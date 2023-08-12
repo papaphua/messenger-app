@@ -22,7 +22,7 @@ public static class Config
         get
         {
             var mvcClientSecret = Environment.GetEnvironmentVariable("MVC_CLIENT_SECRET");
-            
+
             return new Client[]
             {
                 new()

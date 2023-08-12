@@ -63,7 +63,7 @@ public class Callback : PageModel
 
         // find external user
         var user = await _userManager.FindByLoginAsync(provider, providerUserId);
-        
+
         if (user == null)
             // this might be where you might initiate a custom workflow for user registration
             // in this sample we don't show how that would be done, as our sample implementation
@@ -88,7 +88,8 @@ public class Callback : PageModel
 
         // check if external login is in the context of an OIDC request
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id.ToString(), user.UserName, true,
+        await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id.ToString(), user.UserName,
+            true,
             context?.Client.ClientId));
 
         if (context != null)
@@ -107,36 +108,40 @@ public class Callback : PageModel
 
         var user = new ApplicationUser
         {
-            Id = sub,
-            UserName = sub.ToString() // don't need a username, since the user will be using an external provider to login
+            Id = sub
         };
 
         // email
         var email = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Email)?.Value ??
                     claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-        if (email != null) user.Email = email;
+        if (email != null)
+        {
+            user.Email = email;
+
+            //username 
+            user.UserName = email[..email.LastIndexOf('@')];
+        }
 
         // create a list of claims that we want to transfer into our store
         var filtered = new List<Claim>();
 
         // user's display name
-        var name = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Name)?.Value ??
-                   claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-        if (name != null)
-        {
-            filtered.Add(new Claim(JwtClaimTypes.Name, name));
-        }
-        else
-        {
-            var first = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.GivenName)?.Value ??
+        var firstName = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.GivenName)?.Value ??
                         claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
-            var last = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.FamilyName)?.Value ??
+
+        var lastName = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.FamilyName)?.Value ??
                        claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
-            if (first != null && last != null)
-                filtered.Add(new Claim(JwtClaimTypes.Name, first + " " + last));
-            else if (first != null)
-                filtered.Add(new Claim(JwtClaimTypes.Name, first));
-            else if (last != null) filtered.Add(new Claim(JwtClaimTypes.Name, last));
+
+        if (firstName != null)
+        {
+            user.FirstName = firstName;
+            filtered.Add(new Claim(JwtClaimTypes.GivenName, firstName));
+        }
+
+        if (lastName != null)
+        {
+            user.LastName = lastName;
+            filtered.Add(new Claim(JwtClaimTypes.GivenName, lastName));
         }
 
         var identityResult = await _userManager.CreateAsync(user);

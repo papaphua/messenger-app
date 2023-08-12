@@ -1,10 +1,7 @@
-using System.Security.Claims;
-using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
-using IdentityModel;
 using MessengerApp.IdentityServer.Models;
 using MessengerApp.IdentityServer.Pages.Account.Login;
 using Microsoft.AspNetCore.Authentication;
@@ -80,10 +77,10 @@ public class Index : PageModel
 
         if (Input.Email != null && await _userManager.FindByEmailAsync(Input.Email) != null)
             ModelState.AddModelError("Input.Email", SignupOptions.EmailAlreadyTakenErrorMessage);
-        
+
         if (Input.Username != null && await _userManager.FindByNameAsync(Input.Username) != null)
             ModelState.AddModelError("Input.Username", SignupOptions.UsernameAlreadyTakenErrorMessage);
-        
+
         if (ModelState.IsValid)
         {
             var createResult = await _userManager.CreateAsync(new ApplicationUser
@@ -101,7 +98,7 @@ public class Index : PageModel
                 //     new(JwtClaimTypes.Id, user.Id.ToString()),
                 //     new(JwtClaimTypes.PreferredUserName, user.UserName)
                 // });
-                
+
                 if (context != null)
                 {
                     if (context.IsNativeClient())
@@ -112,7 +109,7 @@ public class Index : PageModel
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                     return Redirect(Input.ReturnUrl);
                 }
-                
+
                 // request for a local page
                 if (Url.IsLocalUrl(Input.ReturnUrl))
                     return Redirect(Input.ReturnUrl);
@@ -126,7 +123,7 @@ public class Index : PageModel
                 clientId: context?.Client.ClientId));
             ModelState.AddModelError(string.Empty, LoginOptions.InvalidCredentialsErrorMessage);
         }
-        
+
         return Page();
     }
 }

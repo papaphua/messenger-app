@@ -21,7 +21,7 @@ try
     var app = builder
         .ConfigureServices()
         .ConfigurePipeline();
-    
+
     if (args.Contains("/seed"))
     {
         Log.Information("Seeding database...");
