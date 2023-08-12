@@ -11,7 +11,8 @@
 @if (User.Identity.IsAuthenticated)
 {
     @(Model.FirstName + " " + Model.LastName)
-    
+    @Model.Id
+
     <h2>Claims</h2>
 
     <dl>

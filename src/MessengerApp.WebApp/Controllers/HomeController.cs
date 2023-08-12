@@ -15,12 +15,12 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         var userId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-
-        var user = _db.Users.FirstOrDefault(user => user.Id.ToString() == userId);
         
+        var user = _db.Users.FirstOrDefault(user => user.Id.ToString() == userId);
+
         return View(user);
     }
-    
+
     public IActionResult LogOut()
     {
         return SignOut("Cookies", "oidc");
