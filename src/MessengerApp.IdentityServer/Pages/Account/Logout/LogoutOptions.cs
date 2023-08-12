@@ -1,4 +1,4 @@
-namespace MessengerApp.IdentityServer.Pages.Logout;
+namespace MessengerApp.IdentityServer.Pages.Account.Logout;
 
 public class LogoutOptions
 {

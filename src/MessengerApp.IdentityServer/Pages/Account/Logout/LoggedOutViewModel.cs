@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 
-namespace MessengerApp.IdentityServer.Pages.Logout;
+namespace MessengerApp.IdentityServer.Pages.Account.Logout;
 
 public class LoggedOutViewModel
 {

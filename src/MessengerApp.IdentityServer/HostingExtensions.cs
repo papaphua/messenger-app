@@ -16,7 +16,8 @@ internal static class HostingExtensions
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+        builder.Services
+            .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => options.User.RequireUniqueEmail = true)
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
@@ -24,12 +25,12 @@ internal static class HostingExtensions
             .AddIdentityServer(options =>
             {
                 options.KeyManagement.KeyPath = "Keys";
-                
+
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-                
+
                 options.EmitStaticAudienceClaim = true;
             })
             .AddInMemoryIdentityResources(Config.IdentityResources)
@@ -41,7 +42,7 @@ internal static class HostingExtensions
             .AddGoogle(options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                
+
                 options.ClientId = "clientId";
                 options.ClientSecret = "secret";
             });

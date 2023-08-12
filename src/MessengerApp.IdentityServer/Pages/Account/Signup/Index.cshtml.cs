@@ -1,16 +1,19 @@
+using System.Security.Claims;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using IdentityModel;
 using MessengerApp.IdentityServer.Models;
+using MessengerApp.IdentityServer.Pages.Account.Login;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MessengerApp.IdentityServer.Pages.Account.Login;
+namespace MessengerApp.IdentityServer.Pages.Account.Signup;
 
 [SecurityHeaders]
 [AllowAnonymous]
@@ -39,18 +42,11 @@ public class Index : PageModel
         _events = events;
     }
 
-    public ViewModel View { get; set; }
-
     [BindProperty] public InputModel Input { get; set; }
 
-    public async Task<IActionResult> OnGet(string returnUrl)
+    public IActionResult OnGet(string returnUrl)
     {
-        await BuildModelAsync(returnUrl);
-
-        if (View.IsExternalLoginOnly)
-            // we only have one option for logging in and it's an external provider
-            return RedirectToPage("/ExternalLogin/Challenge", new { scheme = View.ExternalLoginScheme, returnUrl });
-
+        Input = new InputModel { ReturnUrl = returnUrl };
         return Page();
     }
 
@@ -60,7 +56,7 @@ public class Index : PageModel
         var context = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
 
         // the user clicked the "cancel" button
-        if (Input.Button != "login")
+        if (Input.Button != "signup")
         {
             if (context != null)
             {
@@ -82,16 +78,30 @@ public class Index : PageModel
             return Redirect("~/");
         }
 
+        if (Input.Email != null && await _userManager.FindByEmailAsync(Input.Email) != null)
+            ModelState.AddModelError("Input.Email", SignupOptions.EmailAlreadyTakenErrorMessage);
+        
+        if (Input.Username != null && await _userManager.FindByNameAsync(Input.Username) != null)
+            ModelState.AddModelError("Input.Username", SignupOptions.UsernameAlreadyTakenErrorMessage);
+        
         if (ModelState.IsValid)
         {
-            var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberLogin,
-                true);
-            if (result.Succeeded)
+            var createResult = await _userManager.CreateAsync(new ApplicationUser
             {
-                var user = await _userManager.FindByNameAsync(Input.Username);
-                await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName,
-                    clientId: context?.Client.ClientId));
+                Email = Input.Email,
+                UserName = Input.Username
+            }, Input.Password);
 
+            if (createResult.Succeeded)
+            {
+                // var user = await _userManager.FindByNameAsync(Input.Username);
+                //
+                // await _userManager.AddClaimsAsync(user, new Claim[]
+                // {
+                //     new(JwtClaimTypes.Id, user.Id.ToString()),
+                //     new(JwtClaimTypes.PreferredUserName, user.UserName)
+                // });
+                
                 if (context != null)
                 {
                     if (context.IsNativeClient())
@@ -102,7 +112,7 @@ public class Index : PageModel
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                     return Redirect(Input.ReturnUrl);
                 }
-
+                
                 // request for a local page
                 if (Url.IsLocalUrl(Input.ReturnUrl))
                     return Redirect(Input.ReturnUrl);
@@ -116,74 +126,7 @@ public class Index : PageModel
                 clientId: context?.Client.ClientId));
             ModelState.AddModelError(string.Empty, LoginOptions.InvalidCredentialsErrorMessage);
         }
-
-        // something went wrong, show form with error
-        await BuildModelAsync(Input.ReturnUrl);
+        
         return Page();
-    }
-
-    private async Task BuildModelAsync(string returnUrl)
-    {
-        Input = new InputModel
-        {
-            ReturnUrl = returnUrl
-        };
-
-        var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
-        {
-            var local = context.IdP == IdentityServerConstants.LocalIdentityProvider;
-
-            // this is meant to short circuit the UI and only trigger the one external IdP
-            View = new ViewModel
-            {
-                EnableLocalLogin = local
-            };
-
-            Input.Username = context?.LoginHint;
-
-            if (!local)
-                View.ExternalProviders = new[]
-                    { new ViewModel.ExternalProvider { AuthenticationScheme = context.IdP } };
-
-            return;
-        }
-
-        var schemes = await _schemeProvider.GetAllSchemesAsync();
-
-        var providers = schemes
-            .Where(x => x.DisplayName != null)
-            .Select(x => new ViewModel.ExternalProvider
-            {
-                DisplayName = x.DisplayName ?? x.Name,
-                AuthenticationScheme = x.Name
-            }).ToList();
-
-        var dyanmicSchemes = (await _identityProviderStore.GetAllSchemeNamesAsync())
-            .Where(x => x.Enabled)
-            .Select(x => new ViewModel.ExternalProvider
-            {
-                AuthenticationScheme = x.Scheme,
-                DisplayName = x.DisplayName
-            });
-        providers.AddRange(dyanmicSchemes);
-
-
-        var allowLocal = true;
-        var client = context?.Client;
-        if (client != null)
-        {
-            allowLocal = client.EnableLocalLogin;
-            if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
-                providers = providers.Where(provider =>
-                    client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
-        }
-
-        View = new ViewModel
-        {
-            AllowRememberLogin = LoginOptions.AllowRememberLogin,
-            EnableLocalLogin = allowLocal && LoginOptions.AllowLocalLogin,
-            ExternalProviders = providers.ToArray()
-        };
     }
 }

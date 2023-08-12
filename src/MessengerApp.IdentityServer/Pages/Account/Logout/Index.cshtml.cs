@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MessengerApp.IdentityServer.Pages.Logout;
+namespace MessengerApp.IdentityServer.Pages.Account.Logout;
 
 [SecurityHeaders]
 [AllowAnonymous]

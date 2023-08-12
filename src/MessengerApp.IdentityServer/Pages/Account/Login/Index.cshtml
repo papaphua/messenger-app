@@ -1,5 +1,6 @@
 @page
-@model MessengerApp.IdentityServer.Pages.Login.Index
+@using MessengerApp.IdentityServer.Pages.Account.Login
+@model MessengerApp.IdentityServer.Pages.Account.Login.Index
 
 <div class="login-page">
     <div class="lead">
@@ -44,9 +45,12 @@
                                 </div>
                             }
 
-                            <button class="btn btn-primary" name="Input.Button" value="login">Login</button>
+                            <button class="btn btn-primary" name="Input.Button" value="login">Log in</button>
                             <button class="btn btn-secondary" name="Input.Button" value="cancel">Cancel</button>
                         </form>
+                    </div>
+                    <div class="card-footer">
+                        Don't have an account? <a href="@LoginOptions.SignupLink">Sign up</a>
                     </div>
                 </div>
             </div>

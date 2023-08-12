@@ -3,7 +3,7 @@
 
 using Duende.IdentityServer.Models;
 
-namespace MessengerApp.IdentityServer.Pages.Error;
+namespace MessengerApp.IdentityServer.Pages.Home.Error;
 
 public class ViewModel
 {

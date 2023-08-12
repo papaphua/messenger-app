@@ -3,7 +3,7 @@ using Duende.IdentityServer.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MessengerApp.IdentityServer.Pages.Home;
+namespace MessengerApp.IdentityServer.Pages;
 
 [AllowAnonymous]
 public class Index : PageModel

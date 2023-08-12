@@ -2,7 +2,7 @@ using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MessengerApp.IdentityServer.Pages.Error;
+namespace MessengerApp.IdentityServer.Pages.Home.Error;
 
 [AllowAnonymous]
 [SecurityHeaders]
