@@ -17,22 +17,29 @@ public static class Config
             new("scope1")
         };
 
-    public static IEnumerable<Client> Clients =>
-        new Client[]
+    public static IEnumerable<Client> Clients
+    {
+        get
         {
-            new()
+            var mvcClientSecret = Environment.GetEnvironmentVariable("MVC_CLIENT_SECRET");
+            
+            return new Client[]
             {
-                ClientId = "mvc",
-                ClientSecrets = { new Secret("secret".Sha256()) },
+                new()
+                {
+                    ClientId = "mvc",
+                    ClientSecrets = { new Secret(mvcClientSecret.Sha256()) },
 
-                AllowedGrantTypes = GrantTypes.Code,
+                    AllowedGrantTypes = GrantTypes.Code,
 
-                RedirectUris = { "https://localhost:5002/signin-oidc" },
-                FrontChannelLogoutUri = "https://localhost:5002/signout-oidc",
-                PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+                    RedirectUris = { "https://localhost:5002/signin-oidc" },
+                    FrontChannelLogoutUri = "https://localhost:5002/signout-oidc",
+                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
-                AllowOfflineAccess = true,
-                AllowedScopes = { "openid", "profile", "scope1" }
-            }
-        };
+                    AllowOfflineAccess = true,
+                    AllowedScopes = { "openid", "profile", "scope1" }
+                }
+            };
+        }
+    }
 }

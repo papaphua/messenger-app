@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="DotNetEnv" Version="2.5.0" />
         <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.3.3" />
 
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.0"/>

@@ -1,6 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
 
 builder.Services.AddControllersWithViews();
 
@@ -17,7 +20,7 @@ builder.Services.AddAuthentication(options =>
         options.Authority = "https://localhost:5001";
 
         options.ClientId = "mvc";
-        options.ClientSecret = "secret";
+        options.ClientSecret = Environment.GetEnvironmentVariable("MVC_CLIENT_SECRET");
         options.ResponseType = "code";
 
         options.SaveTokens = true;

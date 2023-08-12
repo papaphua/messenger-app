@@ -1,3 +1,4 @@
+using DotNetEnv;
 using Duende.IdentityServer;
 using MessengerApp.IdentityServer.Data;
 using MessengerApp.IdentityServer.Models;
@@ -11,8 +12,10 @@ internal static class HostingExtensions
 {
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
+        Env.Load();
+        
         builder.Services.AddRazorPages();
-
+        
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -37,14 +40,14 @@ internal static class HostingExtensions
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
             .AddAspNetIdentity<ApplicationUser>();
-
+        
         builder.Services.AddAuthentication()
             .AddGoogle(options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
 
-                options.ClientId = "clientId";
-                options.ClientSecret = "secret";
+                options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")!;
+                options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")!;
             });
 
         return builder.Build();
