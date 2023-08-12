@@ -141,7 +141,7 @@ public class Callback : PageModel
         if (lastName != null)
         {
             user.LastName = lastName;
-            filtered.Add(new Claim(JwtClaimTypes.GivenName, lastName));
+            filtered.Add(new Claim(JwtClaimTypes.FamilyName, lastName));
         }
 
         var identityResult = await _userManager.CreateAsync(user);
