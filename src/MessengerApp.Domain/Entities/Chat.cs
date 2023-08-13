@@ -2,11 +2,9 @@
 
 namespace MessengerApp.Domain.Entities;
 
-public sealed class Chat : Entity
+public sealed class Chat : IEntity
 {
-    public Chat(Guid id) : base(id)
-    {
-    }
+    public Guid Id { get; set; }
 
     public ICollection<User> Users { get; set; } = null!;
 

@@ -2,12 +2,9 @@
 
 namespace MessengerApp.Domain.Entities;
 
-public sealed class Attachment : Entity
+public sealed class Attachment : IEntity
 {
-    public Attachment(Guid id)
-        : base(id)
-    {
-    }
+    public Guid Id { get; set; }
 
     public required Guid MessageId { get; set; }
     

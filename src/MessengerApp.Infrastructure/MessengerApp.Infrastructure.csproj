@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\MessengerApp.Application\MessengerApp.Application.csproj" />
         <ProjectReference Include="..\MessengerApp.Domain\MessengerApp.Domain.csproj"/>
     </ItemGroup>
 

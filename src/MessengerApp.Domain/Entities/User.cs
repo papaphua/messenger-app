@@ -5,7 +5,6 @@ namespace MessengerApp.Domain.Entities;
 
 public sealed class User : IdentityUser<Guid>, IEntity
 {
-    public new Guid Id { get; init; }
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }
@@ -13,4 +12,10 @@ public sealed class User : IdentityUser<Guid>, IEntity
     public string? Biography { get; set; }
 
     public ICollection<Chat> Chats { get; set; } = null!;
+    
+    Guid IEntity.Id
+    {
+        get => Id;
+        set => Id = value;
+    }
 }

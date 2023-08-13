@@ -2,12 +2,9 @@
 
 namespace MessengerApp.Domain.Entities;
 
-public sealed class Reaction : Entity
+public sealed class Reaction : IEntity
 {
-    public Reaction(Guid id)
-        : base(id)
-    {
-    }
+    public Guid Id { get; set; }
 
     public required Guid UserId { get; set; }
 

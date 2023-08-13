@@ -2,13 +2,9 @@
 
 namespace MessengerApp.Domain.Entities;
 
-public sealed class Message : Entity
+public sealed class Message : IEntity
 {
-    public Message(Guid id)
-        : base(id)
-    {
-        DateTimeCreated = DateTime.UtcNow;
-    }
+    public Guid Id { get; set; }
 
     public required Guid UserId { get; set; }
 
