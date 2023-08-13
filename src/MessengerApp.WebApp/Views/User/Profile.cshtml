@@ -1,0 +1,58 @@
+﻿@using MessengerApp.Application.Dtos
+@model MessengerApp.Application.Dtos.UserDto
+
+<div class="row">
+    <div class="col">
+        <partial name="_ValidationSummary"/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">Profile</div>
+            <form asp-action="UpdateProfile" method="post">
+                <div class="card-body">
+                    <partial name="_UserProfileForm" model="Model.UserProfileDto"/>
+                </div>
+
+                <div class="card-footer d-flex justify-content-end">
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">Password</div>
+            <form asp-action="ChangePassword" method="post">
+                <div class="card-body">
+                    <partial name="_UserPasswordForm" model="@(new UserPasswordDto())"/>
+                </div>
+
+                <div class="card-footer d-flex justify-content-end">
+                    <button class="btn btn-primary" type="submit">Change password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-4 mb-2">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">Email</div>
+            <form asp-action="ChangeEmail" method="post">
+                <div class="card-body">
+                    <partial name="_UserEmailForm" model="Model.UserEmailDto"/>
+                </div>
+
+                <div class="card-footer d-flex justify-content-end">
+                    <button class="btn btn-primary" type="submit">Change email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
