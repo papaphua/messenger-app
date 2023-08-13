@@ -15,13 +15,6 @@ public sealed class ApplicationDbContext : IdentityDbContext<User, IdentityRole<
     {
     }
 
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-
-        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-    }
-
     public new DbSet<TEntity> Set<TEntity>()
         where TEntity : class, IEntity
     {
@@ -55,5 +48,12 @@ public sealed class ApplicationDbContext : IdentityDbContext<User, IdentityRole<
     public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         return await Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

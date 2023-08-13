@@ -12,7 +12,7 @@ public sealed class User : IdentityUser<Guid>, IEntity
     public string? Biography { get; set; }
 
     public ICollection<Chat> Chats { get; set; } = null!;
-    
+
     Guid IEntity.Id
     {
         get => Id;

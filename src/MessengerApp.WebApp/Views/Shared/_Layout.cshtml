@@ -3,10 +3,23 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - MessengerApp</title>
+    <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <style>
+        .notification-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+
 </head>
 <body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script src="~/js/_Layout.cshtml.js"></script>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
@@ -59,6 +72,55 @@
     @RenderBody()
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<!-- Notification -->
+<div class="notification-container">
+    <div id="notification" class="alert alert-dismissible fade show" role="alert" style="display: none;">
+        <strong id="notification-message"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+    // Check if notification data is available
+    var notificationMessage = "@TempData[Notifications.Message]";
+    var notificationSucceeded = "@TempData[Notifications.Succeeded]" === "True"; // Fix the boolean conversion
+
+    if (notificationMessage !== "") {
+        // Update notification message
+        $("#notification-message").text(notificationMessage);
+
+        // Apply color based on success status
+        if (notificationSucceeded) {
+            $("#notification").addClass("alert-success");
+        } else {
+            $("#notification").addClass("alert-danger");
+        }
+
+        // Show notification
+        $("#notification").fadeIn();
+
+        // Set a timeout to hide the notification after a few seconds
+        var notificationTimeout = setTimeout(function () {
+            $("#notification").fadeOut(function () {
+                // Remove the notification element after fading out
+                $(this).remove();
+            });
+        }, 5000); // Adjust the duration (in milliseconds) as needed
+
+        // Update the notification with a countdown timer
+        var countdownInterval = setInterval(function () {
+            var remainingTime = Math.ceil((5000 - (Date.now() - notificationTimeout)) / 1000);
+            $("#notification .countdown").text(" (" + remainingTime + "s)");
+        }, 1000); // Update every second
+
+        // Clear the countdown interval when the notification is removed
+        $("#notification").on("hidden.bs.alert", function () {
+            clearInterval(countdownInterval);
+        });
+    }
+});
+</script>
+
 </body>
 </html>

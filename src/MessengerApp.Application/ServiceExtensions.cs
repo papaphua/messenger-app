@@ -8,7 +8,7 @@ public static class ServiceExtensions
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
-        
+
         return services;
     }
 }

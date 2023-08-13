@@ -7,10 +7,10 @@ public interface IDbContext
 {
     DbSet<TEntity> Set<TEntity>()
         where TEntity : class, IEntity;
-    
+
     Task<TEntity?> GetBydIdAsync<TEntity>(Guid id)
         where TEntity : class, IEntity;
-    
+
     Task AddAsync<TEntity>(TEntity entity)
         where TEntity : class, IEntity;
 

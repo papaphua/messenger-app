@@ -1,5 +1,6 @@
 ﻿using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Services.UserService;
+using MessengerApp.Domain.Constants;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,15 @@ public sealed class UserController : Controller
     public async Task<IActionResult> Profile()
     {
         var userId = Parser.ParseUserId(HttpContext)!;
-        var user = await _userService.GetUserAsync(userId);
+
+        var result = await _userService.GetUserAsync(userId);
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Home");
+
+        var user = result.Data;
 
         return View(user);
     }
@@ -29,10 +38,13 @@ public sealed class UserController : Controller
         if (!ModelState.IsValid)
         {
             var user = await _userService.GetUserAsync(userId);
-            return View("Profile", user);
+            return View("Profile", user.Data);
         }
 
-        await _userService.UpdateUserProfileAsync(userId, profileDto);
+        var result = await _userService.UpdateUserProfileAsync(userId, profileDto);
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
         return RedirectToAction("Profile");
     }
@@ -44,10 +56,13 @@ public sealed class UserController : Controller
         if (!ModelState.IsValid)
         {
             var user = await _userService.GetUserAsync(userId);
-            return View("Profile", user);
+            return View("Profile", user.Data);
         }
 
-        await _userService.ChangeEmailAsync(userId, emailDto);
+        var result = await _userService.ChangeEmailAsync(userId, emailDto);
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
         return RedirectToAction("Profile");
     }
@@ -59,10 +74,13 @@ public sealed class UserController : Controller
         if (!ModelState.IsValid)
         {
             var user = await _userService.GetUserAsync(userId);
-            return View("Profile", user);
+            return View("Profile", user.Data);
         }
 
-        await _userService.ChangePasswordAsync(userId, passwordDto);
+        var result = await _userService.ChangePasswordAsync(userId, passwordDto);
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
         return RedirectToAction("Profile");
     }

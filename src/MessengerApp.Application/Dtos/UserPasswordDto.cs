@@ -8,11 +8,11 @@ public sealed class UserPasswordDto
     [Required]
     [DisplayName("Current password")]
     public string CurrentPassword { get; set; } = string.Empty;
-    
+
     [Required]
     [DisplayName("New password")]
     public string NewPassword { get; set; } = string.Empty;
-    
+
     [Required]
     [DisplayName("Confirm new password")]
     [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match.")]
