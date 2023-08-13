@@ -2,17 +2,8 @@
     ViewData["Title"] = "Home Page";
 }
 
-@model MessengerApp.Domain.Entities.User
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-</div>
-
 @if (User.Identity.IsAuthenticated)
 {
-    @(Model.FirstName + " " + Model.LastName)
-    @Model.Id
-
     <h2>Claims</h2>
 
     <dl>

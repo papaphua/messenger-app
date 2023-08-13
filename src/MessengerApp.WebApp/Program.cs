@@ -23,6 +23,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IDbContext, ApplicationDbContext>();
 builder.Services.AddScoped<IUnitOfWork, ApplicationDbContext>();
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 builder.Services
     .AddIdentityCore<User>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
