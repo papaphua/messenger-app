@@ -1,8 +1,6 @@
-﻿using MessengerApp.Domain.Entities;
-
-namespace MessengerApp.Application.Abstractions.Services;
+﻿namespace MessengerApp.Application.Abstractions.Services;
 
 public interface IEmailService
 {
-    Task SendEmailAsync(EmailMessage emailMessage);
+    Task SendEmailAsync(string receiver, string subject, string content);
 }

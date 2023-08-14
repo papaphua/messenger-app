@@ -4,5 +4,6 @@ namespace MessengerApp.Application.Dtos;
 
 public sealed class UserEmailDto
 {
-    [Required] public string Email { get; set; }
+    [Required] [EmailAddress] public string Email { get; set; }
+    public bool IsConfirmed { get; init; }
 }

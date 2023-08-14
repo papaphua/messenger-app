@@ -2,6 +2,6 @@
 
 public static class Notifications
 {
-    public const string Message = "NotificationMessage";
-    public const string Succeeded = "ResultStatus";
+    public const string Message = "Message";
+    public const string Succeeded = "Succeeded";
 }

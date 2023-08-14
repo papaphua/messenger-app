@@ -21,10 +21,13 @@ public sealed class UserController : Controller
 
         var result = await _userService.GetUserAsync(userId);
 
-        TempData[Notifications.Message] = result.Message;
-        TempData[Notifications.Succeeded] = result.Succeeded;
-
-        if (!result.Succeeded) return RedirectToAction("Index", "Home");
+        if (!result.Succeeded)
+        {
+            TempData[Notifications.Message] = result.Message;
+            TempData[Notifications.Succeeded] = result.Succeeded;
+            
+            return RedirectToAction("Index", "Home");
+        }
 
         var user = result.Data;
 

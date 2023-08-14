@@ -82,7 +82,7 @@ public sealed class UserService : IUserService
         return new Result
         {
             Succeeded = emailResult.Succeeded,
-            Message = Result.IdentityResultsToMessage(emailResult) ?? Results.UserEmailUpdated
+            Message = Result.IdentityResultsToMessage(emailResult) ?? Results.UserEmailChanged
         };
     }
 
@@ -110,7 +110,7 @@ public sealed class UserService : IUserService
         return new Result
         {
             Succeeded = passwordResult.Succeeded,
-            Message = Result.IdentityResultsToMessage(passwordResult) ?? Results.UserPasswordUpdated
+            Message = Result.IdentityResultsToMessage(passwordResult) ?? Results.UserPasswordChanged
         };
     }
 }

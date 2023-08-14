@@ -19,16 +19,16 @@ public sealed class EmailService : IEmailService
         _client = new SendGridClient(Environment.GetEnvironmentVariable(Variables.SendGridApiKey));
     }
 
-    public async Task SendEmailAsync(EmailMessage emailMessage)
+    public async Task SendEmailAsync(string receiver, string subject, string content)
     {
         var message = new SendGridMessage
         {
             From = new EmailAddress(_options.SenderEmail, _options.SenderName),
-            Subject = emailMessage.Subject,
-            PlainTextContent = emailMessage.Content
+            Subject = subject,
+            PlainTextContent = content
         };
         
-        message.AddTo(new EmailAddress(emailMessage.Receiver));
+        message.AddTo(new EmailAddress(receiver));
 
         await _client.SendEmailAsync(message);
     }
