@@ -32,7 +32,7 @@
             <div class="card-header">Password</div>
             <form asp-action="ChangePassword" method="post">
                 <div class="card-body">
-                    <partial name="_UserPasswordForm" model="@(new UserPasswordDto())"/>
+                    <partial name="_UserPasswordForm" model="@(new ChangePasswordDto())"/>
                 </div>
 
                 <div class="card-footer d-flex justify-content-end">
@@ -48,13 +48,14 @@
     <div class="col">
         <div class="card">
             <div class="card-header">Email</div>
-            <form asp-action="ChangeEmail" method="post">
+            <form method="post">
                 <div class="card-body">
                     <partial name="_UserEmailForm" model="Model.UserEmailDto"/>
                 </div>
 
-                <div class="card-footer d-flex justify-content-end">
-                    <button class="btn btn-primary" type="submit">Change email</button>
+                <div class="card-footer d-flex justify-content-around justify-content-end">
+                    <button asp-action="RequestEmailConfirmation" class="btn btn-primary" type="submit">Confirm email</button>
+                    <button asp-action="RequestEmailChange" class="btn btn-secondary" type="submit">Change email</button>
                 </div>
             </form>
         </div>

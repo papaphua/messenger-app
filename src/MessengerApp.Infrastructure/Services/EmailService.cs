@@ -1,6 +1,5 @@
 ﻿using MessengerApp.Application.Abstractions.Services;
 using MessengerApp.Domain.Constants;
-using MessengerApp.Domain.Entities;
 using MessengerApp.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using SendGrid;
@@ -16,10 +15,10 @@ public sealed class EmailService : IEmailService
     public EmailService(IOptions<EmailOptions> options)
     {
         _options = options.Value;
-        _client = new SendGridClient(Environment.GetEnvironmentVariable(Variables.SendGridApiKey));
+        _client = new SendGridClient(Environment.GetEnvironmentVariable(Envs.SendGridApiKey));
     }
 
-    public async Task SendEmailAsync(string receiver, string subject, string content)
+    public async Task SendEmailAsync(string receiverEmail, string subject, string content)
     {
         var message = new SendGridMessage
         {
@@ -27,8 +26,8 @@ public sealed class EmailService : IEmailService
             Subject = subject,
             PlainTextContent = content
         };
-        
-        message.AddTo(new EmailAddress(receiver));
+
+        message.AddTo(new EmailAddress(receiverEmail));
 
         await _client.SendEmailAsync(message);
     }

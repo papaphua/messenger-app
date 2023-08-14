@@ -20,7 +20,7 @@ var configuration = builder.Configuration;
 builder.Services.AddControllersWithViews();
 
 // Options
-builder.Services.Configure<EmailOptions>(configuration.GetSection(Configurations.EmailOptions).Bind);
+builder.Services.Configure<EmailOptions>(configuration.GetSection(Sections.EmailOptions).Bind);
 
 // External services
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -33,8 +33,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<IDbContext, ApplicationDbContext>();
-builder.Services.AddScoped<IUnitOfWork, ApplicationDbContext>();
+builder.Services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>());
+builder.Services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>());
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -56,7 +56,7 @@ builder.Services.AddAuthentication(options =>
         options.Authority = "https://localhost:5001";
 
         options.ClientId = "mvc";
-        options.ClientSecret = Environment.GetEnvironmentVariable(Variables.MvcClientSecret);
+        options.ClientSecret = Environment.GetEnvironmentVariable(Envs.MvcClientSecret);
         options.ResponseType = "code";
 
         options.SaveTokens = true;

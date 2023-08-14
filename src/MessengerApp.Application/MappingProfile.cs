@@ -12,7 +12,7 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.UserEmailDto,
                 opt => opt.MapFrom(src => new UserEmailDto
                 {
-                    Email = src.Email, 
+                    Email = src.Email,
                     IsConfirmed = src.EmailConfirmed
                 }))
             .ForMember(dest => dest.UserProfileDto, opt => opt.MapFrom(src => new UserProfileDto

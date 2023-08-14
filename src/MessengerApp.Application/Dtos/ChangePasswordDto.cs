@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MessengerApp.Application.Dtos;
 
-public sealed class UserPasswordDto
+public sealed class ChangePasswordDto
 {
     [Required]
     [DisplayName("Current password")]

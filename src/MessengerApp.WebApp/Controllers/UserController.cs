@@ -25,7 +25,7 @@ public sealed class UserController : Controller
         {
             TempData[Notifications.Message] = result.Message;
             TempData[Notifications.Succeeded] = result.Succeeded;
-            
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -52,25 +52,7 @@ public sealed class UserController : Controller
         return RedirectToAction("Profile");
     }
 
-    public async Task<IActionResult> ChangeEmail(UserEmailDto emailDto)
-    {
-        var userId = Parser.ParseUserId(HttpContext)!;
-
-        if (!ModelState.IsValid)
-        {
-            var user = await _userService.GetUserAsync(userId);
-            return View("Profile", user.Data);
-        }
-
-        var result = await _userService.ChangeEmailAsync(userId, emailDto);
-
-        TempData[Notifications.Message] = result.Message;
-        TempData[Notifications.Succeeded] = result.Succeeded;
-
-        return RedirectToAction("Profile");
-    }
-
-    public async Task<IActionResult> ChangePassword(UserPasswordDto passwordDto)
+    public async Task<IActionResult> ChangePassword(ChangePasswordDto passwordDto)
     {
         var userId = Parser.ParseUserId(HttpContext)!;
 
@@ -81,6 +63,58 @@ public sealed class UserController : Controller
         }
 
         var result = await _userService.ChangePasswordAsync(userId, passwordDto);
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        return RedirectToAction("Profile");
+    }
+
+    public async Task<IActionResult> RequestEmailConfirmation()
+    {
+        var userId = Parser.ParseUserId(HttpContext)!;
+
+        var result = await _userService.RequestEmailConfirmationAsync(userId);
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        return RedirectToAction("Profile");
+    }
+
+    public async Task<IActionResult> EmailConfirmation()
+    {
+        var userId = Parser.ParseUserId(HttpContext)!;
+
+        var token = HttpContext.Request.Query["token"].First()!;
+
+        var result = await _userService.ConfirmEmailAsync(userId, token);
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        return RedirectToAction("Profile");
+    }
+
+    public async Task<IActionResult> RequestEmailChange(UserEmailDto emailDto)
+    {
+        var userId = Parser.ParseUserId(HttpContext)!;
+
+        var result = await _userService.RequestEmailChangeAsync(userId, emailDto);
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        return RedirectToAction("Profile");
+    }
+
+    public async Task<IActionResult> EmailChange()
+    {
+        var userId = Parser.ParseUserId(HttpContext)!;
+
+        var token = HttpContext.Request.Query["token"].First()!;
+
+        var result = await _userService.ChangeEmailAsync(userId, token);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;

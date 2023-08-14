@@ -1,6 +1,6 @@
 ﻿namespace MessengerApp.Domain.Constants;
 
-public static class Configurations
+public static class Sections
 {
     public const string EmailOptions = "EmailOptions";
 }
