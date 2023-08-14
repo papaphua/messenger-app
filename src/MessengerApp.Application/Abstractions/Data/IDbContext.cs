@@ -1,7 +1,7 @@
 ﻿using MessengerApp.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-namespace MessengerApp.Application.Abstractions;
+namespace MessengerApp.Application.Abstractions.Data;
 
 public interface IDbContext
 {

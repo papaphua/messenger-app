@@ -17,7 +17,7 @@ public sealed class MappingProfile : Profile
                 LastName = src.LastName,
                 Biography = src.Biography
             }));
-
+        
         CreateMap<UserProfileDto, User>();
     }
 }

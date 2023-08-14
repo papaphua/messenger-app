@@ -1,4 +1,4 @@
-﻿using MessengerApp.Application.Abstractions;
+﻿using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Domain.Abstractions;
 using MessengerApp.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace MessengerApp.Infrastructure;
+namespace MessengerApp.Infrastructure.Data;
 
 public sealed class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IDbContext, IUnitOfWork
 {
