@@ -31,9 +31,48 @@ public sealed class UserController : Controller
 
         var user = result.Data;
 
+        ViewBag.ProfilePictureBytes = user.UserProfileDto.ProfilePicture;
+        
         return View(user);
     }
 
+    public async Task<IActionResult> UploadProfilePicture()
+    {
+        var userId = Parser.ParseUserId(HttpContext)!;
+        
+        if (Request.Form.Files.Count == 0)
+        {
+            ModelState.AddModelError("file", "Please select a valid image file.");
+            
+            var result = await _userService.GetUserAsync(userId);
+            
+            if (!result.Succeeded)
+            {
+                TempData[Notifications.Message] = result.Message;
+                TempData[Notifications.Succeeded] = result.Succeeded;
+
+                return RedirectToAction("Index", "Home");
+            }
+            
+            ViewBag.ProfilePictureBytes = result.Data!.UserProfileDto.ProfilePicture!;
+            
+            return View("Profile", result.Data);
+        }
+        
+        var profilePicture = Request.Form.Files[0];
+        
+        using var memoryStream = new MemoryStream();
+        
+        await profilePicture.CopyToAsync(memoryStream);
+        var pictureBytes = memoryStream.ToArray();
+        var uploadResult = await _userService.UploadProfilePictureAsync(userId, pictureBytes);
+        
+        TempData[Notifications.Message] = uploadResult.Message;
+        TempData[Notifications.Succeeded] = uploadResult.Succeeded;
+        
+        return RedirectToAction("Profile");
+    }
+    
     public async Task<IActionResult> UpdateProfile(UserProfileDto profileDto)
     {
         var userId = Parser.ParseUserId(HttpContext)!;

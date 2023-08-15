@@ -17,6 +17,7 @@ public sealed class MappingProfile : Profile
                 }))
             .ForMember(dest => dest.UserProfileDto, opt => opt.MapFrom(src => new UserProfileDto
             {
+                ProfilePicture = src.ProfilePicture,
                 UserName = src.UserName,
                 FirstName = src.FirstName,
                 LastName = src.LastName,

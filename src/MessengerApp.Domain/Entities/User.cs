@@ -5,6 +5,8 @@ namespace MessengerApp.Domain.Entities;
 
 public sealed class User : IdentityUser<Guid>, IEntity
 {
+    public byte[]? ProfilePicture { get; set; }
+    
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }

@@ -7,6 +7,8 @@ public interface IUserService
 {
     public Task<Result<UserDto>> GetUserAsync(string userId);
 
+    public Task<Result> UploadProfilePictureAsync(string userId, byte[] pictureBytes);
+
     public Task<Result> UpdateUserProfileAsync(string userId, UserProfileDto profileDto);
 
     public Task<Result> ChangePasswordAsync(string userId, ChangePasswordDto passwordDto);

@@ -1,6 +1,5 @@
 ﻿using System.Web;
 using AutoMapper;
-using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Application.Abstractions.Services;
 using MessengerApp.Application.Dtos;
 using MessengerApp.Domain.Constants;
@@ -39,6 +38,26 @@ public sealed class UserService : IUserService
         return new Result<UserDto>
         {
             Data = _mapper.Map<User, UserDto>(user)
+        };
+    }
+
+    public async Task<Result> UploadProfilePictureAsync(string userId, byte[] pictureBytes)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        user.ProfilePicture = pictureBytes;
+        await _userManager.UpdateAsync(user);
+
+        return new Result
+        {
+            Message = Results.ProfilePictureUpdated
         };
     }
 
