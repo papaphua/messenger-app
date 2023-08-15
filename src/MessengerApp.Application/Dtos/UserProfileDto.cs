@@ -5,7 +5,7 @@ namespace MessengerApp.Application.Dtos;
 
 public sealed class UserProfileDto
 {
-    [Required] [DisplayName("Username")] public string UserName { get; set; }
+    [Required] [DisplayName("Username")] public required string UserName { get; set; }
 
     [DisplayName("First name")] public string? FirstName { get; set; }
 

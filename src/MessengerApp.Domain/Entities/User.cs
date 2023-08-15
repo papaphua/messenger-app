@@ -5,10 +5,6 @@ namespace MessengerApp.Domain.Entities;
 
 public sealed class User : IdentityUser<Guid>, IEntity
 {
-    public new string Email { get; set; }
-    
-    public new string UserName { get; set; }
-    
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }

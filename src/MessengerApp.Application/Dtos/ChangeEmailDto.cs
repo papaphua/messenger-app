@@ -1,8 +1,10 @@
-﻿namespace MessengerApp.Application.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MessengerApp.Application.Dtos;
 
 public sealed class ChangeEmailDto
 {
-    public string NewEmail { get; set; }
+    [Required] public required string NewEmail { get; set; }
 
-    public string Token { get; set; }
+    [Required] public required string Token { get; set; }
 }
