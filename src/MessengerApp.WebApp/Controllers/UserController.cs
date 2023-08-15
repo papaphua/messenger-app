@@ -30,8 +30,6 @@ public sealed class UserController : Controller
         }
 
         var user = result.Data;
-
-        ViewBag.ProfilePictureBytes = user.UserProfileDto.ProfilePicture;
         
         return View(user);
     }
@@ -45,16 +43,6 @@ public sealed class UserController : Controller
             ModelState.AddModelError("file", "Please select a valid image file.");
             
             var result = await _userService.GetUserAsync(userId);
-            
-            if (!result.Succeeded)
-            {
-                TempData[Notifications.Message] = result.Message;
-                TempData[Notifications.Succeeded] = result.Succeeded;
-
-                return RedirectToAction("Index", "Home");
-            }
-            
-            ViewBag.ProfilePictureBytes = result.Data!.UserProfileDto.ProfilePicture!;
             
             return View("Profile", result.Data);
         }

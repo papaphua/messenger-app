@@ -15,14 +15,19 @@ public sealed class MappingProfile : Profile
                     Email = src.Email,
                     IsConfirmed = src.EmailConfirmed
                 }))
-            .ForMember(dest => dest.UserProfileDto, opt => opt.MapFrom(src => new UserProfileDto
-            {
-                ProfilePicture = src.ProfilePicture,
-                UserName = src.UserName,
-                FirstName = src.FirstName,
-                LastName = src.LastName,
-                Biography = src.Biography
-            }));
+            .ForMember(dest => dest.UserProfileDto,
+                opt => opt.MapFrom(src => new UserProfileDto
+                {
+                    UserName = src.UserName,
+                    FirstName = src.FirstName,
+                    LastName = src.LastName,
+                    Biography = src.Biography
+                }))
+            .ForMember(dest => dest.UserPictureDto,
+                opt => opt.MapFrom(src => new UserPictureDto
+                {
+                    ProfilePicture = src.ProfilePicture
+                }));
 
         CreateMap<UserProfileDto, User>();
     }
