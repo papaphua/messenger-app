@@ -8,6 +8,7 @@ public static class Results
     public const string UserEmailConfirmed = "Email confirmed.";
     public const string UserEmailChanged = "Email changed.";
     public const string RequestedEmailNotFound = "Something went wrong. Try to change email again.";
+    public const string RequestedEmailSameAsCurrent = "You have to provide email different from current one.";
     public const string EmailConfirmationRequested = "Confirmation message sent to your email.";
     public const string EmailConfirmationNotAuthenticated = "You must be logged in to confirm your email.";
     public const string EmailChangeRequested = "Confirmation message sent to your new email.";

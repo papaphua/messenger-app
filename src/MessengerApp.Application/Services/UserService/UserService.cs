@@ -14,16 +14,13 @@ public sealed class UserService : IUserService
 {
     private readonly IEmailService _emailService;
     private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<User> _userManager;
 
-    public UserService(UserManager<User> userManager, IMapper mapper, IEmailService emailService,
-        IUnitOfWork unitOfWork)
+    public UserService(UserManager<User> userManager, IMapper mapper, IEmailService emailService)
     {
         _userManager = userManager;
         _mapper = mapper;
         _emailService = emailService;
-        _unitOfWork = unitOfWork;
     }
 
 
@@ -182,11 +179,18 @@ public sealed class UserService : IUserService
                 Message = Results.ExternalUser
             };
 
+        if (user.Email == emailDto.Email)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.RequestedEmailSameAsCurrent
+            };
+
         var token = await _userManager.GenerateChangeEmailTokenAsync(user, emailDto.Email);
         var link = AddTokenToUrl(Links.EmailChangeLink, token);
 
         user.RequestedEmail = emailDto.Email;
-        await _unitOfWork.SaveChangesAsync();
+        await _userManager.UpdateAsync(user);
 
         await _emailService.SendEmailAsync(emailDto.Email, Emails.EmailChangeSubject,
             Emails.EmailChangeMessage(link));
