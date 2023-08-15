@@ -108,7 +108,9 @@ public class Callback : PageModel
 
         var user = new ApplicationUser
         {
-            Id = sub
+            Id = sub,
+            EmailConfirmed = true,
+            IsExternal = true
         };
 
         // email

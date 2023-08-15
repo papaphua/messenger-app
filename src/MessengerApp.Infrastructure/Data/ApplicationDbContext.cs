@@ -1,4 +1,4 @@
-﻿using MessengerApp.Application.Abstractions;
+﻿using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Domain.Abstractions;
 using MessengerApp.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -6,20 +6,13 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace MessengerApp.Infrastructure;
+namespace MessengerApp.Infrastructure.Data;
 
 public sealed class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IDbContext, IUnitOfWork
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
-    }
-
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-
-        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 
     public new DbSet<TEntity> Set<TEntity>()
@@ -55,5 +48,12 @@ public sealed class ApplicationDbContext : IdentityDbContext<User, IdentityRole<
     public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         return await Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

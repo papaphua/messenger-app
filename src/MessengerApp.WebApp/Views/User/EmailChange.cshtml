@@ -1,0 +1,29 @@
+﻿<div class="animated-text-container">
+    <div class="animated-text">Changing...</div>
+</div>
+
+<style>
+.animated-text-container {
+    position: relative;
+    height: calc(100vh - 100px); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.animated-text {
+    font-size: 24px;
+    animation: changeText 2s infinite;
+}
+
+    @@keyframes changeText {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0;
+            transform: scale(1.2);
+        }
+    }
+</style>

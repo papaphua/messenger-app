@@ -9,4 +9,8 @@ public class ApplicationUser : IdentityUser<Guid>
     public string LastName { get; set; }
 
     public string Biography { get; set; }
+
+    public string RequestedEmail { get; set; }
+
+    public bool IsExternal { get; set; } = false;
 }

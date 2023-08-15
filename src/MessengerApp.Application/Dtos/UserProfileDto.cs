@@ -5,15 +5,11 @@ namespace MessengerApp.Application.Dtos;
 
 public sealed class UserProfileDto
 {
-    [Required]
-    [DisplayName("Username")]
-    public string UserName { get; set; }
-    
-    [DisplayName("First name")]
-    public string? FirstName { get; set; }
+    [Required] [DisplayName("Username")] public required string UserName { get; set; }
 
-    [DisplayName("Last name")]
-    public string? LastName { get; set; }
+    [DisplayName("First name")] public string? FirstName { get; set; }
+
+    [DisplayName("Last name")] public string? LastName { get; set; }
 
     public string? Biography { get; set; }
 }

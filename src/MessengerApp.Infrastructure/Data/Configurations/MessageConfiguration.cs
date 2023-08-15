@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MessengerApp.Infrastructure.Configurations;
+namespace MessengerApp.Infrastructure.Data.Configurations;
 
 public sealed class MessageConfiguration : IEntityTypeConfiguration<Message>
 {

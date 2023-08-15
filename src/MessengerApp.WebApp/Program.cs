@@ -1,27 +1,40 @@
 using System.IdentityModel.Tokens.Jwt;
 using DotNetEnv;
 using MessengerApp.Application;
-using MessengerApp.Application.Abstractions;
+using MessengerApp.Application.Abstractions.Data;
+using MessengerApp.Application.Abstractions.Services;
+using MessengerApp.Application.Services.UserService;
+using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
-using MessengerApp.Infrastructure;
+using MessengerApp.Infrastructure.Data;
+using MessengerApp.Infrastructure.Options;
+using MessengerApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
-
 Env.Load();
+
+var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddBusinessServices();
+// Options
+builder.Services.Configure<EmailOptions>(configuration.GetSection(Sections.EmailOptions).Bind);
+
+// External services
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+// Application services
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<IDbContext, ApplicationDbContext>();
-builder.Services.AddScoped<IUnitOfWork, ApplicationDbContext>();
+builder.Services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>());
+builder.Services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>());
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -43,7 +56,7 @@ builder.Services.AddAuthentication(options =>
         options.Authority = "https://localhost:5001";
 
         options.ClientId = "mvc";
-        options.ClientSecret = Environment.GetEnvironmentVariable("MVC_CLIENT_SECRET");
+        options.ClientSecret = Environment.GetEnvironmentVariable(Envs.MvcClientSecret);
         options.ResponseType = "code";
 
         options.SaveTokens = true;
@@ -70,8 +83,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    "default",
-    "{controller=Home}/{action=Index}/{id?}")
+        "default",
+        "{controller=Home}/{action=Index}/{id?}")
     .RequireAuthorization();
 
 app.Run();

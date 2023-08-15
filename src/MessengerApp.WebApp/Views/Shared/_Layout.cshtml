@@ -3,15 +3,22 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - MessengerApp</title>
+    <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+        .notification-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
-
+<!-- Top bar --->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" asp-controller="Home" asp-action="Index">MessengerApp</a>
-
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a class="nav-link" asp-controller="User" asp-action="Profile">Profile</a>
@@ -39,12 +46,10 @@
                 </ul>
             </li>
         </ul>
-
         <form class="d-flex">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-light" type="submit">Search</button>
         </form>
-
         @if (User.Identity.IsAuthenticated)
         {
             <form asp-controller="Home" asp-action="LogOut" method="post">
@@ -53,12 +58,51 @@
         }
     </div>
 </nav>
-
 <!-- Content -->
 <div class="container mt-4">
     @RenderBody()
 </div>
-
+<!-- Notification -->
+<div class="notification-container">
+    <div id="notification" class="alert alert-dismissible fade show" role="alert" style="display: none;">
+        <strong id="notification-message"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function () {
+    var notificationMessage = "@TempData[Notifications.Message]";
+    var notificationSucceeded = "@TempData[Notifications.Succeeded]" === "True";
+
+    if (notificationMessage !== "") {
+        $("#notification-message").text(notificationMessage);
+
+        if (notificationSucceeded) {
+            $("#notification").addClass("alert-success");
+        } else {
+            $("#notification").addClass("alert-danger");
+        }
+
+        $("#notification").fadeIn();
+
+        var notificationTimeout = setTimeout(function () {
+            $("#notification").fadeOut(function () {
+                $(this).remove();
+            });
+        }, 5000);
+
+        var countdownInterval = setInterval(function () {
+            var remainingTime = Math.ceil((5000 - (Date.now() - notificationTimeout)) / 1000);
+            $("#notification .countdown").text(" (" + remainingTime + "s)");
+        }, 1000);
+
+        $("#notification").on("hidden.bs.alert", function () {
+            clearInterval(countdownInterval);
+        });
+    }
+});
+</script>
 </body>
 </html>

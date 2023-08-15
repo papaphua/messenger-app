@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 
-namespace MessengerApp.Application.Abstractions;
+namespace MessengerApp.Application.Abstractions.Data;
 
 public interface IUnitOfWork
 {

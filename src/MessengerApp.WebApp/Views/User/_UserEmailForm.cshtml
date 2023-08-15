@@ -1,6 +1,15 @@
 ﻿@model MessengerApp.Application.Dtos.UserEmailDto
 
 <div class="form-group">
-    <label asp-for="Email"></label>
+    <label asp-for="Email">
+        @if (Model.IsConfirmed)
+        {
+            <span style="color: green">Email confirmed</span>
+        }
+        @if (!Model.IsConfirmed)
+        {
+            <span style="color: red">Email is not confirmed</span>
+        }
+    </label>
     <input class="form-control" placeholder="Email" asp-for="Email" autofocus>
 </div>
