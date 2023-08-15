@@ -7,6 +7,7 @@ using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Primitives;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace MessengerApp.Application.Services.UserService;
 
@@ -177,6 +178,16 @@ public sealed class UserService : IUserService
             {
                 Succeeded = false,
                 Message = Results.ExternalUser
+            };
+
+        var userWithThisEmail =
+            await _userManager.Users.FirstOrDefaultAsync(u => u.IsExternal && u.Email == emailDto.Email);
+
+        if (userWithThisEmail != null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.EmailAlreadyTaken
             };
 
         if (user.Email == emailDto.Email)

@@ -14,6 +14,7 @@ public static class Results
     public const string EmailChangeRequested = "Confirmation message sent to your new email.";
     public const string EmailChangeNotAuthenticated = "You must be logged in to change your email.";
     public const string EmailAlreadyConfirmed = "Email already confirmed";
+    public const string EmailAlreadyTaken = "Email address is already taken by another user.";
 
     public const string ExternalUser =
         "Users authenticated using external services can't change their email and password.";
