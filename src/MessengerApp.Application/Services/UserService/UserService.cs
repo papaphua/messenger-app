@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using AutoMapper;
 using MessengerApp.Application.Abstractions.Services;
-using MessengerApp.Application.Dtos;
+using MessengerApp.Application.Dtos.User;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Primitives;
@@ -24,25 +24,39 @@ public sealed class UserService : IUserService
     }
 
 
-    public async Task<Result<UserDto>> GetUserAsync(string userId)
+    public async Task<Result<UserProfileDto>> GetUserProfileAsync(string? userId)
     {
+        if (userId == null)
+            return new Result<UserProfileDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotAuthenticated
+            };
+        
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<UserDto>
+            return new Result<UserProfileDto>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
             };
 
-        return new Result<UserDto>
+        return new Result<UserProfileDto>
         {
-            Data = _mapper.Map<User, UserDto>(user)
+            Data = _mapper.Map<User, UserProfileDto>(user)
         };
     }
 
-    public async Task<Result> UploadProfilePictureAsync(string userId, byte[] pictureBytes)
+    public async Task<Result> UploadProfilePictureAsync(string? userId, UserProfilePictureDto profilePictureDto)
     {
+        if (userId == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.UserNotAuthenticated
+            };
+        
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -52,7 +66,7 @@ public sealed class UserService : IUserService
                 Message = Results.UserNotFound
             };
 
-        user.ProfilePicture = pictureBytes;
+        user.ProfilePicture = profilePictureDto.ProfilePictureBytes;
         await _userManager.UpdateAsync(user);
 
         return new Result
@@ -61,8 +75,15 @@ public sealed class UserService : IUserService
         };
     }
 
-    public async Task<Result> UpdateUserProfileAsync(string userId, UserProfileDto dto)
+    public async Task<Result> UpdateUserInfoAsync(string? userId, UserInfoDto infoDto)
     {
+        if (userId == null)
+            return new Result<UserProfileDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotAuthenticated
+            };
+        
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -72,7 +93,7 @@ public sealed class UserService : IUserService
                 Message = Results.UserNotFound
             };
 
-        _mapper.Map(dto, user);
+        _mapper.Map(infoDto, user);
         var updateResult = await _userManager.UpdateAsync(user);
 
         return new Result
@@ -82,8 +103,15 @@ public sealed class UserService : IUserService
         };
     }
 
-    public async Task<Result> ChangePasswordAsync(string userId, ChangePasswordDto passwordDto)
+    public async Task<Result> ChangePasswordAsync(string? userId, ChangePasswordDto passwordDto)
     {
+        if (userId == null)
+            return new Result<UserProfileDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotAuthenticated
+            };
+        
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -110,8 +138,15 @@ public sealed class UserService : IUserService
         };
     }
 
-    public async Task<Result> RequestEmailConfirmationAsync(string userId)
+    public async Task<Result> RequestEmailConfirmationAsync(string? userId)
     {
+        if (userId == null)
+            return new Result<UserProfileDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotAuthenticated
+            };
+        
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -181,8 +216,15 @@ public sealed class UserService : IUserService
         };
     }
 
-    public async Task<Result> RequestEmailChangeAsync(string userId, UserEmailDto emailDto)
+    public async Task<Result> RequestEmailChangeAsync(string? userId, UserEmailDto emailDto)
     {
+        if (userId == null)
+            return new Result<UserProfileDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotAuthenticated
+            };
+        
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -264,7 +306,7 @@ public sealed class UserService : IUserService
             Message = Result.IdentityResultsToMessage(changeResult) ?? Results.UserEmailChanged
         };
     }
-
+    
     private static string AddTokenToUrl(string baseUrl, string token)
     {
         var uriBuilder = new UriBuilder(baseUrl);

@@ -1,4 +1,4 @@
-﻿using MessengerApp.Application.Dtos;
+﻿using MessengerApp.Application.Dtos.User;
 using MessengerApp.Application.Services.UserService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.WebApp.Helpers;
@@ -17,9 +17,9 @@ public sealed class UserController : Controller
 
     public async Task<IActionResult> Profile()
     {
-        var userId = Parser.ParseUserId(HttpContext)!;
+        var userId = Parser.ParseUserId(HttpContext);
 
-        var result = await _userService.GetUserAsync(userId);
+        var result = await _userService.GetUserProfileAsync(userId);
 
         if (!result.Succeeded)
         {
@@ -30,48 +30,47 @@ public sealed class UserController : Controller
         }
 
         var user = result.Data;
-        
+
         return View(user);
     }
 
     public async Task<IActionResult> UploadProfilePicture()
     {
         var userId = Parser.ParseUserId(HttpContext)!;
-        
+
         if (Request.Form.Files.Count == 0)
         {
             ModelState.AddModelError("file", "Please select a valid image file.");
-            
-            var result = await _userService.GetUserAsync(userId);
-            
-            return View("Profile", result.Data);
+
+            var userResult = await _userService.GetUserProfileAsync(userId);
+            return View("Profile", userResult.Data);
         }
-        
+
         var profilePicture = Request.Form.Files[0];
-        
+
         using var memoryStream = new MemoryStream();
-        
+
         await profilePicture.CopyToAsync(memoryStream);
-        var pictureBytes = memoryStream.ToArray();
-        var uploadResult = await _userService.UploadProfilePictureAsync(userId, pictureBytes);
-        
+        var profilePictureDto = new UserProfilePictureDto { ProfilePictureBytes = memoryStream.ToArray() };
+        var uploadResult = await _userService.UploadProfilePictureAsync(userId, profilePictureDto);
+
         TempData[Notifications.Message] = uploadResult.Message;
         TempData[Notifications.Succeeded] = uploadResult.Succeeded;
-        
+
         return RedirectToAction("Profile");
     }
-    
-    public async Task<IActionResult> UpdateProfile(UserProfileDto profileDto)
+
+    public async Task<IActionResult> UpdateProfile(UserInfoDto infoDto)
     {
         var userId = Parser.ParseUserId(HttpContext)!;
 
         if (!ModelState.IsValid)
         {
-            var user = await _userService.GetUserAsync(userId);
-            return View("Profile", user.Data);
+            var userResult = await _userService.GetUserProfileAsync(userId);
+            return View("Profile", userResult.Data);
         }
 
-        var result = await _userService.UpdateUserProfileAsync(userId, profileDto);
+        var result = await _userService.UpdateUserInfoAsync(userId, infoDto);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
@@ -85,8 +84,8 @@ public sealed class UserController : Controller
 
         if (!ModelState.IsValid)
         {
-            var user = await _userService.GetUserAsync(userId);
-            return View("Profile", user.Data);
+            var userResult = await _userService.GetUserProfileAsync(userId);
+            return View("Profile", userResult.Data);
         }
 
         var result = await _userService.ChangePasswordAsync(userId, passwordDto);
