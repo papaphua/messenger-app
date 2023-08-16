@@ -2,9 +2,9 @@
 
 public sealed class UserProfileDto
 {
-    public required UserInfoDto UserInfoDto { get; set; }
+    public UserInfoDto UserInfoDto { get; set; } = null!;
     
-    public required UserEmailDto UserEmailDto { get; set; }
+    public UserEmailDto UserEmailDto { get; set; } = null!;
     
-    public required UserProfilePictureDto UserProfilePictureDto { get; set; }
+    public UserProfilePictureDto UserProfilePictureDto { get; set; } = null!;
 }

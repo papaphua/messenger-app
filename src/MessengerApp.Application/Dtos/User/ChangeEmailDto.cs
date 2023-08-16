@@ -4,7 +4,7 @@ namespace MessengerApp.Application.Dtos.User;
 
 public sealed class ChangeEmailDto
 {
-    [Required] [EmailAddress] public required string NewEmail { get; set; }
+    [Required] [EmailAddress] public string NewEmail { get; set; }  = null!;
 
-    [Required] public required string Token { get; set; }
+    [Required] public string Token { get; set; } = null!;
 }
