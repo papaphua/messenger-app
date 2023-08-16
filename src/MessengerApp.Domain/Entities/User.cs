@@ -5,6 +5,10 @@ namespace MessengerApp.Domain.Entities;
 
 public sealed class User : IdentityUser<Guid>, IEntity
 {
+    public new required string UserName { get; set; }
+    
+    public new required string Email { get; set; }
+
     public byte[]? ProfilePicture { get; set; }
     
     public string? FirstName { get; set; }
@@ -15,7 +19,7 @@ public sealed class User : IdentityUser<Guid>, IEntity
 
     public string? RequestedEmail { get; set; }
 
-    public bool IsExternal { get; set; } = false;
+    public bool IsExternal { get; set; }
 
     public ICollection<Chat> Chats { get; set; } = null!;
 

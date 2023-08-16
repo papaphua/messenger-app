@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MessengerApp.Application.Dtos;
+namespace MessengerApp.Application.Dtos.User;
 
 public sealed class ChangePasswordDto
 {
