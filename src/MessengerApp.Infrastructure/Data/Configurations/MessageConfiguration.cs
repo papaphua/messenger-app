@@ -8,6 +8,11 @@ public sealed class MessageConfiguration : IEntityTypeConfiguration<Message>
 {
     public void Configure(EntityTypeBuilder<Message> builder)
     {
+        builder.HasOne(message => message.User)
+            .WithMany()
+            .HasForeignKey(message => message.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+        
         builder.HasMany(message => message.Attachments)
             .WithOne(attachment => attachment.Message)
             .HasForeignKey(attachment => attachment.MessageId)
