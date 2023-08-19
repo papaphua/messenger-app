@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using DotNetEnv;
 using MessengerApp.Application;
 using MessengerApp.Application.Abstractions.Data;
-using MessengerApp.Application.Abstractions.Services;
 using MessengerApp.Application.Services.UserService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
@@ -10,6 +9,7 @@ using MessengerApp.Infrastructure.Data;
 using MessengerApp.Infrastructure.Options;
 using MessengerApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 Env.Load();
@@ -21,9 +21,6 @@ builder.Services.AddControllersWithViews();
 
 // Options
 builder.Services.Configure<EmailOptions>(configuration.GetSection(Sections.EmailOptions).Bind);
-
-// External services
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Application services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -42,6 +39,8 @@ builder.Services
     .AddIdentityCore<User>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<IEmailSender, CustomEmailSender>();
 
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 

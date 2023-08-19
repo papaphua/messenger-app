@@ -1,26 +1,26 @@
 ﻿using System.Web;
 using AutoMapper;
-using MessengerApp.Application.Abstractions.Services;
 using MessengerApp.Application.Dtos.User;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Primitives;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace MessengerApp.Application.Services.UserService;
 
 public sealed class UserService : IUserService
 {
-    private readonly IEmailService _emailService;
+    private readonly IEmailSender _sender;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
 
-    public UserService(UserManager<User> userManager, IMapper mapper, IEmailService emailService)
+    public UserService(UserManager<User> userManager, IMapper mapper, IEmailSender sender)
     {
         _userManager = userManager;
         _mapper = mapper;
-        _emailService = emailService;
+        _sender = sender;
     }
 
 
@@ -130,7 +130,7 @@ public sealed class UserService : IUserService
 
         var passwordResult =
             await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
-
+        
         return new Result
         {
             Succeeded = passwordResult.Succeeded,
@@ -173,7 +173,7 @@ public sealed class UserService : IUserService
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var link = AddTokenToUrl(Links.EmailConfirmationLink, token);
 
-        await _emailService.SendEmailAsync(user.Email, Emails.EmailConfirmationSubject,
+        await _sender.SendEmailAsync(user.Email, Emails.EmailConfirmationSubject,
             Emails.EmailConfirmationMessage(link));
 
         return new Result
@@ -264,7 +264,7 @@ public sealed class UserService : IUserService
         user.RequestedEmail = emailDto.Email;
         await _userManager.UpdateAsync(user);
 
-        await _emailService.SendEmailAsync(emailDto.Email, Emails.EmailChangeSubject,
+        await _sender.SendEmailAsync(emailDto.Email, Emails.EmailChangeSubject,
             Emails.EmailChangeMessage(link));
 
         return new Result
