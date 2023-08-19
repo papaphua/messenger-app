@@ -17,7 +17,9 @@ public sealed class User : IdentityUser<Guid>, IEntity
 
     public bool IsExternal { get; set; }
 
-    public ICollection<Chat> Chats { get; set; } = null!;
+    public ICollection<PersonalChat> PersonalChats { get; set; } = null!;
+
+    public ICollection<GroupChat> GroupChats { get; set; } = null!;
 
     Guid IEntity.Id
     {

@@ -4,14 +4,15 @@ namespace MessengerApp.Domain.Entities;
 
 public sealed class Reaction : IEntity
 {
-    public required Guid UserId { get; set; }
-
-    public required User User { get; set; }
-
-    public required Guid MessageId { get; set; }
-
-    public required Message Message { get; set; }
-
-    public required string Content { get; set; }
     public Guid Id { get; set; }
+    
+    public Guid UserId { get; set; }
+
+    public User User { get; set; } = null!;
+
+    public Guid MessageId { get; set; }
+
+    public Message Message { get; set; } = null!;
+
+    public string Content { get; set; } = null!;
 }
