@@ -12,7 +12,7 @@ public sealed class CustomEmailSender : IEmailSender
     private readonly SendGridClient _client;
     private readonly EmailOptions _options;
 
-    private CustomEmailSender(IOptions<EmailOptions> options)
+    public CustomEmailSender(IOptions<EmailOptions> options)
     {
         _options = options.Value;
         _client = new SendGridClient(Environment.GetEnvironmentVariable(Envs.SendGridApiKey));
