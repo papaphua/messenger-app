@@ -1,18 +1,18 @@
-﻿using MessengerApp.Application.Abstractions.Services;
-using MessengerApp.Domain.Constants;
+﻿using MessengerApp.Domain.Constants;
 using MessengerApp.Infrastructure.Options;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
 namespace MessengerApp.Infrastructure.Services;
 
-public sealed class EmailService : IEmailService
+public sealed class CustomEmailSender : IEmailSender
 {
     private readonly SendGridClient _client;
     private readonly EmailOptions _options;
 
-    public EmailService(IOptions<EmailOptions> options)
+    private CustomEmailSender(IOptions<EmailOptions> options)
     {
         _options = options.Value;
         _client = new SendGridClient(Environment.GetEnvironmentVariable(Envs.SendGridApiKey));
