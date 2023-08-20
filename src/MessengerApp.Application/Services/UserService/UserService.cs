@@ -12,8 +12,8 @@ namespace MessengerApp.Application.Services.UserService;
 
 public sealed class UserService : IUserService
 {
-    private readonly IEmailSender _sender;
     private readonly IMapper _mapper;
+    private readonly IEmailSender _sender;
     private readonly UserManager<User> _userManager;
 
     public UserService(UserManager<User> userManager, IMapper mapper, IEmailSender sender)
@@ -32,7 +32,7 @@ public sealed class UserService : IUserService
                 Succeeded = false,
                 Message = Results.UserNotAuthenticated
             };
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -56,7 +56,7 @@ public sealed class UserService : IUserService
                 Succeeded = false,
                 Message = Results.UserNotAuthenticated
             };
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -83,7 +83,7 @@ public sealed class UserService : IUserService
                 Succeeded = false,
                 Message = Results.UserNotAuthenticated
             };
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -111,7 +111,7 @@ public sealed class UserService : IUserService
                 Succeeded = false,
                 Message = Results.UserNotAuthenticated
             };
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -130,7 +130,7 @@ public sealed class UserService : IUserService
 
         var passwordResult =
             await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
-        
+
         return new Result
         {
             Succeeded = passwordResult.Succeeded,
@@ -146,7 +146,7 @@ public sealed class UserService : IUserService
                 Succeeded = false,
                 Message = Results.UserNotAuthenticated
             };
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -224,7 +224,7 @@ public sealed class UserService : IUserService
                 Succeeded = false,
                 Message = Results.UserNotAuthenticated
             };
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -306,7 +306,7 @@ public sealed class UserService : IUserService
             Message = Result.IdentityResultsToMessage(changeResult) ?? Results.UserEmailChanged
         };
     }
-    
+
     private static string AddTokenToUrl(string baseUrl, string token)
     {
         var uriBuilder = new UriBuilder(baseUrl);

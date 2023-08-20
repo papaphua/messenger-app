@@ -13,7 +13,7 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.10"/>
     </ItemGroup>
 
 
@@ -22,8 +22,6 @@
             <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.21\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
         </Reference>
     </ItemGroup>
-
-
 
 
 </Project>
