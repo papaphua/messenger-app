@@ -1,8 +1,8 @@
 ﻿namespace MessengerApp.Domain.Entities.Joints;
 
-public sealed class UserGroup
+public sealed class ChannelUser
 {
+    public Guid ChannelId { get; set; }
+    
     public Guid UserId { get; set; }
-
-    public Guid GroupId { get; set; }
 }

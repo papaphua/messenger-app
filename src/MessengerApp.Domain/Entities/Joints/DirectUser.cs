@@ -1,8 +1,8 @@
 ﻿namespace MessengerApp.Domain.Entities.Joints;
 
-public sealed class UserDirect
+public sealed class DirectUser
 {
-    public Guid UserId { get; set; }
-
     public Guid DirectId { get; set; }
+    
+    public Guid UserId { get; set; }
 }

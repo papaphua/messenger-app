@@ -11,14 +11,14 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.HasMany(user => user.Directs)
             .WithMany(direct => direct.Users)
-            .UsingEntity<UserDirect>();
+            .UsingEntity<DirectUser>();
 
         builder.HasMany(user => user.Groups)
             .WithMany(group => group.Users)
-            .UsingEntity<UserGroup>();
+            .UsingEntity<GroupUser>();
 
         builder.HasMany(user => user.Channels)
             .WithMany(channel => channel.Users)
-            .UsingEntity<UserChannel>();
+            .UsingEntity<ChannelUser>();
     }
 }
