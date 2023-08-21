@@ -304,6 +304,36 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                     b.ToTable("ChannelAdmin");
                 });
 
+            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.ChannelUser", b =>
+                {
+                    b.Property<Guid>("ChannelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ChannelId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChannelUser");
+                });
+
+            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.DirectUser", b =>
+                {
+                    b.Property<Guid>("DirectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("DirectId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DirectUser");
+                });
+
             modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.GroupAdmin", b =>
                 {
                     b.Property<Guid>("AdminsId")
@@ -322,37 +352,7 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                     b.ToTable("GroupAdmin");
                 });
 
-            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.UserChannel", b =>
-                {
-                    b.Property<Guid>("ChannelId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ChannelId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserChannel");
-                });
-
-            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.UserDirect", b =>
-                {
-                    b.Property<Guid>("DirectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("DirectId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserDirect");
-                });
-
-            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.UserGroup", b =>
+            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.GroupUser", b =>
                 {
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
@@ -364,7 +364,7 @@ namespace MessengerApp.Infrastructure.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserGroup");
+                    b.ToTable("GroupUser");
                 });
 
             modelBuilder.Entity("MessengerApp.Domain.Entities.User", b =>
@@ -744,6 +744,36 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.ChannelUser", b =>
+                {
+                    b.HasOne("MessengerApp.Domain.Entities.Channel", null)
+                        .WithMany()
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MessengerApp.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.DirectUser", b =>
+                {
+                    b.HasOne("MessengerApp.Domain.Entities.Direct", null)
+                        .WithMany()
+                        .HasForeignKey("DirectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MessengerApp.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.GroupAdmin", b =>
                 {
                     b.HasOne("MessengerApp.Domain.Entities.User", null)
@@ -759,37 +789,7 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.UserChannel", b =>
-                {
-                    b.HasOne("MessengerApp.Domain.Entities.Channel", null)
-                        .WithMany()
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MessengerApp.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.UserDirect", b =>
-                {
-                    b.HasOne("MessengerApp.Domain.Entities.Direct", null)
-                        .WithMany()
-                        .HasForeignKey("DirectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MessengerApp.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.UserGroup", b =>
+            modelBuilder.Entity("MessengerApp.Domain.Entities.Joints.GroupUser", b =>
                 {
                     b.HasOne("MessengerApp.Domain.Entities.Group", null)
                         .WithMany()

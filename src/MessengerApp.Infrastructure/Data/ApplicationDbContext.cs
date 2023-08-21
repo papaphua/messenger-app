@@ -21,12 +21,6 @@ public sealed class ApplicationDbContext : IdentityDbContext<User, IdentityRole<
         return ((DbContext)this).Set<TEntity>();
     }
 
-    public async Task<TEntity?> GetBydIdAsync<TEntity>(Guid id)
-        where TEntity : class, IEntity
-    {
-        return await Set<TEntity>().FirstOrDefaultAsync(entity => entity.Id == id);
-    }
-
     public async Task AddAsync<TEntity>(TEntity entity)
         where TEntity : class, IEntity
     {

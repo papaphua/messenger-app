@@ -1,25 +1,25 @@
-﻿using MessengerApp.Application.Dtos.User;
-using MessengerApp.Application.Services.UserService;
+﻿using MessengerApp.Application.Dtos.Profile;
+using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessengerApp.WebApp.Controllers;
 
-public sealed class UserController : Controller
+public sealed class ProfileController : Controller
 {
-    private readonly IUserService _userService;
+    private readonly IProfileService _profileService;
 
-    public UserController(IUserService userService)
+    public ProfileController(IProfileService profileService)
     {
-        _userService = userService;
+        _profileService = profileService;
     }
 
-    public async Task<IActionResult> Profile()
+    public async Task<IActionResult> Index()
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var result = await _userService.GetUserProfileAsync(userId);
+        var result = await _profileService.GetProfileAsync(userId);
 
         if (!result.Succeeded)
         {
@@ -42,8 +42,8 @@ public sealed class UserController : Controller
         {
             ModelState.AddModelError("file", "Please select a valid image file.");
 
-            var userResult = await _userService.GetUserProfileAsync(userId);
-            return View("Profile", userResult.Data);
+            var userResult = await _profileService.GetProfileAsync(userId);
+            return View("Index", userResult.Data);
         }
 
         var profilePicture = Request.Form.Files[0];
@@ -51,31 +51,31 @@ public sealed class UserController : Controller
         using var memoryStream = new MemoryStream();
 
         await profilePicture.CopyToAsync(memoryStream);
-        var profilePictureDto = new UserProfilePictureDto { ProfilePictureBytes = memoryStream.ToArray() };
-        var uploadResult = await _userService.UploadProfilePictureAsync(userId, profilePictureDto);
+        var profilePictureDto = new ProfilePictureDto { ProfilePictureBytes = memoryStream.ToArray() };
+        var uploadResult = await _profileService.UploadProfilePictureAsync(userId, profilePictureDto);
 
         TempData[Notifications.Message] = uploadResult.Message;
         TempData[Notifications.Succeeded] = uploadResult.Succeeded;
 
-        return RedirectToAction("Profile");
+        return RedirectToAction("Index");
     }
 
-    public async Task<IActionResult> UpdateProfile(UserInfoDto infoDto)
+    public async Task<IActionResult> UpdateProfile(ProfileInfoDto infoDto)
     {
         var userId = Parser.ParseUserId(HttpContext)!;
 
         if (!ModelState.IsValid)
         {
-            var userResult = await _userService.GetUserProfileAsync(userId);
-            return View("Profile", userResult.Data);
+            var userResult = await _profileService.GetProfileAsync(userId);
+            return View("Index", userResult.Data);
         }
 
-        var result = await _userService.UpdateUserInfoAsync(userId, infoDto);
+        var result = await _profileService.UpdateUserInfoAsync(userId, infoDto);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Profile");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> ChangePassword(ChangePasswordDto passwordDto)
@@ -84,67 +84,67 @@ public sealed class UserController : Controller
 
         if (!ModelState.IsValid)
         {
-            var userResult = await _userService.GetUserProfileAsync(userId);
-            return View("Profile", userResult.Data);
+            var userResult = await _profileService.GetProfileAsync(userId);
+            return View("Index", userResult.Data);
         }
 
-        var result = await _userService.ChangePasswordAsync(userId, passwordDto);
+        var result = await _profileService.ChangePasswordAsync(userId, passwordDto);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Profile");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> RequestEmailConfirmation()
     {
         var userId = Parser.ParseUserId(HttpContext)!;
 
-        var result = await _userService.RequestEmailConfirmationAsync(userId);
+        var result = await _profileService.RequestEmailConfirmationAsync(userId);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Profile");
+        return RedirectToAction("Index");
     }
 
-    public async Task<IActionResult> EmailConfirmation()
+    public async Task<IActionResult> ConfirmEmail()
     {
         var userId = Parser.ParseUserId(HttpContext)!;
 
         var token = HttpContext.Request.Query["token"].First()!;
 
-        var result = await _userService.ConfirmEmailAsync(userId, token);
+        var result = await _profileService.ConfirmEmailAsync(userId, token);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Profile");
+        return RedirectToAction("Index");
     }
 
-    public async Task<IActionResult> RequestEmailChange(UserEmailDto emailDto)
+    public async Task<IActionResult> RequestEmailChange(ProfileEmailDto emailDto)
     {
         var userId = Parser.ParseUserId(HttpContext)!;
 
-        var result = await _userService.RequestEmailChangeAsync(userId, emailDto);
+        var result = await _profileService.RequestEmailChangeAsync(userId, emailDto);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Profile");
+        return RedirectToAction("Index");
     }
 
-    public async Task<IActionResult> EmailChange()
+    public async Task<IActionResult> ChangeEmail()
     {
         var userId = Parser.ParseUserId(HttpContext)!;
 
         var token = HttpContext.Request.Query["token"].First()!;
 
-        var result = await _userService.ChangeEmailAsync(userId, token);
+        var result = await _profileService.ChangeEmailAsync(userId, token);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Profile");
+        return RedirectToAction("Index");
     }
 }

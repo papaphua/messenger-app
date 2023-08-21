@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MessengerApp.Application.Dtos.User;
+namespace MessengerApp.Application.Dtos.Profile;
 
-public sealed class UserInfoDto
+public sealed class ProfileInfoDto
 {
     [Required] [DisplayName("Username")] public string UserName { get; set; } = null!;
 

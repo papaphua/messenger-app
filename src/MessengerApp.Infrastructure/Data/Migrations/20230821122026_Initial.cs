@@ -252,23 +252,23 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserChannel",
+                name: "ChannelUser",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChannelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ChannelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserChannel", x => new { x.ChannelId, x.UserId });
+                    table.PrimaryKey("PK_ChannelUser", x => new { x.ChannelId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_UserChannel_AspNetUsers_UserId",
+                        name: "FK_ChannelUser_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserChannel_Channel_ChannelId",
+                        name: "FK_ChannelUser_Channel_ChannelId",
                         column: x => x.ChannelId,
                         principalTable: "Channel",
                         principalColumn: "Id",
@@ -303,23 +303,23 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserDirect",
+                name: "DirectUser",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DirectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    DirectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserDirect", x => new { x.DirectId, x.UserId });
+                    table.PrimaryKey("PK_DirectUser", x => new { x.DirectId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_UserDirect_AspNetUsers_UserId",
+                        name: "FK_DirectUser_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserDirect_Direct_DirectId",
+                        name: "FK_DirectUser_Direct_DirectId",
                         column: x => x.DirectId,
                         principalTable: "Direct",
                         principalColumn: "Id",
@@ -379,23 +379,23 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserGroup",
+                name: "GroupUser",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserGroup", x => new { x.GroupId, x.UserId });
+                    table.PrimaryKey("PK_GroupUser", x => new { x.GroupId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_UserGroup_AspNetUsers_UserId",
+                        name: "FK_GroupUser_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserGroup_Group_GroupId",
+                        name: "FK_GroupUser_Group_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Group",
                         principalColumn: "Id",
@@ -604,6 +604,11 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChannelUser_UserId",
+                table: "ChannelUser",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DirectMessage_ChatId",
                 table: "DirectMessage",
                 column: "ChatId");
@@ -626,6 +631,11 @@ namespace MessengerApp.Infrastructure.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_DirectMessageReaction_UserId",
                 table: "DirectMessageReaction",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DirectUser_UserId",
+                table: "DirectUser",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -659,18 +669,8 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserChannel_UserId",
-                table: "UserChannel",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserDirect_UserId",
-                table: "UserDirect",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserGroup_UserId",
-                table: "UserGroup",
+                name: "IX_GroupUser_UserId",
+                table: "GroupUser",
                 column: "UserId");
         }
 
@@ -702,10 +702,16 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                 name: "ChannelMessageReaction");
 
             migrationBuilder.DropTable(
+                name: "ChannelUser");
+
+            migrationBuilder.DropTable(
                 name: "DirectMessageAttachment");
 
             migrationBuilder.DropTable(
                 name: "DirectMessageReaction");
+
+            migrationBuilder.DropTable(
+                name: "DirectUser");
 
             migrationBuilder.DropTable(
                 name: "GroupAdmin");
@@ -717,13 +723,7 @@ namespace MessengerApp.Infrastructure.Data.Migrations
                 name: "GroupMessageReaction");
 
             migrationBuilder.DropTable(
-                name: "UserChannel");
-
-            migrationBuilder.DropTable(
-                name: "UserDirect");
-
-            migrationBuilder.DropTable(
-                name: "UserGroup");
+                name: "GroupUser");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

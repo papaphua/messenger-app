@@ -4,28 +4,24 @@ using MessengerApp.Application.Services.UserService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Primitives;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace MessengerApp.Application.Services.DirectService;
 
-public sealed class DirectService
+public sealed class DirectService : IDirectService
 {
     private readonly IDbContext _dbContext;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly UserManager<User> _userManager;
     private readonly IUserService _userService;
 
-    public DirectService(IDbContext dbContext, IUnitOfWork unitOfWork, UserManager<User> userManager,
-        IUserService userService)
+    public DirectService(IDbContext dbContext, IUnitOfWork unitOfWork, IUserService userService)
     {
         _dbContext = dbContext;
         _unitOfWork = unitOfWork;
-        _userManager = userManager;
         _userService = userService;
     }
 
-    public async Task<Result<IEnumerable<DirectPreviewDto>>> GetDirects(string? userId)
+    public async Task<Result<IEnumerable<DirectPreviewDto>>> GetDirectPreviews(string? userId)
     {
         var userResult = await _userService.DoesUserExist(userId);
 
