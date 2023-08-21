@@ -1,4 +1,5 @@
 ﻿using MessengerApp.Application.Dtos.User;
+using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Primitives;
 
 namespace MessengerApp.Application.Services.UserService;
@@ -20,4 +21,6 @@ public interface IUserService
     public Task<Result> RequestEmailChangeAsync(string? userId, UserEmailDto emailDto);
 
     public Task<Result> ChangeEmailAsync(string? userId, string token);
+
+    public Task<Result<User>> DoesUserExist(string? userId);
 }

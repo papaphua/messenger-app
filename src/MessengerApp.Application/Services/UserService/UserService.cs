@@ -23,25 +23,19 @@ public sealed class UserService : IUserService
         _sender = sender;
     }
 
-
     public async Task<Result<UserProfileDto>> GetUserProfileAsync(string? userId)
     {
-        if (userId == null)
+        var userResult = await DoesUserExist(userId);
+
+        if (!userResult.Succeeded)
             return new Result<UserProfileDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotAuthenticated
+                Message = userResult.Message
             };
 
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-            return new Result<UserProfileDto>
-            {
-                Succeeded = false,
-                Message = Results.UserNotFound
-            };
-
+        var user = userResult.Data!;
+        
         return new Result<UserProfileDto>
         {
             Data = _mapper.Map<User, UserProfileDto>(user)
@@ -50,21 +44,16 @@ public sealed class UserService : IUserService
 
     public async Task<Result> UploadProfilePictureAsync(string? userId, UserProfilePictureDto profilePictureDto)
     {
-        if (userId == null)
+        var userResult = await DoesUserExist(userId);
+
+        if (!userResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotAuthenticated
+                Message = userResult.Message
             };
 
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-            return new Result
-            {
-                Succeeded = false,
-                Message = Results.UserNotFound
-            };
+        var user = userResult.Data!;
 
         user.ProfilePicture = profilePictureDto.ProfilePictureBytes;
         await _userManager.UpdateAsync(user);
@@ -77,21 +66,16 @@ public sealed class UserService : IUserService
 
     public async Task<Result> UpdateUserInfoAsync(string? userId, UserInfoDto infoDto)
     {
-        if (userId == null)
-            return new Result<UserProfileDto>
-            {
-                Succeeded = false,
-                Message = Results.UserNotAuthenticated
-            };
+        var userResult = await DoesUserExist(userId);
 
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
+        if (!userResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = userResult.Message
             };
+
+        var user = userResult.Data!;
 
         _mapper.Map(infoDto, user);
         var updateResult = await _userManager.UpdateAsync(user);
@@ -105,21 +89,16 @@ public sealed class UserService : IUserService
 
     public async Task<Result> ChangePasswordAsync(string? userId, ChangePasswordDto passwordDto)
     {
-        if (userId == null)
-            return new Result<UserProfileDto>
-            {
-                Succeeded = false,
-                Message = Results.UserNotAuthenticated
-            };
+        var userResult = await DoesUserExist(userId);
 
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
+        if (!userResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = userResult.Message
             };
+
+        var user = userResult.Data!;
 
         if (user.IsExternal)
             return new Result
@@ -140,21 +119,16 @@ public sealed class UserService : IUserService
 
     public async Task<Result> RequestEmailConfirmationAsync(string? userId)
     {
-        if (userId == null)
-            return new Result<UserProfileDto>
-            {
-                Succeeded = false,
-                Message = Results.UserNotAuthenticated
-            };
+        var userResult = await DoesUserExist(userId);
 
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
+        if (!userResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = userResult.Message
             };
+
+        var user = userResult.Data!;
 
         if (user.IsExternal)
             return new Result
@@ -173,7 +147,7 @@ public sealed class UserService : IUserService
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var link = AddTokenToUrl(Links.EmailConfirmationLink, token);
 
-        await _sender.SendEmailAsync(user.Email, Emails.EmailConfirmationSubject,
+        await _sender.SendEmailAsync(user.Email!, Emails.EmailConfirmationSubject,
             Emails.EmailConfirmationMessage(link));
 
         return new Result
@@ -184,21 +158,16 @@ public sealed class UserService : IUserService
 
     public async Task<Result> ConfirmEmailAsync(string? userId, string token)
     {
-        if (userId == null)
+        var userResult = await DoesUserExist(userId);
+
+        if (!userResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailConfirmationNotAuthenticated
+                Message = userResult.Message
             };
 
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-            return new Result
-            {
-                Succeeded = false,
-                Message = Results.UserNotFound
-            };
+        var user = userResult.Data!;
 
         if (user.EmailConfirmed)
             return new Result
@@ -218,21 +187,16 @@ public sealed class UserService : IUserService
 
     public async Task<Result> RequestEmailChangeAsync(string? userId, UserEmailDto emailDto)
     {
-        if (userId == null)
-            return new Result<UserProfileDto>
-            {
-                Succeeded = false,
-                Message = Results.UserNotAuthenticated
-            };
+        var userResult = await DoesUserExist(userId);
 
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
+        if (!userResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = userResult.Message
             };
+
+        var user = userResult.Data!;
 
         if (user.IsExternal)
             return new Result
@@ -275,21 +239,16 @@ public sealed class UserService : IUserService
 
     public async Task<Result> ChangeEmailAsync(string? userId, string token)
     {
-        if (userId == null)
+        var userResult = await DoesUserExist(userId);
+
+        if (!userResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailChangeNotAuthenticated
+                Message = userResult.Message
             };
 
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-            return new Result
-            {
-                Succeeded = false,
-                Message = Results.UserNotFound
-            };
+        var user = userResult.Data!;
 
         if (user.RequestedEmail == null)
             return new Result
@@ -307,6 +266,30 @@ public sealed class UserService : IUserService
         };
     }
 
+    public async Task<Result<User>> DoesUserExist(string? userId)
+    {
+        if (userId == null)
+            return new Result<User>
+            {
+                Succeeded = false,
+                Message = Results.UserNotAuthenticated
+            };
+
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result<User>
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        return new Result<User>
+        {
+            Data = user
+        };
+    }
+    
     private static string AddTokenToUrl(string baseUrl, string token)
     {
         var uriBuilder = new UriBuilder(baseUrl);
