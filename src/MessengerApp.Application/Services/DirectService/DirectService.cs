@@ -3,6 +3,7 @@ using MessengerApp.Application.Dtos.Direct;
 using MessengerApp.Application.Services.UserService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
+using MessengerApp.Domain.Entities.Joints;
 using MessengerApp.Domain.Primitives;
 using Microsoft.EntityFrameworkCore;
 
@@ -81,24 +82,46 @@ public sealed class DirectService : IDirectService
                 Message = userResult.Message ?? conversatorResult.Message
             };
 
-        var direct = new Direct
+        var user = userResult.Data!;
+        var conversator = conversatorResult.Data!;
+
+        var direct = await _dbContext.Set<Direct>()
+            .Where(direct => direct.Users.Any(u => u.Id == user.Id) &&
+                             direct.Users.Any(u => u.Id == conversator.Id))
+            .FirstOrDefaultAsync();
+
+        if (direct != null)
         {
-            Users = { userResult.Data!, conversatorResult.Data! }
-        };
+            return new Result();
+        }
+
+        direct = new Direct();
+        
+        var transaction = await _unitOfWork.BeginTransactionAsync();
 
         try
         {
             await _dbContext.AddAsync(direct);
             await _unitOfWork.SaveChangesAsync();
+
+            await _dbContext.Set<DirectUser>()
+                .AddAsync(new DirectUser { DirectId = direct.Id, UserId = user.Id });
+            await _dbContext.Set<DirectUser>()
+                .AddAsync(new DirectUser { DirectId = direct.Id, UserId = conversator.Id });
+            await _unitOfWork.SaveChangesAsync();
         }
         catch (Exception)
         {
+            await transaction.RollbackAsync();
+
             return new Result
             {
                 Succeeded = false,
                 Message = Results.ChatCreateError
             };
         }
+
+        await transaction.CommitAsync();
 
         return new Result();
     }

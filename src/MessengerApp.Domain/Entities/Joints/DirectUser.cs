@@ -1,8 +1,11 @@
-﻿namespace MessengerApp.Domain.Entities.Joints;
+﻿using MessengerApp.Domain.Abstractions;
 
-public sealed class DirectUser
+namespace MessengerApp.Domain.Entities.Joints;
+
+public sealed class DirectUser : IEntity
 {
     public Guid DirectId { get; set; }
 
     public Guid UserId { get; set; }
+    public Guid Id { get; set; }
 }

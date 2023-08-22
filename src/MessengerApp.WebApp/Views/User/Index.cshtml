@@ -22,7 +22,12 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button class="btn btn-success btn-block">Chat</button>
+                    <form method="post" asp-controller="Direct" asp-action="Chat">
+                        <input type="hidden" name="conversatorId" value="@user.Id" />
+                        <button class="btn btn-success btn-block" type="submit">
+                            Chat
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
