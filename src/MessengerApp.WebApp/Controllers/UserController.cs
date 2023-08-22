@@ -15,7 +15,7 @@ public sealed class UserController : Controller
 
     public async Task<IActionResult> Index(string? search)
     {
-        var result = await _userService.SearchUsers(search);
+        var result = await _userService.SearchUsersAsync(search);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;

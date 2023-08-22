@@ -6,5 +6,5 @@ public sealed class ProfileDto
 
     public ProfileEmailDto ProfileEmailDto { get; set; } = null!;
 
-    public ProfilePictureDto ProfilePictureDto { get; set; } = null!;
+    public byte[]? ProfilePictureBytes { get; set; }
 }

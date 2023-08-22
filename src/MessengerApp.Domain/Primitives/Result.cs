@@ -7,7 +7,7 @@ public class Result
     public bool Succeeded { get; init; } = true;
     public string? Message { get; init; }
 
-    public static string? IdentityResultsToMessage(IdentityResult result)
+    public static string? IdentityResultsToString(IdentityResult result)
     {
         var message = string.Join(Environment.NewLine, result.Errors.Select(error => error.Description));
 

@@ -23,11 +23,6 @@ public sealed class MappingProfile : Profile
                     FirstName = src.FirstName,
                     LastName = src.LastName,
                     Biography = src.Biography
-                }))
-            .ForMember(dest => dest.ProfilePictureDto,
-                opt => opt.MapFrom(src => new ProfilePictureDto
-                {
-                    ProfilePicture = src.ProfilePicture
                 }));
 
         CreateMap<ProfileInfoDto, User>();

@@ -4,7 +4,7 @@ namespace MessengerApp.Application.Dtos.User;
 
 public sealed class UserPreviewDto
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; } = null!;
 
     [DisplayName("Username")] public string UserName { get; set; } = null!;
 
@@ -12,5 +12,5 @@ public sealed class UserPreviewDto
 
     [DisplayName("Last name")] public string? LastName { get; set; }
 
-    public byte[]? ProfilePicture { get; set; }
+    public byte[]? ProfilePictureBytes { get; set; }
 }

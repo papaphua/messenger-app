@@ -18,7 +18,7 @@ public sealed class DirectController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var result = await _directService.GetDirectPreviews(userId);
+        var result = await _directService.GetDirectPreviewsAsync(userId);
         
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
@@ -30,7 +30,7 @@ public sealed class DirectController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var result = await _directService.AddDirect(userId, conversatorId.ToString());
+        var result = await _directService.CreateDirectAsync(userId, conversatorId.ToString());
         
         if (!result.Succeeded)
         {

@@ -5,7 +5,7 @@ namespace MessengerApp.Application.Services.DirectService;
 
 public interface IDirectService
 {
-    Task<Result<IEnumerable<DirectPreviewDto>>> GetDirectPreviews(string? userId);
-    Task<Result> AddDirect(string? userId, string conversatorId);
-    Task<Result> RemoveDirect(string? userId, Guid directId);
+    Task<Result<IEnumerable<DirectPreviewDto>>> GetDirectPreviewsAsync(string? userId);
+    Task<Result> CreateDirectAsync(string? userId, string conversatorId);
+    Task<Result> RemoveDirectAsync(string? userId, string directId);
 }

@@ -11,7 +11,7 @@ public sealed class User : IdentityUser, IEntity
 
     public string? Biography { get; set; }
 
-    public byte[]? ProfilePicture { get; set; }
+    public byte[]? ProfilePictureBytes { get; set; }
 
     public string? RequestedEmail { get; set; }
 

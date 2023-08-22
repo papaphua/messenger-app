@@ -22,33 +22,32 @@ public sealed class DirectService : IDirectService
         _userService = userService;
     }
 
-    public async Task<Result<IEnumerable<DirectPreviewDto>>> GetDirectPreviews(string? userId)
+    public async Task<Result<IEnumerable<DirectPreviewDto>>> GetDirectPreviewsAsync(string? userId)
     {
-        var userResult = await _userService.DoesUserExist(userId);
+        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
 
-        if (!userResult.Succeeded)
+        if (!doesUserExistResult.Succeeded)
             return new Result<IEnumerable<DirectPreviewDto>>
             {
                 Succeeded = false,
-                Message = userResult.Message
+                Message = doesUserExistResult.Message
             };
 
-        var user = userResult.Data!;
+        var user = doesUserExistResult.Data!;
 
-        var directPreviews = await _dbContext.Set<Direct>()
+        var directs = await _dbContext.Set<Direct>()
             .Include(u => u.Users)
             .Where(direct => direct.Users
                 .Any(u => u.Id == user.Id))
             .ToListAsync();
 
-        if (directPreviews.Count == 0)
+        if (directs.Count == 0)
             return new Result<IEnumerable<DirectPreviewDto>>
             {
                 Message = Results.ChatsEmpty
             };
 
-        // TODO create map
-        var dtos = directPreviews.Select(direct =>
+        var directPreviews = directs.Select(direct =>
         {
             var conversator = direct.Users.FirstOrDefault(u => u.Id != user.Id)!;
 
@@ -60,30 +59,30 @@ public sealed class DirectService : IDirectService
             {
                 Id = direct.Id,
                 Title = title,
-                ProfilePicture = conversator.ProfilePicture
+                ProfilePictureBytes = conversator.ProfilePictureBytes
             };
         }).ToList();
 
         return new Result<IEnumerable<DirectPreviewDto>>
         {
-            Data = dtos
+            Data = directPreviews
         };
     }
 
-    public async Task<Result> AddDirect(string? userId, string conversatorId)
+    public async Task<Result> CreateDirectAsync(string? userId, string conversatorId)
     {
-        var userResult = await _userService.DoesUserExist(userId);
-        var conversatorResult = await _userService.DoesUserExist(conversatorId);
+        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
+        var doesConversatorExistResult = await _userService.DoesUserExistAsync(conversatorId);
 
-        if (!userResult.Succeeded || !conversatorResult.Succeeded)
+        if (!doesUserExistResult.Succeeded || !doesConversatorExistResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = userResult.Message ?? conversatorResult.Message
+                Message = doesConversatorExistResult.Message ?? doesConversatorExistResult.Message
             };
 
-        var user = userResult.Data!;
-        var conversator = conversatorResult.Data!;
+        var user = doesConversatorExistResult.Data!;
+        var conversator = doesConversatorExistResult.Data!;
 
         var direct = await _dbContext.Set<Direct>()
             .Where(direct => direct.Users.Any(u => u.Id == user.Id) &&
@@ -96,7 +95,7 @@ public sealed class DirectService : IDirectService
         }
 
         direct = new Direct();
-        
+
         var transaction = await _unitOfWork.BeginTransactionAsync();
 
         try
@@ -104,10 +103,8 @@ public sealed class DirectService : IDirectService
             await _dbContext.AddAsync(direct);
             await _unitOfWork.SaveChangesAsync();
 
-            await _dbContext.Set<DirectUser>()
-                .AddAsync(new DirectUser { DirectId = direct.Id, UserId = user.Id });
-            await _dbContext.Set<DirectUser>()
-                .AddAsync(new DirectUser { DirectId = direct.Id, UserId = conversator.Id });
+            await AddUserToDirect(direct.Id, user.Id);
+            await AddUserToDirect(direct.Id, conversator.Id);
             await _unitOfWork.SaveChangesAsync();
         }
         catch (Exception)
@@ -126,18 +123,18 @@ public sealed class DirectService : IDirectService
         return new Result();
     }
 
-    public async Task<Result> RemoveDirect(string? userId, Guid directId)
+    public async Task<Result> RemoveDirectAsync(string? userId, string directId)
     {
-        var userResult = await _userService.DoesUserExist(userId);
+        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
 
-        if (!userResult.Succeeded)
+        if (!doesUserExistResult.Succeeded)
             return new Result
             {
                 Succeeded = false,
-                Message = userResult.Message
+                Message = doesUserExistResult.Message
             };
 
-        var user = userResult.Data!;
+        var user = doesUserExistResult.Data!;
 
         var direct = await _dbContext.Set<Direct>()
             .Include(direct => direct.Users)
@@ -174,5 +171,16 @@ public sealed class DirectService : IDirectService
         }
 
         return new Result();
+    }
+
+    private async Task AddUserToDirect(string directId, string userId)
+    {
+        await _dbContext.Set<DirectUser>()
+            .AddAsync(
+                new DirectUser
+                {
+                    DirectId = directId, 
+                    UserId = userId
+                });
     }
 }

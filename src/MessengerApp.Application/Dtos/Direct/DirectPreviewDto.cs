@@ -2,9 +2,9 @@
 
 public sealed class DirectPreviewDto
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; } = null!;
 
     public string Title { get; set; } = null!;
 
-    public byte[]? ProfilePicture { get; set; }
+    public byte[]? ProfilePictureBytes { get; set; }
 }
