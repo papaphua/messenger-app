@@ -13,6 +13,18 @@ public sealed class DirectController : Controller
     {
         _directService = directService;
     }
+
+    public async Task<IActionResult> Index()
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var result = await _directService.GetDirectPreviews(userId);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+        
+        return View(result.Data);
+    }
     
     public async Task<IActionResult> Chat(Guid conversatorId)
     {
@@ -28,7 +40,9 @@ public sealed class DirectController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        // TODO open chat page
+        // TODO open chat page after creation
+        // or just open if already created
+        // add method to open chat without try to create
         return View();
     }
 }

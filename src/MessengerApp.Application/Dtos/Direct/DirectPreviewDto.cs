@@ -6,5 +6,5 @@ public sealed class DirectPreviewDto
 
     public string Title { get; set; } = null!;
 
-    public byte[]? ProfilePictureBytes { get; set; }
+    public byte[]? ProfilePicture { get; set; }
 }

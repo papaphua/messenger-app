@@ -36,10 +36,9 @@ public sealed class DirectService : IDirectService
         var user = userResult.Data!;
 
         var directPreviews = await _dbContext.Set<Direct>()
+            .Include(u => u.Users)
             .Where(direct => direct.Users
                 .Any(u => u.Id == user.Id))
-            .Include(direct => direct.Users
-                .Any(u => u.Id != user.Id))
             .ToListAsync();
 
         if (directPreviews.Count == 0)
@@ -51,7 +50,7 @@ public sealed class DirectService : IDirectService
         // TODO create map
         var dtos = directPreviews.Select(direct =>
         {
-            var conversator = direct.Users.FirstOrDefault()!;
+            var conversator = direct.Users.FirstOrDefault(u => u.Id != user.Id)!;
 
             var fullName = string.Join(' ', conversator.FirstName, conversator.LastName);
 
@@ -60,7 +59,8 @@ public sealed class DirectService : IDirectService
             return new DirectPreviewDto
             {
                 Id = direct.Id,
-                Title = title
+                Title = title,
+                ProfilePicture = conversator.ProfilePicture
             };
         }).ToList();
 
