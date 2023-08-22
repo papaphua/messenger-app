@@ -18,6 +18,7 @@ public static class Results
     public const string ChatsEmpty = "Chats are empty.";
     public const string ChatCreateError = "Could not start chat.";
     public const string ChatRemoveError = "Could not remove chat";
+    public const string NoSearchResults = "Searh result is empty";
 
     public const string ExternalUser =
         "Users authenticated using external services can't change their email and password.";

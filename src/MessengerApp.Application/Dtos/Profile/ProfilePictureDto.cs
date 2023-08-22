@@ -2,5 +2,5 @@
 
 public class ProfilePictureDto
 {
-    public byte[]? ProfilePictureBytes { get; set; }
+    public byte[]? ProfilePicture { get; set; }
 }

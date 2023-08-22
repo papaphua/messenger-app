@@ -51,7 +51,7 @@ public sealed class ProfileController : Controller
         using var memoryStream = new MemoryStream();
 
         await profilePicture.CopyToAsync(memoryStream);
-        var profilePictureDto = new ProfilePictureDto { ProfilePictureBytes = memoryStream.ToArray() };
+        var profilePictureDto = new ProfilePictureDto { ProfilePicture = memoryStream.ToArray() };
         var uploadResult = await _profileService.UploadProfilePictureAsync(userId, profilePictureDto);
 
         TempData[Notifications.Message] = uploadResult.Message;

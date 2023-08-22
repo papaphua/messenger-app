@@ -47,6 +47,7 @@ public sealed class DirectService : IDirectService
                 Message = Results.ChatsEmpty
             };
 
+        // TODO create map
         var dtos = directPreviews.Select(direct =>
         {
             var conversator = direct.Users.FirstOrDefault()!;

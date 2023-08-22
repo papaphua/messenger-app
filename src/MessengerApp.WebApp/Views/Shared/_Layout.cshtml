@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="css/app.css"rel="stylesheet"/>
+    <link href="css/app.css" rel="stylesheet"/>
 </head>
 <body>
 <!-- Top bar --->
@@ -39,8 +39,8 @@
                 </ul>
             </li>
         </ul>
-        <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <form class="d-flex" method="post" asp-controller="User" asp-action="Index">
+            <input name="search" class="form-control me-2" type="search" placeholder="Search users..." aria-label="Search">
             <button class="btn btn-outline-light" type="submit">Search</button>
         </form>
         @if (User.Identity.IsAuthenticated)

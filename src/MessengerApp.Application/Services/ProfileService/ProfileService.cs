@@ -58,7 +58,7 @@ public sealed class ProfileService : IProfileService
 
         var user = userResult.Data!;
 
-        user.ProfilePicture = profilePictureDto.ProfilePictureBytes;
+        user.ProfilePicture = profilePictureDto.ProfilePicture;
         await _userManager.UpdateAsync(user);
 
         return new Result

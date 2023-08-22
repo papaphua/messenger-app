@@ -1,0 +1,30 @@
+﻿@model IEnumerable<MessengerApp.Application.Dtos.User.UserPreviewDto>
+
+<div class="row">
+    @foreach (var user in Model)
+    {
+        <div class="col-2 mb-4">
+            <div class="card user-card">
+                <div class="card-header">
+                    @user.UserName
+                </div>
+                <div class="card-body text-center">
+                    @if (user.ProfilePicture != null)
+                    {
+                        <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(user.ProfilePicture)" alt="Profile Picture"/>
+                    }
+                    else
+                    {
+                        <div class="empty-circle"></div>
+                    }
+                    <div class="mt-2">
+                        @user.FirstName @user.LastName
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-success btn-block">Chat</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
