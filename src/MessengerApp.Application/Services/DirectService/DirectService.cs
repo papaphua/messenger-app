@@ -103,8 +103,10 @@ public sealed class DirectService : IDirectService
             await _dbContext.AddAsync(direct);
             await _unitOfWork.SaveChangesAsync();
 
-            await AddUserToDirect(direct.Id, user.Id);
-            await AddUserToDirect(direct.Id, conversator.Id);
+            var directUser = DirectUser.AddUserToDirect(direct.Id, user.Id);
+            var directConversator = DirectUser.AddUserToDirect(direct.Id, conversator.Id);
+
+            await _dbContext.AddRangeAsync(directUser, directConversator);
             await _unitOfWork.SaveChangesAsync();
         }
         catch (Exception)
@@ -171,16 +173,5 @@ public sealed class DirectService : IDirectService
         }
 
         return new Result();
-    }
-
-    private async Task AddUserToDirect(string directId, string userId)
-    {
-        await _dbContext.Set<DirectUser>()
-            .AddAsync(
-                new DirectUser
-                {
-                    DirectId = directId, 
-                    UserId = userId
-                });
     }
 }

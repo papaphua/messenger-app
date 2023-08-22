@@ -26,6 +26,12 @@ public sealed class ApplicationDbContext : IdentityDbContext<User>, IDbContext, 
         await Set<TEntity>().AddAsync(entity);
     }
 
+    public async Task AddRangeAsync<TEntity>(params TEntity[] entities) 
+        where TEntity : class, IEntity
+    {
+        await Set<TEntity>().AddRangeAsync(entities);
+    }
+
     public new void Update<TEntity>(TEntity entity)
         where TEntity : class, IEntity
     {
