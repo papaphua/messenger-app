@@ -7,6 +7,7 @@ public sealed class Group
 {
     public string? Description { get; set; }
 
+    // TODO rename
     public byte[]? ChatPicture { get; set; }
 
     public ICollection<User> Admins { get; set; } = null!;

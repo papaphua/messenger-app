@@ -26,6 +26,7 @@ public sealed class MappingProfile : Profile
                 }));
 
         CreateMap<ProfileInfoDto, User>();
+        CreateMap<User, ProfileInfoDto>();
         CreateMap<User, UserPreviewDto>();
     }
 }

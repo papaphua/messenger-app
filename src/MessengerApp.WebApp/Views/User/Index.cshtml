@@ -22,10 +22,10 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <form method="post" asp-controller="Direct" asp-action="Chat">
+                    <form method="post" asp-controller="Direct" asp-action="StartChat">
                         <input type="hidden" name="conversatorId" value="@user.Id" />
                         <button class="btn btn-success btn-block" type="submit">
-                            Open
+                            Start chat
                         </button>
                     </form>
                 </div>

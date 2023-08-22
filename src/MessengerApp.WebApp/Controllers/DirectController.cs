@@ -19,20 +19,20 @@ public sealed class DirectController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _directService.GetDirectPreviewsAsync(userId);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
         var directPreviews = result.Data;
-        
+
         return View(directPreviews);
     }
-    
-    public async Task<IActionResult> Chat(Guid conversatorId)
+
+    public async Task<IActionResult> Chat(string directId)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var result = await _directService.CreateDirectAsync(userId, conversatorId.ToString());
+        var result = await _directService.GetDirectAsync(userId, directId);
         
         if (!result.Succeeded)
         {
@@ -42,9 +42,46 @@ public sealed class DirectController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        // TODO open chat page after creation
-        // or just open if already created
-        // add method to open chat without try to create
-        return View();
+        var direct = result.Data!;
+        
+        return View("Chat", direct);
+    }
+
+    public async Task<IActionResult> StartChat(string conversatorId)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var result = await _directService.CreateDirectAsync(userId, conversatorId);
+
+        if (!result.Succeeded)
+        {
+            TempData[Notifications.Message] = result.Message;
+            TempData[Notifications.Succeeded] = result.Succeeded;
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        var directId = result.Data!;
+
+        var getDirectResult = await _directService.GetDirectAsync(userId, directId);
+        var direct = getDirectResult.Data!;
+
+        return View("Chat", direct);
+    }
+
+    public async Task<IActionResult> RemoveChat(string directId)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var result = await _directService.RemoveDirectAsync(userId, directId);
+
+        var getDirectPreviewsResult = await _directService.GetDirectPreviewsAsync(userId);
+        var directs = getDirectPreviewsResult.Data!;
+        
+        TempData[Notifications.Message] = result.Message ?? getDirectPreviewsResult.Message;
+        TempData[Notifications.Succeeded] =
+            result.Message == null ? getDirectPreviewsResult.Succeeded : result.Succeeded;
+        
+        return View("Index", directs);
     }
 }

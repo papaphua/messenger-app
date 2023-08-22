@@ -50,6 +50,7 @@ public sealed class ProfileController : Controller
 
         var profilePicture = Request.Form.Files[0];
 
+        // TODO send stream to server
         using var memoryStream = new MemoryStream();
 
         await profilePicture.CopyToAsync(memoryStream);

@@ -21,4 +21,8 @@
     </ItemGroup>
 
 
+    <ItemGroup>
+      <Compile Remove="Data\Migrations\20230822222540_Initial.Designer.cs" />
+    </ItemGroup>
+
 </Project>
