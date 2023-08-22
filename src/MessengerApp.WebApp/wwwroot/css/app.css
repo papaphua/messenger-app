@@ -1,0 +1,43 @@
+﻿.notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.empty-circle {
+    width: 100px;
+    height: 100px;
+    background-color: gray;
+    border-radius: 50%;
+}
+
+.animated-text-container {
+    position: relative;
+    height: calc(100vh - 100px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.animated-text {
+    font-size: 24px;
+    animation: changeText 2s infinite;
+}
+
+@keyframes changeText {
+     0%, 100% {
+         opacity: 1;
+         transform: scale(1);
+     }
+     50% {
+         opacity: 0;
+         transform: scale(1.2);
+     }
+ }
