@@ -4,8 +4,9 @@ namespace MessengerApp.Domain.Entities.Joints;
 
 public sealed class DirectUser : IEntity
 {
-    public Guid DirectId { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    public Guid UserId { get; set; }
-    public Guid Id { get; set; }
+    public string DirectId { get; set; } = null!;
+
+    public string UserId { get; set; } = null!;
 }

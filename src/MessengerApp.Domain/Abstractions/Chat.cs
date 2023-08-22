@@ -8,9 +8,9 @@ public abstract class Chat<TChat, TMessage, TAttachment, TReaction> : IEntity
     where TAttachment : Attachment<TChat, TMessage, TAttachment, TReaction>
     where TReaction : Reaction<TChat, TMessage, TAttachment, TReaction>
 {
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+
     public ICollection<User> Users { get; set; } = null!;
 
     public ICollection<TMessage> Messages { get; set; } = null!;
-
-    public Guid Id { get; set; } = Guid.NewGuid();
 }

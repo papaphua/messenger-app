@@ -6,11 +6,11 @@ public abstract class Attachment<TChat, TMessage, TAttachment, TReaction> : IEnt
     where TAttachment : Attachment<TChat, TMessage, TAttachment, TReaction>
     where TReaction : Reaction<TChat, TMessage, TAttachment, TReaction>
 {
-    public Guid MessageId { get; set; }
-
-    public TMessage Message { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public byte[] ContentBytes { get; set; } = null!;
 
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public TMessage Message { get; set; } = null!;
+
+    public string MessageId { get; set; } = null!;
 }

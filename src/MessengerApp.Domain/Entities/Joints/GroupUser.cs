@@ -4,9 +4,9 @@ namespace MessengerApp.Domain.Entities.Joints;
 
 public sealed class GroupUser : IEntity
 {
-    public Guid GroupId { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    public Guid UserId { get; set; }
-    
-    public Guid Id { get; set; }
+    public string GroupId { get; set; } = null!;
+
+    public string UserId { get; set; } = null!;
 }

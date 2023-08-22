@@ -8,21 +8,21 @@ public abstract class Message<TChat, TMessage, TAttachment, TReaction> : IEntity
     where TAttachment : Attachment<TChat, TMessage, TAttachment, TReaction>
     where TReaction : Reaction<TChat, TMessage, TAttachment, TReaction>
 {
-    public Guid SenderId { get; set; }
-
-    public User Sender { get; set; } = null!;
-
-    public Guid ChatId { get; set; }
-
-    public TChat Chat { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string Content { get; set; } = null!;
 
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
-    public ICollection<TAttachment> Attachments { get; set; } = new List<TAttachment>();
+    public User Sender { get; set; } = null!;
 
-    public ICollection<TReaction> Reactions { get; set; } = new List<TReaction>();
+    public string SenderId { get; set; } = null!;
 
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public TChat Chat { get; set; } = null!;
+
+    public string ChatId { get; set; } = null!;
+
+    public ICollection<TAttachment> Attachments { get; set; } = null!;
+
+    public ICollection<TReaction> Reactions { get; set; } = null!;
 }

@@ -148,10 +148,10 @@ public sealed class ProfileService : IProfileService
             };
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var link = AddTokenToUrl(Links.EmailConfirmationLink, token);
+        var link = AddTokenToUrl(Urls.EmailConfirmationLink, token);
 
-        await _sender.SendEmailAsync(user.Email!, Emails.EmailConfirmationSubject,
-            Emails.EmailConfirmationMessage(link));
+        await _sender.SendEmailAsync(user.Email!, Emails.ConfirmationSubject,
+            Emails.GetConfirmationMessage(link));
 
         return new Result
         {
@@ -226,13 +226,13 @@ public sealed class ProfileService : IProfileService
             };
 
         var token = await _userManager.GenerateChangeEmailTokenAsync(user, emailDto.Email);
-        var link = AddTokenToUrl(Links.EmailChangeLink, token);
+        var link = AddTokenToUrl(Urls.EmailChangeLink, token);
 
         user.RequestedEmail = emailDto.Email;
         await _userManager.UpdateAsync(user);
 
-        await _sender.SendEmailAsync(emailDto.Email, Emails.EmailChangeSubject,
-            Emails.EmailChangeMessage(link));
+        await _sender.SendEmailAsync(emailDto.Email, Emails.ChangeSubject,
+            Emails.GetChangeMessage(link));
 
         return new Result
         {

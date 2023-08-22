@@ -4,9 +4,9 @@ namespace MessengerApp.Domain.Entities.Joints;
 
 public sealed class ChannelAdmin : IEntity
 {
-    public Guid ChannelId { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    public Guid AdminId { get; set; }
-    
-    public Guid Id { get; set; }
+    public string ChannelId { get; set; } = null!;
+
+    public string AdminId { get; set; } = null!;
 }

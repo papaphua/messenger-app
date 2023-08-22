@@ -4,8 +4,8 @@ namespace MessengerApp.Domain.Primitives;
 
 public class Result
 {
-    public bool Succeeded { get; set; } = true;
-    public string? Message { get; set; }
+    public bool Succeeded { get; init; } = true;
+    public string? Message { get; init; }
 
     public static string? IdentityResultsToMessage(IdentityResult result)
     {
@@ -17,5 +17,5 @@ public class Result
 
 public sealed class Result<TData> : Result
 {
-    public TData? Data { get; set; }
+    public TData? Data { get; init; }
 }
