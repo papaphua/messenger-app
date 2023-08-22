@@ -81,7 +81,7 @@ public sealed class DirectService : IDirectService
                 Message = doesConversatorExistResult.Message ?? doesConversatorExistResult.Message
             };
 
-        var user = doesConversatorExistResult.Data!;
+        var user = doesUserExistResult.Data!;
         var conversator = doesConversatorExistResult.Data!;
 
         var direct = await _dbContext.Set<Direct>()

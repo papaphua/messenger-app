@@ -40,7 +40,7 @@
             <input name="search" class="form-control me-2" type="search" placeholder="Search users..." aria-label="Search">
             <button class="btn btn-outline-light" type="submit">Search</button>
         </form>
-        @if (User.Identity.IsAuthenticated)
+        @if (User.Identity!.IsAuthenticated)
         {
             <form asp-controller="Home" asp-action="LogOut" method="post">
                 <button class="btn btn-danger" type="submit">Log out</button>

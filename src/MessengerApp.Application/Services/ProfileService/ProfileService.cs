@@ -149,7 +149,7 @@ public sealed class ProfileService : IProfileService
             };
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var link = AddTokenToUrl(Urls.EmailConfirmationLink, token);
+        var link = AddTokenToUrl(Urls.ConfirmEmailLink, token);
 
         await _sender.SendEmailAsync(user.Email!, Emails.ConfirmationSubject,
             Emails.GetConfirmationMessage(link));
@@ -227,7 +227,7 @@ public sealed class ProfileService : IProfileService
             };
 
         var token = await _userManager.GenerateChangeEmailTokenAsync(user, profileEmailDto.Email);
-        var link = AddTokenToUrl(Urls.EmailChangeLink, token);
+        var link = AddTokenToUrl(Urls.ChangeEmailLink, token);
 
         user.RequestedEmail = profileEmailDto.Email;
         await _userManager.UpdateAsync(user);

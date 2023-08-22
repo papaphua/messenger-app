@@ -20,7 +20,7 @@ internal static class HostingExtensions
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services
-            .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => options.User.RequireUniqueEmail = true)
+            .AddIdentity<ApplicationUser, IdentityRole>(options => options.User.RequireUniqueEmail = true)
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 

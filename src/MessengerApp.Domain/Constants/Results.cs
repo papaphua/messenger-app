@@ -1,4 +1,5 @@
-﻿namespace MessengerApp.Domain.Constants;
+﻿// ReSharper disable InconsistentNaming
+namespace MessengerApp.Domain.Constants;
 
 public static class Results
 {

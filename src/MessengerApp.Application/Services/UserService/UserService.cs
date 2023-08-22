@@ -28,7 +28,7 @@ public sealed class UserService : IUserService
             };
         
         var users = await _userManager.Users
-            .Where(user => EF.Functions.Like(user.UserName, $"%{search}%"))
+            .Where(user => EF.Functions.Like(user.UserName!, $"%{search}%"))
             .ToListAsync();
 
         if (users.Count == 0)

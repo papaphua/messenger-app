@@ -2,6 +2,6 @@
 
 public static class Urls
 {
-    public const string EmailConfirmationLink = "https://localhost:5002/User/EmailConfirmation";
-    public const string EmailChangeLink = "https://localhost:5002/User/EmailChange";
+    public const string ConfirmEmailLink = "https://localhost:5002/Profile/ConfirmEmail";
+    public const string ChangeEmailLink = "https://localhost:5002/Profile/ChangeEmail";
 }
