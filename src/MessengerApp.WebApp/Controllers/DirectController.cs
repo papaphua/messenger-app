@@ -22,8 +22,10 @@ public sealed class DirectController : Controller
         
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
+
+        var directPreviews = result.Data;
         
-        return View(result.Data);
+        return View(directPreviews);
     }
     
     public async Task<IActionResult> Chat(Guid conversatorId)

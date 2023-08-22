@@ -20,8 +20,8 @@ public sealed class UserController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        var users = result.Data;
+        var userPreviews = result.Data;
 
-        return View(users);
+        return View(userPreviews);
     }
 }
