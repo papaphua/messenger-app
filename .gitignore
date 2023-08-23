@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 *.env
 .idea/
+
+# Migrations
+/src/MessengerApp.Infrastructure/Data/Migrations/

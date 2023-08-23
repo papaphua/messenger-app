@@ -9,8 +9,8 @@ namespace MessengerApp.Infrastructure.Services;
 
 public sealed class CustomEmailSender : IEmailSender
 {
-    private readonly SendGridClient _client;
     private readonly EmailOptions _options;
+    private readonly SendGridClient _client;
 
     public CustomEmailSender(IOptions<EmailOptions> options)
     {

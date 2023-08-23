@@ -88,7 +88,7 @@ public class Callback : PageModel
 
         // check if external login is in the context of an OIDC request
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id.ToString(), user.UserName,
+        await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, user.UserName,
             true,
             context?.Client.ClientId));
 
@@ -104,7 +104,7 @@ public class Callback : PageModel
     private async Task<ApplicationUser> AutoProvisionUserAsync(string provider, string providerUserId,
         IEnumerable<Claim> claims)
     {
-        var sub = Guid.NewGuid();
+        var sub = Guid.NewGuid().ToString();
 
         var user = new ApplicationUser
         {

@@ -2,6 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using DotNetEnv;
 using MessengerApp.Application;
 using MessengerApp.Application.Abstractions.Data;
+using MessengerApp.Application.Services.DirectService;
+using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Application.Services.UserService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
@@ -24,6 +26,8 @@ builder.Services.Configure<EmailOptions>(configuration.GetSection(Sections.Email
 
 // Application services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IDirectService, DirectService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

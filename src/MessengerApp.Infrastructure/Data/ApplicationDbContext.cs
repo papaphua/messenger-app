@@ -1,14 +1,13 @@
 ﻿using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Domain.Abstractions;
 using MessengerApp.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace MessengerApp.Infrastructure.Data;
 
-public sealed class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IDbContext, IUnitOfWork
+public sealed class ApplicationDbContext : IdentityDbContext<User>, IDbContext, IUnitOfWork
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -21,16 +20,16 @@ public sealed class ApplicationDbContext : IdentityDbContext<User, IdentityRole<
         return ((DbContext)this).Set<TEntity>();
     }
 
-    public async Task<TEntity?> GetBydIdAsync<TEntity>(Guid id)
-        where TEntity : class, IEntity
-    {
-        return await Set<TEntity>().FirstOrDefaultAsync(entity => entity.Id == id);
-    }
-
     public async Task AddAsync<TEntity>(TEntity entity)
         where TEntity : class, IEntity
     {
         await Set<TEntity>().AddAsync(entity);
+    }
+
+    public async Task AddRangeAsync<TEntity>(params TEntity[] entities) 
+        where TEntity : class, IEntity
+    {
+        await Set<TEntity>().AddRangeAsync(entities);
     }
 
     public new void Update<TEntity>(TEntity entity)

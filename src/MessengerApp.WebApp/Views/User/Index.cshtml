@@ -1,0 +1,35 @@
+﻿@model IEnumerable<MessengerApp.Application.Dtos.User.UserPreviewDto>
+
+<div class="row">
+    @foreach (var user in Model)
+    {
+        <div class="col-2 mb-4">
+            <div class="card user-card">
+                <div class="card-header">
+                    @user.UserName
+                </div>
+                <div class="card-body">
+                    @if (user.ProfilePictureBytes != null)
+                    {
+                        <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(user.ProfilePictureBytes)" alt="Profile Picture"/>
+                    }
+                    else
+                    {
+                        <div class="empty-circle"></div>
+                    }
+                    <div class="mt-2">
+                        @user.FirstName @user.LastName
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form method="post" asp-controller="Direct" asp-action="StartChat">
+                        <input type="hidden" name="conversatorId" value="@user.Id" />
+                        <button class="btn btn-success btn-block" type="submit">
+                            Start chat
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
