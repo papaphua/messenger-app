@@ -3,6 +3,7 @@ using DotNetEnv;
 using MessengerApp.Application;
 using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Application.Services.DirectService;
+using MessengerApp.Application.Services.GroupService;
 using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Application.Services.UserService;
 using MessengerApp.Domain.Constants;
@@ -28,6 +29,7 @@ builder.Services.Configure<EmailOptions>(configuration.GetSection(Sections.Email
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IDirectService, DirectService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

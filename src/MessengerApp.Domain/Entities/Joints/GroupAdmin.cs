@@ -9,4 +9,13 @@ public sealed class GroupAdmin : IEntity
     public string GroupId { get; set; } = null!;
 
     public string AdminId { get; set; } = null!;
+    
+    public static GroupAdmin AddAdminToGroup(string groupId, string userId)
+    {
+        return new GroupAdmin
+        {
+            GroupId= groupId,
+            AdminId = userId
+        };
+    }
 }
