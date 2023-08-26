@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MessengerApp.Infrastructure.Data.Configurations;
 
-public sealed class ChannelMessageReactionConfiguration : IEntityTypeConfiguration<ChannelMessageReaction>
+public sealed class ChannelMessageReactionConfiguration : IEntityTypeConfiguration<ChannelReaction>
 {
-    public void Configure(EntityTypeBuilder<ChannelMessageReaction> builder)
+    public void Configure(EntityTypeBuilder<ChannelReaction> builder)
     {
         builder.HasOne(reaction => reaction.User)
             .WithMany()

@@ -151,8 +151,8 @@ public sealed class DirectService : IDirectService
             await _dbContext.AddAsync(direct);
             await _unitOfWork.SaveChangesAsync();
 
-            var directUser = DirectUser.AddUserToDirect(direct.Id, user.Id);
-            var directConversator = DirectUser.AddUserToDirect(direct.Id, conversator.Id);
+            var directUser = DirectMember.AddMemberToDirect(direct.Id, user.Id);
+            var directConversator = DirectMember.AddMemberToDirect(direct.Id, conversator.Id);
 
             await _dbContext.AddRangeAsync(directUser, directConversator);
             await _unitOfWork.SaveChangesAsync();

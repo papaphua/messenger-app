@@ -1,8 +1,9 @@
 ﻿using MessengerApp.Domain.Abstractions;
+using MessengerApp.Domain.Abstractions.Chat;
 
 namespace MessengerApp.Domain.Entities;
 
 public sealed class DirectMessage
-    : Message<Direct, DirectMessage, DirectMessageAttachment, DirectMessageReaction>
+    : Message<Direct, DirectMessage, DirectAttachment, DirectReaction>
 {
 }

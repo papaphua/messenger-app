@@ -5,9 +5,10 @@ namespace MessengerApp.Domain.Primitives;
 public class Result
 {
     public bool Succeeded { get; init; } = true;
+    
     public string? Message { get; init; }
 
-    public static string? IdentityResultsToString(IdentityResult result)
+    public static string? IdentityResultToString(IdentityResult result)
     {
         var message = string.Join(Environment.NewLine, result.Errors.Select(error => error.Description));
 

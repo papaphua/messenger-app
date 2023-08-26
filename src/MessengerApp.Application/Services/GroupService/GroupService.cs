@@ -114,7 +114,7 @@ public sealed class GroupService : IGroupService
             await _dbContext.AddAsync(group);
             await _unitOfWork.SaveChangesAsync();
             
-            var groupUser = GroupUser.AddUserToGroup(group.Id, user.Id);
+            var groupUser = GroupMember.AddMemberToGroup(group.Id, user.Id);
 
             await _dbContext.AddAsync(groupUser);
             await _unitOfWork.SaveChangesAsync();
@@ -176,7 +176,7 @@ public sealed class GroupService : IGroupService
 
         try
         {
-            var userGroup = GroupUser.AddUserToGroup(group.Id, memberId);
+            var userGroup = GroupMember.AddMemberToGroup(group.Id, memberId);
             await _dbContext.AddAsync(userGroup);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -232,8 +232,8 @@ public sealed class GroupService : IGroupService
                 Message = Results.ChatNotMember
             };
 
-        var groupUser = await _dbContext.Set<GroupUser>()
-            .FirstAsync(g => g.GroupId == groupId && g.UserId == memberId);
+        var groupUser = await _dbContext.Set<GroupMember>()
+            .FirstAsync(g => g.GroupId == groupId && g.MemberId == memberId);
 
         try
         {
@@ -287,8 +287,8 @@ public sealed class GroupService : IGroupService
 
         try
         {
-            var groupUser = await _dbContext.Set<GroupUser>()
-                .FirstAsync(g => g.GroupId == groupId && g.UserId == user.Id);
+            var groupUser = await _dbContext.Set<GroupMember>()
+                .FirstAsync(g => g.GroupId == groupId && g.MemberId == user.Id);
             
             if (group.Owner.Id == user.Id && group.Admins.Count >= 1)
             {

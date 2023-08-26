@@ -1,6 +1,8 @@
-﻿namespace MessengerApp.Domain.Abstractions;
+﻿using MessengerApp.Domain.Entities;
 
-public abstract class Attachment<TChat, TMessage, TAttachment, TReaction> : IEntity
+namespace MessengerApp.Domain.Abstractions.Chat;
+
+public abstract class Chat<TChat, TMessage, TAttachment, TReaction> : IEntity
     where TMessage : Message<TChat, TMessage, TAttachment, TReaction>
     where TChat : Chat<TChat, TMessage, TAttachment, TReaction>
     where TAttachment : Attachment<TChat, TMessage, TAttachment, TReaction>
@@ -8,9 +10,7 @@ public abstract class Attachment<TChat, TMessage, TAttachment, TReaction> : IEnt
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    public byte[] ContentBytes { get; set; } = null!;
+    public ICollection<User> Members { get; set; } = null!;
 
-    public TMessage Message { get; set; } = null!;
-
-    public string MessageId { get; set; } = null!;
+    public ICollection<TMessage> Messages { get; set; } = null!;
 }

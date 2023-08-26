@@ -87,7 +87,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = updateResult.Succeeded,
-            Message = Result.IdentityResultsToString(updateResult) ?? Results.UserProfileUpdated
+            Message = Result.IdentityResultToString(updateResult) ?? Results.UserProfileUpdated
         };
     }
 
@@ -117,7 +117,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = changePasswordResult.Succeeded,
-            Message = Result.IdentityResultsToString(changePasswordResult) ?? Results.UserPasswordChanged
+            Message = Result.IdentityResultToString(changePasswordResult) ?? Results.UserPasswordChanged
         };
     }
 
@@ -185,7 +185,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = confirmEmailResult.Succeeded,
-            Message = Result.IdentityResultsToString(confirmEmailResult) ?? Results.UserEmailConfirmed
+            Message = Result.IdentityResultToString(confirmEmailResult) ?? Results.UserEmailConfirmed
         };
     }
 
@@ -266,7 +266,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = changeEmailResult.Succeeded,
-            Message = Result.IdentityResultsToString(changeEmailResult) ?? Results.UserEmailChanged
+            Message = Result.IdentityResultToString(changeEmailResult) ?? Results.UserEmailChanged
         };
     }
 

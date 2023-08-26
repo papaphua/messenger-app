@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MessengerApp.Infrastructure.Data.Configurations;
 
-public sealed class DirectMessageReactionConfiguration : IEntityTypeConfiguration<DirectMessageReaction>
+public sealed class DirectMessageReactionConfiguration : IEntityTypeConfiguration<DirectReaction>
 {
-    public void Configure(EntityTypeBuilder<DirectMessageReaction> builder)
+    public void Configure(EntityTypeBuilder<DirectReaction> builder)
     {
         builder.HasOne(reaction => reaction.User)
             .WithMany()
