@@ -29,7 +29,7 @@ public sealed class MappingProfile : Profile
         CreateMap<ProfileInfoDto, User>();
         CreateMap<User, ProfileInfoDto>();
         CreateMap<User, UserPreviewDto>();
-        
+
         CreateMap<Group, GroupDto>()
             .ForMember(dest => dest.GroupInfoDto,
                 opt => opt.MapFrom(src => new GroupInfoDto

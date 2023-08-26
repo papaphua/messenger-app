@@ -55,7 +55,7 @@ public sealed class ProfileController : Controller
 
         await profilePicture.CopyToAsync(memoryStream);
         var profilePictureBytes = memoryStream.ToArray();
-        var uploadResult = await _profileService.UploadProfilePictureAsync(userId, profilePictureBytes);
+        var uploadResult = await _profileService.UpdateProfilePictureAsync(userId, profilePictureBytes);
 
         TempData[Notifications.Message] = uploadResult.Message;
         TempData[Notifications.Succeeded] = uploadResult.Succeeded;
@@ -75,7 +75,7 @@ public sealed class ProfileController : Controller
             return View("Index", user);
         }
 
-        var result = await _profileService.UpdateUserInfoAsync(userId, profileInfoDto);
+        var result = await _profileService.UpdateProfileInfoAsync(userId, profileInfoDto);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
@@ -83,7 +83,7 @@ public sealed class ProfileController : Controller
         return RedirectToAction("Index");
     }
 
-    public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+    public async Task<IActionResult> ChangePassword(PasswordDto passwordDto)
     {
         var userId = Parser.ParseUserId(HttpContext)!;
 
@@ -95,7 +95,7 @@ public sealed class ProfileController : Controller
             return View("Index", user);
         }
 
-        var result = await _profileService.ChangePasswordAsync(userId, changePasswordDto);
+        var result = await _profileService.ChangePasswordAsync(userId, passwordDto);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;

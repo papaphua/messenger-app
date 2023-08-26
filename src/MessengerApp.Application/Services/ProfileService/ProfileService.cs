@@ -16,129 +16,120 @@ public sealed class ProfileService : IProfileService
     private readonly UserManager<User> _userManager;
     private readonly IMapper _mapper;
     private readonly IEmailSender _sender;
-    private readonly IUserService _userService;
 
-    public ProfileService(UserManager<User> userManager, IMapper mapper, IEmailSender sender, IUserService userService)
+    public ProfileService(UserManager<User> userManager, IMapper mapper, IEmailSender sender)
     {
         _userManager = userManager;
         _mapper = mapper;
         _sender = sender;
-        _userService = userService;
     }
 
-    public async Task<Result<ProfileDto>> GetProfileAsync(string? userId)
+    public async Task<Result<ProfileDto>> GetProfileAsync(string userId)
     {
-        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if (!doesUserExistResult.Succeeded)
+        if (user == null)
             return new Result<ProfileDto>
             {
                 Succeeded = false,
-                Message = doesUserExistResult.Message
+                Message = Results.UserNotFound
             };
-
-        var user = doesUserExistResult.Data!;
-        var profileDto = _mapper.Map<User, ProfileDto>(user);
         
+        var profileDto = _mapper.Map<User, ProfileDto>(user);
+
         return new Result<ProfileDto>
         {
             Data = profileDto
         };
     }
 
-    public async Task<Result> UploadProfilePictureAsync(string? userId, byte[] profilePictureBytes)
+    public async Task<Result> UpdateProfileInfoAsync(string userId, ProfileInfoDto profileInfoDto)
     {
-        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if (!doesUserExistResult.Succeeded)
+        if (user == null)
             return new Result
             {
                 Succeeded = false,
-                Message = doesUserExistResult.Message
+                Message = Results.UserNotFound
             };
-
-        var user = doesUserExistResult.Data!;
-
-        user.ProfilePictureBytes = profilePictureBytes;
-        await _userManager.UpdateAsync(user);
-
-        return new Result
-        {
-            Message = Results.ProfilePictureUpdated
-        };
-    }
-
-    public async Task<Result> UpdateUserInfoAsync(string? userId, ProfileInfoDto profileInfoDto)
-    {
-        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
-
-        if (!doesUserExistResult.Succeeded)
-            return new Result
-            {
-                Succeeded = false,
-                Message = doesUserExistResult.Message
-            };
-
-        var user = doesUserExistResult.Data!;
         
         _mapper.Map(profileInfoDto, user);
+        
         var updateResult = await _userManager.UpdateAsync(user);
 
         return new Result
         {
             Succeeded = updateResult.Succeeded,
-            Message = Result.IdentityResultToString(updateResult) ?? Results.UserProfileUpdated
+            Message = Result.IdentityResultToString(updateResult) ?? Results.ProfileUpdated
         };
     }
 
-    public async Task<Result> ChangePasswordAsync(string? userId, ChangePasswordDto changePasswordDto)
+    public async Task<Result> UpdateProfilePictureAsync(string userId, byte[] profilePictureBytes)
     {
-        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if (!doesUserExistResult.Succeeded)
+        if (user == null)
             return new Result
             {
                 Succeeded = false,
-                Message = doesUserExistResult.Message
+                Message = Results.UserNotFound
             };
 
-        var user = doesUserExistResult.Data!;
+        user.ProfilePictureBytes = profilePictureBytes;
+        
+        await _userManager.UpdateAsync(user);
+
+        return new Result
+        {
+            Message = Results.ProfilePictureUpdate
+        };
+    }
+
+    public async Task<Result> ChangePasswordAsync(string userId, PasswordDto passwordDto)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
 
         if (user.IsExternal)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ExternalUser
+                Message = Results.ExternalUserPasswordError
             };
 
         var changePasswordResult =
-            await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+            await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
 
         return new Result
         {
             Succeeded = changePasswordResult.Succeeded,
-            Message = Result.IdentityResultToString(changePasswordResult) ?? Results.UserPasswordChanged
+            Message = Result.IdentityResultToString(changePasswordResult) ?? Results.PasswordChanged
         };
     }
 
-    public async Task<Result> RequestEmailConfirmationAsync(string? userId)
+    public async Task<Result> RequestEmailConfirmationAsync(string userId)
     {
-        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if (!doesUserExistResult.Succeeded)
+        if (user == null)
             return new Result
             {
                 Succeeded = false,
-                Message = doesUserExistResult.Message
+                Message = Results.UserNotFound
             };
-
-        var user = doesUserExistResult.Data!;
 
         if (user.IsExternal)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ExternalUser
+                Message = Results.ExternalUserEmailError
             };
 
         if (user.EmailConfirmed)
@@ -149,29 +140,27 @@ public sealed class ProfileService : IProfileService
             };
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var link = AddTokenToUrl(Urls.ConfirmEmailLink, token);
+        var link = AddTokenToUrl(Urls.EmailConfirmationLink, token);
 
-        await _sender.SendEmailAsync(user.Email!, Emails.ConfirmationSubject,
-            Emails.GetConfirmationMessage(link));
+        await _sender.SendEmailAsync(user.Email!, Emails.EmailConfirmationSubject,
+            Emails.EmailConfirmationMessage(link));
 
         return new Result
         {
-            Message = Results.EmailConfirmationRequested
+            Message = Results.EmailConfirmationRequestSentTo(user.Email!)
         };
     }
 
-    public async Task<Result> ConfirmEmailAsync(string? userId, string token)
+    public async Task<Result> ConfirmEmailAsync(string userId, string token)
     {
-        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if (!doesUserExistResult.Succeeded)
+        if (user == null)
             return new Result
             {
                 Succeeded = false,
-                Message = doesUserExistResult.Message
+                Message = Results.UserNotFound
             };
-
-        var user = doesUserExistResult.Data!;
 
         if (user.EmailConfirmed)
             return new Result
@@ -185,28 +174,26 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = confirmEmailResult.Succeeded,
-            Message = Result.IdentityResultToString(confirmEmailResult) ?? Results.UserEmailConfirmed
+            Message = Result.IdentityResultToString(confirmEmailResult) ?? Results.EmailConfirmed
         };
     }
 
-    public async Task<Result> RequestEmailChangeAsync(string? userId, ProfileEmailDto profileEmailDto)
+    public async Task<Result> RequestEmailChangeAsync(string userId, ProfileEmailDto profileEmailDto)
     {
-        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if (!doesUserExistResult.Succeeded)
+        if (user == null)
             return new Result
             {
                 Succeeded = false,
-                Message = doesUserExistResult.Message
+                Message = Results.UserNotFound
             };
-
-        var user = doesUserExistResult.Data!;
 
         if (user.IsExternal)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ExternalUser
+                Message = Results.ExternalUserEmailError
             };
 
         var userWithSameEmail =
@@ -216,49 +203,48 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailAlreadyTaken
+                Message = Results.EmailAlreadyTaken(profileEmailDto.Email)
             };
 
         if (user.Email == profileEmailDto.Email)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.RequestedEmailSameAsCurrent
+                Message = Results.EmailSameAsCurrect
             };
 
         var token = await _userManager.GenerateChangeEmailTokenAsync(user, profileEmailDto.Email);
-        var link = AddTokenToUrl(Urls.ChangeEmailLink, token);
+        var link = AddTokenToUrl(Urls.EmailChangeLink, token);
 
         user.RequestedEmail = profileEmailDto.Email;
+        
         await _userManager.UpdateAsync(user);
 
-        await _sender.SendEmailAsync(profileEmailDto.Email, Emails.ChangeSubject,
-            Emails.GetChangeMessage(link));
+        await _sender.SendEmailAsync(profileEmailDto.Email, Emails.EmailChangeSubject,
+            Emails.EmailChangeMessage(link));
 
         return new Result
         {
-            Message = Results.EmailChangeRequested
+            Message = Results.EmailChangeRequestSentTo(user.Email!)
         };
     }
 
-    public async Task<Result> ChangeEmailAsync(string? userId, string token)
+    public async Task<Result> ChangeEmailAsync(string userId, string token)
     {
-        var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if (!doesUserExistResult.Succeeded)
+        if (user == null)
             return new Result
             {
                 Succeeded = false,
-                Message = doesUserExistResult.Message
+                Message = Results.UserNotFound
             };
-
-        var user = doesUserExistResult.Data!;
 
         if (user.RequestedEmail == null)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.RequestedEmailNotFound
+                Message = Results.EmailChangeError
             };
 
         var changeEmailResult = await _userManager.ChangeEmailAsync(user, user.RequestedEmail, token);
@@ -266,7 +252,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = changeEmailResult.Succeeded,
-            Message = Result.IdentityResultToString(changeEmailResult) ?? Results.UserEmailChanged
+            Message = Result.IdentityResultToString(changeEmailResult) ?? Results.EmailChanged
         };
     }
 

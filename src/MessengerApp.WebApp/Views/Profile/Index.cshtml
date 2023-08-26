@@ -32,7 +32,7 @@
             <div class="card-header">Password</div>
             <form asp-action="ChangePassword" method="post">
                 <div class="card-body">
-                    <partial name="_UserPasswordForm" model="@(new ChangePasswordDto())"/>
+                    <partial name="_UserPasswordForm" model="@(new PasswordDto())"/>
                 </div>
 
                 <div class="card-footer d-flex justify-content-end">

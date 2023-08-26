@@ -19,14 +19,8 @@ public sealed class UserService : IUserService
         _mapper = mapper;
     }
 
-    public async Task<Result<IEnumerable<UserPreviewDto>>> SearchUsersAsync(string? search)
+    public async Task<Result<IEnumerable<UserPreviewDto>>> SearchUsersByUsernameAsync(string? search)
     {
-        if (string.IsNullOrEmpty(search))
-            return new Result<IEnumerable<UserPreviewDto>>
-            {
-                Message = Results.NoSearchResults
-            };
-        
         var users = await _userManager.Users
             .Where(user => EF.Functions.Like(user.UserName!, $"%{search}%"))
             .ToListAsync();
@@ -34,38 +28,15 @@ public sealed class UserService : IUserService
         if (users.Count == 0)
             return new Result<IEnumerable<UserPreviewDto>>
             {
-                Message = Results.NoSearchResults
+                Succeeded = false,
+                Message = Results.NoSearchResultsFor(search)
             };
 
-        var userPreviews = users.Select(user => _mapper.Map<UserPreviewDto>(user));
+        var userPreviewDtos = users.Select(user => _mapper.Map<UserPreviewDto>(user));
 
         return new Result<IEnumerable<UserPreviewDto>>
         {
-            Data = userPreviews
-        };
-    }
-
-    public async Task<Result<User>> DoesUserExistAsync(string? userId)
-    {
-        if (userId == null)
-            return new Result<User>
-            {
-                Succeeded = false,
-                Message = Results.UserNotAuthenticated
-            };
-
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-            return new Result<User>
-            {
-                Succeeded = false,
-                Message = Results.UserNotFound
-            };
-
-        return new Result<User>
-        {
-            Data = user
+            Data = userPreviewDtos
         };
     }
 }
