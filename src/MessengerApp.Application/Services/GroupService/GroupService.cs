@@ -90,12 +90,12 @@ public sealed class GroupService : IGroupService
         };
     }
 
-    public async Task<Result<string>> CreateGroupAsync(string? userId, GroupInfoDto groupInfoDto)
+    public async Task<Result<GroupDto>> CreateGroupAsync(string? userId, GroupInfoDto groupInfoDto)
     {
         var doesUserExistResult = await _userService.DoesUserExistAsync(userId);
 
         if (!doesUserExistResult.Succeeded)
-            return new Result<string>
+            return new Result<GroupDto>
             {
                 Succeeded = false,
                 Message = doesUserExistResult.Message
@@ -123,7 +123,7 @@ public sealed class GroupService : IGroupService
         {
             await transaction.RollbackAsync();
 
-            return new Result<string>
+            return new Result<GroupDto>
             {
                 Succeeded = false,
                 Message = Results.ChatCreateError
@@ -132,9 +132,14 @@ public sealed class GroupService : IGroupService
         
         await transaction.CommitAsync();
 
-        return new Result<string>
+        var newGroup = await _dbContext.Set<Group>()
+            .FirstAsync(g => g.Id == group.Id);
+
+        var newGroupDto = _mapper.Map<GroupDto>(newGroup);
+        
+        return new Result<GroupDto>
         {
-            Data = group.Id
+            Data = newGroupDto
         };
     }
 
@@ -285,7 +290,7 @@ public sealed class GroupService : IGroupService
             var groupUser = await _dbContext.Set<GroupUser>()
                 .FirstAsync(g => g.GroupId == groupId && g.UserId == user.Id);
             
-            if (group.Owner.Id == user.Id)
+            if (group.Owner.Id == user.Id && group.Admins.Count >= 1)
             {
                 var newOwner = group.Admins.First();
 
@@ -298,6 +303,12 @@ public sealed class GroupService : IGroupService
             }
            
             _dbContext.Remove(groupUser);
+
+            if (group.Users.Count <= 1)
+            {
+                _dbContext.Remove(group);
+            }
+            
             await _unitOfWork.SaveChangesAsync();
         }
         catch (Exception)

@@ -7,7 +7,7 @@ public interface IGroupService
 {
     Task<Result<GroupDto>> GetGroupAsync(string? userId, string groupId);
     Task<Result<IEnumerable<GroupPreviewDto>>> GetGroupPreviewsAsync(string? userId);
-    Task<Result<string>> CreateGroupAsync(string? userId, GroupInfoDto groupInfoDto);
+    Task<Result<GroupDto>> CreateGroupAsync(string? userId, GroupInfoDto groupInfoDto);
     Task<Result> AddGroupMemberAsync(string? userId, string groupId, string memberId);
     Task<Result> RemoveGroupMemberAsync(string? userId, string groupId, string memberId);
     Task<Result> LeaveGroupAsync(string? userId, string groupId);

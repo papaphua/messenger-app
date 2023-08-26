@@ -1,4 +1,6 @@
-﻿namespace MessengerApp.Application.Dtos.Group;
+﻿using System.ComponentModel;
+
+namespace MessengerApp.Application.Dtos.Group;
 
 public sealed class GroupInfoDto
 {
@@ -6,5 +8,6 @@ public sealed class GroupInfoDto
     
     public string? Description { get; set; }
 
+    [DisplayName("Chat picture")]
     public byte[]? ChatPictureBytes { get; set; }
 }
