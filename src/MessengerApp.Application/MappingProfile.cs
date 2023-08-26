@@ -40,5 +40,7 @@ public sealed class MappingProfile : Profile
                 }));
 
         CreateMap<Group, GroupPreviewDto>();
+        CreateMap<GroupInfoDto, Group>();
+        CreateMap<Group, GroupInfoDto>();
     }
 }
