@@ -26,6 +26,12 @@ public static class Results
     public const string ChatCreateError = "Could not start chat.";
     public const string ChatRemoveError = "Could not remove chat";
     public const string ChatNotFound = "Chat not found.";
+    public const string ChatAddMemberError = "Could not add member.";
+    public const string ChatAlreadyMember = "User is member already.";
+    public const string ChatNotMember = "User is not a member.";
+    public const string ChatNoPermission = "You do not have permission to perform this action.";
+    public const string ChatRemoveMemberError = "Could not remove member.";
+    public const string ChatAlreadyAdmin = "User is admin already.";
     
     // User Search
     public const string NoSearchResults = "Searh result is empty";

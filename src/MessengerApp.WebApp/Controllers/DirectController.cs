@@ -44,10 +44,10 @@ public sealed class DirectController : Controller
 
         var direct = result.Data!;
         
-        return View("Chat", direct);
+        return View(direct);
     }
 
-    public async Task<IActionResult> StartChat(string conversatorId)
+    public async Task<IActionResult> StartDirect(string conversatorId)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
@@ -69,7 +69,7 @@ public sealed class DirectController : Controller
         return View("Chat", direct);
     }
 
-    public async Task<IActionResult> RemoveChat(string directId)
+    public async Task<IActionResult> RemoveDirect(string directId)
     {
         var userId = Parser.ParseUserId(HttpContext);
 

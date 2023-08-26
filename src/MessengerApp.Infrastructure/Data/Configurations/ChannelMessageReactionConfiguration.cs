@@ -10,6 +10,7 @@ public sealed class ChannelMessageReactionConfiguration : IEntityTypeConfigurati
     {
         builder.HasOne(reaction => reaction.User)
             .WithMany()
+            .HasForeignKey(reaction => reaction.UserId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

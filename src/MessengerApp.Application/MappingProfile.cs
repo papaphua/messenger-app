@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Dtos.Profile;
 using MessengerApp.Application.Dtos.User;
 using MessengerApp.Domain.Entities;
@@ -28,5 +29,18 @@ public sealed class MappingProfile : Profile
         CreateMap<ProfileInfoDto, User>();
         CreateMap<User, ProfileInfoDto>();
         CreateMap<User, UserPreviewDto>();
+        
+        CreateMap<Group, GroupDto>()
+            .ForMember(dest => dest.GroupInfoDto,
+                opt => opt.MapFrom(src => new GroupInfoDto
+                {
+                    Title = src.Title,
+                    Description = src.Description,
+                    ChatPictureBytes = src.ChatPictureBytes
+                }));
+
+        CreateMap<Group, GroupPreviewDto>();
+        CreateMap<GroupInfoDto, Group>();
+        CreateMap<Group, GroupInfoDto>();
     }
 }

@@ -9,9 +9,13 @@ public sealed class ChannelMessageConfiguration : IEntityTypeConfiguration<Chann
     public void Configure(EntityTypeBuilder<ChannelMessage> builder)
     {
         builder.HasMany(message => message.Attachments)
-            .WithOne(attachment => attachment.Message);
+            .WithOne(attachment => attachment.Message)
+            .HasForeignKey(attachment => attachment.MessageId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(message => message.Reactions)
-            .WithOne(reaction => reaction.Message);
+            .WithOne(reaction => reaction.Message)
+            .HasForeignKey(reaction => reaction.MessageId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

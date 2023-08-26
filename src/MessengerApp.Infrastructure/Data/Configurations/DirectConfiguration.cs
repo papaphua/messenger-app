@@ -9,6 +9,8 @@ public sealed class DirectConfiguration : IEntityTypeConfiguration<Direct>
     public void Configure(EntityTypeBuilder<Direct> builder)
     {
         builder.HasMany(direct => direct.Messages)
-            .WithOne(message => message.Chat);
+            .WithOne(message => message.Chat)
+            .HasForeignKey(message => message.ChatId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
