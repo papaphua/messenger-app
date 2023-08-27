@@ -41,7 +41,7 @@ public sealed class DirectService : IDirectService
         var direct = await _dbContext.Set<Direct>()
             .Include(direct => direct.Members)
             .FirstOrDefaultAsync(direct => direct.Id == directId &&
-                                           direct.Members.Any(u => u.Id == user.Id));
+                                           direct.Members.Any(member => member.Id == user.Id));
 
         if (direct == null)
             return new Result<DirectDto>
@@ -50,7 +50,7 @@ public sealed class DirectService : IDirectService
                 Message = Results.ChatNotFound
             };
 
-        var conversator = direct.Members.First(u => u.Id != user.Id);
+        var conversator = direct.Members.First(member => member.Id != user.Id);
 
         var directDto = new DirectDto { Id = direct.Id };
         _mapper.Map(conversator, directDto);
@@ -85,7 +85,7 @@ public sealed class DirectService : IDirectService
 
         var directPreviewDtos = directs.Select(direct =>
         {
-            var conversator = direct.Members.First(u => u.Id != user.Id);
+            var conversator = direct.Members.First(members => members.Id != user.Id);
             var conversatorFullName = string.Join(' ', conversator.FirstName, conversator.LastName);
             var directTitle = string.IsNullOrWhiteSpace(conversatorFullName)
                 ? conversator.UserName!

@@ -26,7 +26,8 @@ public static class Results
     public const string ChatNotFound = "Chat not found.";
     public const string ChatsEmpty = "Chats empty.";
     public const string ChatCreateError = "Could not create chat.";
-    public const string ChatRemoveError = "Could not remive chat.";
+    public const string ChatRemoveError = "Could not remove chat.";
+    public const string ChatLeaveError = "Could not leave chat.";
     
     // Search
     public static string NoSearchResultsFor(string? search) => $"No search results for {search}.";

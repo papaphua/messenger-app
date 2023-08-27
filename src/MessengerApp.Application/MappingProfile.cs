@@ -44,7 +44,7 @@ public sealed class MappingProfile : Profile
             }))
             .ForMember(dest => dest.ProfilePictureBytes, opt => opt.MapFrom(src => src.ProfilePictureBytes));
         
-        //
+        // Group service
         CreateMap<Group, GroupDto>()
             .ForMember(dest => dest.GroupInfoDto,
                 opt => opt.MapFrom(src => new GroupInfoDto
@@ -53,7 +53,6 @@ public sealed class MappingProfile : Profile
                     Description = src.Description,
                     ChatPictureBytes = src.ChatPictureBytes
                 }));
-
         CreateMap<Group, GroupPreviewDto>();
         CreateMap<GroupInfoDto, Group>();
         CreateMap<Group, GroupInfoDto>();
