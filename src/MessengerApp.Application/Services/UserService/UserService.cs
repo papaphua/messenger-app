@@ -28,7 +28,6 @@ public sealed class UserService : IUserService
         if (users.Count == 0)
             return new Result<IEnumerable<UserPreviewDto>>
             {
-                Succeeded = false,
                 Message = Results.NoSearchResultsFor(search)
             };
 
