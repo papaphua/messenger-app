@@ -1,8 +1,9 @@
 ﻿using MessengerApp.Domain.Abstractions;
+using MessengerApp.Domain.Abstractions.Chat;
 
 namespace MessengerApp.Domain.Entities;
 
 public sealed class GroupMessage
-    : Message<Group, GroupMessage, GroupMessageAttachment, GroupMessageReaction>
+    : Message<Group, GroupMessage, GroupAttachment, GroupReaction>
 {
 }

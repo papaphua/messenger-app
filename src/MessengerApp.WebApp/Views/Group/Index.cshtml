@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<MessengerApp.Application.Dtos.Group.GroupPreviewDto>?
 
 <div class="row">
-    <a class="btn btn-primary" asp-action="NewGroup" asp-controller="Group">New group</a>
+    <a class="btn btn-primary" asp-action="New" asp-controller="Group">New group</a>
 </div>
 @if (Model != null && Model.Count() != 0)
 {

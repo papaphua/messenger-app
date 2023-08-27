@@ -10,15 +10,15 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasMany(user => user.Directs)
-            .WithMany(direct => direct.Users)
-            .UsingEntity<DirectUser>();
+            .WithMany(direct => direct.Members)
+            .UsingEntity<DirectMember>();
 
         builder.HasMany(user => user.Groups)
-            .WithMany(group => group.Users)
-            .UsingEntity<GroupUser>();
+            .WithMany(group => group.Members)
+            .UsingEntity<GroupMember>();
 
         builder.HasMany(user => user.Channels)
-            .WithMany(channel => channel.Users)
-            .UsingEntity<ChannelUser>();
+            .WithMany(channel => channel.Members)
+            .UsingEntity<ChannelMember>();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace MessengerApp.Domain.Abstractions;
+﻿namespace MessengerApp.Domain.Abstractions.Chat;
 
 public abstract class Attachment<TChat, TMessage, TAttachment, TReaction> : IEntity
     where TMessage : Message<TChat, TMessage, TAttachment, TReaction>

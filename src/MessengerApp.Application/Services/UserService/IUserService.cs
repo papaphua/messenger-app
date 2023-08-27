@@ -6,7 +6,5 @@ namespace MessengerApp.Application.Services.UserService;
 
 public interface IUserService
 {
-    public Task<Result<IEnumerable<UserPreviewDto>>> SearchUsersAsync(string? search);
-    
-    public Task<Result<User>> DoesUserExistAsync(string? userId);
+    public Task<Result<IEnumerable<UserPreviewDto>>> SearchUsersByUsernameAsync(string? search);
 }
