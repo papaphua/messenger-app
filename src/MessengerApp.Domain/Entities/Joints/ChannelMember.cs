@@ -1,4 +1,5 @@
-﻿using MessengerApp.Domain.Abstractions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using MessengerApp.Domain.Abstractions;
 
 namespace MessengerApp.Domain.Entities.Joints;
 
@@ -7,8 +8,8 @@ public sealed class ChannelMember : IEntity
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string ChannelId { get; set; } = null!;
-
-    public string MemberId { get; set; } = null!;
+    
+    public string MembersId { get; set; } = null!;
     
     public bool IsOwner { get; set; }
 
@@ -19,7 +20,7 @@ public sealed class ChannelMember : IEntity
         return new ChannelMember
         {
             ChannelId = channelId,
-            MemberId = userId
+            MembersId = userId
         };
     }
 
@@ -28,7 +29,7 @@ public sealed class ChannelMember : IEntity
         return new ChannelMember
         {
             ChannelId = channelId,
-            MemberId = userId,
+            MembersId = userId,
             IsAdmin = true
         };
     }
@@ -38,7 +39,7 @@ public sealed class ChannelMember : IEntity
         return new ChannelMember
         {
             ChannelId = channelId,
-            MemberId = userId,
+            MembersId = userId,
             IsOwner = true
         };
     }

@@ -170,19 +170,19 @@ public sealed class GroupService : IGroupService
             {
                 var otherOwners = await _dbContext.Set<GroupMember>()
                     .Where(member => member.GroupId == group.Id &&
-                                     member.MemberId != groupMember.MemberId &&
+                                     member.MembersId != groupMember.MembersId &&
                                      member.IsOwner)
                     .ToListAsync();
 
                 var otherAdmins = await _dbContext.Set<GroupMember>()
                     .Where(member => member.GroupId == group.Id &&
-                                     member.MemberId != groupMember.MemberId &&
+                                     member.MembersId != groupMember.MembersId &&
                                      !member.IsOwner && member.IsAdmin)
                     .ToListAsync();
 
                 var otherMembers = await _dbContext.Set<GroupMember>()
                     .Where(member => member.GroupId == group.Id &&
-                                     member.MemberId != groupMember.MemberId &&
+                                     member.MembersId != groupMember.MembersId &&
                                      !member.IsOwner && !member.IsAdmin)
                     .ToListAsync();
 
@@ -207,8 +207,7 @@ public sealed class GroupService : IGroupService
                 }
                 else
                 {
-                    //TODO remove group
-                    _dbContext.Remove(groupMember);
+                    _dbContext.Remove(group);
                 }
             }
             else
