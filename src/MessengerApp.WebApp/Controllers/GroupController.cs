@@ -21,9 +21,11 @@ public sealed class GroupController : Controller
 
         var result = await _groupService.GetGroupPreviewsAsync(userId);
 
-        TempData[Notifications.Message] = result.Message;
-        TempData[Notifications.Succeeded] = result.Succeeded;
-
+        if (!result.Succeeded)
+        {
+            return RedirectToAction("Index", "Group");
+        }
+        
         var groupPreviews = result.Data;
 
         return View(groupPreviews);
@@ -37,10 +39,7 @@ public sealed class GroupController : Controller
         
         if (!result.Succeeded)
         {
-            TempData[Notifications.Message] = result.Message;
-            TempData[Notifications.Succeeded] = result.Succeeded;
-
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Group");
         }
 
         var group = result.Data!;
@@ -48,7 +47,7 @@ public sealed class GroupController : Controller
         return View(group);
     }
 
-    public IActionResult NewGroup()
+    public IActionResult New()
     {
         return View();
     }
@@ -68,11 +67,11 @@ public sealed class GroupController : Controller
         
         var result = await _groupService.CreateGroupAsync(userId, groupInfoDto);
         
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+        
         if (!result.Succeeded)
         {
-            TempData[Notifications.Message] = result.Message;
-            TempData[Notifications.Succeeded] = result.Succeeded;
-
             return RedirectToAction("Index", "Group");
         }
         

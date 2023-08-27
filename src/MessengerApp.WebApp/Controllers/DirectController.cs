@@ -19,11 +19,13 @@ public sealed class DirectController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _directService.GetDirectPreviewsAsync(userId);
+        
+        if (!result.Succeeded)
+        {
+            return RedirectToAction("Index", "Home");
+        }
 
-        TempData[Notifications.Message] = result.Message;
-        TempData[Notifications.Succeeded] = result.Succeeded;
-
-        var directPreviews = result.Data;
+        var directPreviews = result.Data!;
 
         return View(directPreviews);
     }
@@ -36,10 +38,7 @@ public sealed class DirectController : Controller
         
         if (!result.Succeeded)
         {
-            TempData[Notifications.Message] = result.Message;
-            TempData[Notifications.Succeeded] = result.Succeeded;
-
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Direct");
         }
 
         var direct = result.Data!;
@@ -47,24 +46,21 @@ public sealed class DirectController : Controller
         return View(direct);
     }
 
-    public async Task<IActionResult> StartDirect(string conversatorId)
+    public async Task<IActionResult> CreateDirect(string conversatorId)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _directService.CreateDirectAsync(userId, conversatorId);
 
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+        
         if (!result.Succeeded)
         {
-            TempData[Notifications.Message] = result.Message;
-            TempData[Notifications.Succeeded] = result.Succeeded;
-
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Direct");
         }
 
-        var directId = result.Data!;
-
-        var getDirectResult = await _directService.GetDirectAsync(userId, directId);
-        var direct = getDirectResult.Data!;
+        var direct = result.Data!;
 
         return View("Chat", direct);
     }
@@ -75,13 +71,9 @@ public sealed class DirectController : Controller
 
         var result = await _directService.RemoveDirectAsync(userId, directId);
 
-        var getDirectPreviewsResult = await _directService.GetDirectPreviewsAsync(userId);
-        var directs = getDirectPreviewsResult.Data!;
-        
-        TempData[Notifications.Message] = result.Message ?? getDirectPreviewsResult.Message;
-        TempData[Notifications.Succeeded] =
-            result.Message == null ? getDirectPreviewsResult.Succeeded : result.Succeeded;
-        
-        return View("Index", directs);
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        return RedirectToAction("Index", "Direct");
     }
 }

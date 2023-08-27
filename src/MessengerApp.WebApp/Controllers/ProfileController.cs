@@ -69,10 +69,10 @@ public sealed class ProfileController : Controller
 
         await profilePicture.CopyToAsync(memoryStream);
         var profilePictureBytes = memoryStream.ToArray();
-        var uploadResult = await _profileService.UpdateProfilePictureAsync(userId, profilePictureBytes);
+        var result = await _profileService.UpdateProfilePictureAsync(userId, profilePictureBytes);
 
-        TempData[Notifications.Message] = uploadResult.Message;
-        TempData[Notifications.Succeeded] = uploadResult.Succeeded;
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
         return RedirectToAction("Index", "Profile");
     }
