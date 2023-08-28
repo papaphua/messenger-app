@@ -37,6 +37,7 @@ public sealed class GroupService : IGroupService
             };
 
         var group = await _dbContext.Set<Group>()
+            .Include(group => group.Members)
             .FirstOrDefaultAsync(group => group.Id == groupId &&
                                           group.Members.Any(member => member.Id == userId));
 
@@ -67,6 +68,7 @@ public sealed class GroupService : IGroupService
             };
 
         var groups = await _dbContext.Set<Group>()
+            .Include(group => group.Members)
             .Where(group => group.Members.Any(member => member.Id == user.Id))
             .ToListAsync();
 
@@ -142,6 +144,7 @@ public sealed class GroupService : IGroupService
             };
 
         var group = await _dbContext.Set<Group>()
+            .Include(group => group.Members)
             .FirstOrDefaultAsync(group => group.Id == groupId);
 
         if (group == null)

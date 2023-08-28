@@ -68,6 +68,7 @@ public sealed class ChannelService : IChannelService
             };
 
         var channels = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Members)
             .Where(channel => channel.Members.Any(member => member.Id == user.Id))
             .ToListAsync();
 
@@ -143,6 +144,7 @@ public sealed class ChannelService : IChannelService
             };
 
         var channel = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Members)
             .FirstOrDefaultAsync(channel => channel.Id == channelId);
 
         if (channel == null)

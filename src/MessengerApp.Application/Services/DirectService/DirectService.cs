@@ -37,6 +37,7 @@ public sealed class DirectService : IDirectService
             };
 
         var direct = await _dbContext.Set<Direct>()
+            .Include(direct => direct.Members)
             .FirstOrDefaultAsync(direct => direct.Id == directId &&
                                            direct.Members.Any(member => member.Id == user.Id));
 
@@ -70,6 +71,7 @@ public sealed class DirectService : IDirectService
             };
 
         var directs = await _dbContext.Set<Direct>()
+            .Include(direct => direct.Members)
             .Where(direct => direct.Members.Any(member => member.Id == user.Id))
             .ToListAsync();
 
@@ -114,6 +116,7 @@ public sealed class DirectService : IDirectService
             };
 
         var direct = await _dbContext.Set<Direct>()
+            .Include(direct => direct.Members)
             .Where(direct => direct.Members.Any(member => member.Id == userId) &&
                              direct.Members.Any(member => member.Id == conversatorId))
             .FirstOrDefaultAsync();
@@ -164,6 +167,7 @@ public sealed class DirectService : IDirectService
             };
 
         var direct = await _dbContext.Set<Direct>()
+            .Include(direct => direct.Members)
             .FirstOrDefaultAsync(direct => direct.Id == directId &&
                                            direct.Members.Any(member => member.Id == user.Id));
 

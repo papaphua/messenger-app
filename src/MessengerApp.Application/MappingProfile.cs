@@ -61,7 +61,7 @@ public sealed class MappingProfile : Profile
         // Channel service
         CreateMap<Channel, ChannelDto>()
             .ForMember(dest => dest.ChannelInfoDto,
-                opt => opt.MapFrom(src => new GroupInfoDto
+                opt => opt.MapFrom(src => new ChannelInfoDto()
                 {
                     Title = src.Title,
                     Description = src.Description,
