@@ -1,6 +1,6 @@
-﻿namespace MessengerApp.Application.Dtos.Group;
+﻿namespace MessengerApp.Application.Dtos.Channel;
 
-public sealed class GroupPreviewDto
+public sealed class ChannelPreviewDto
 {
     public string Id { get; set; } = null!;
 

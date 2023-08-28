@@ -1,4 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
+
 namespace MessengerApp.Infrastructure.Options;
 
 public sealed class EmailOptions

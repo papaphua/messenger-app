@@ -19,11 +19,8 @@ public sealed class DirectController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _directService.GetDirectPreviewsAsync(userId);
-        
-        if (!result.Succeeded)
-        {
-            return RedirectToAction("Index", "Home");
-        }
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Home");
 
         var directPreviews = result.Data!;
 
@@ -35,14 +32,11 @@ public sealed class DirectController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _directService.GetDirectAsync(userId, directId);
-        
-        if (!result.Succeeded)
-        {
-            return RedirectToAction("Index", "Direct");
-        }
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Direct");
 
         var direct = result.Data!;
-        
+
         return View(direct);
     }
 
@@ -54,11 +48,8 @@ public sealed class DirectController : Controller
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
-        
-        if (!result.Succeeded)
-        {
-            return RedirectToAction("Index", "Direct");
-        }
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Direct");
 
         var direct = result.Data!;
 

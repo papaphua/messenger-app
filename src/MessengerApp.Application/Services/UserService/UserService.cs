@@ -10,8 +10,8 @@ namespace MessengerApp.Application.Services.UserService;
 
 public sealed class UserService : IUserService
 {
-    private readonly UserManager<User> _userManager;
     private readonly IMapper _mapper;
+    private readonly UserManager<User> _userManager;
 
     public UserService(UserManager<User> userManager, IMapper mapper)
     {

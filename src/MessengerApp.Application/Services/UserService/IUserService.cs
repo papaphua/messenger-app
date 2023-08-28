@@ -1,5 +1,4 @@
 ﻿using MessengerApp.Application.Dtos.User;
-using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Primitives;
 
 namespace MessengerApp.Application.Services.UserService;

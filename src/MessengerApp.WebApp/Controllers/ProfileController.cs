@@ -20,11 +20,8 @@ public sealed class ProfileController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _profileService.GetProfileAsync(userId);
-        
-        if (!result.Succeeded)
-        {
-            return RedirectToAction("Index", "Home");
-        }
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Home");
 
         var profile = result.Data!;
 
@@ -38,7 +35,7 @@ public sealed class ProfileController : Controller
         if (!ModelState.IsValid)
         {
             var profile = (await _profileService.GetProfileAsync(userId)).Data!;
-            
+
             return View("Index", profile);
         }
 
@@ -49,7 +46,7 @@ public sealed class ProfileController : Controller
 
         return RedirectToAction("Index", "Profile");
     }
-    
+
     public async Task<IActionResult> UpdateProfilePicture()
     {
         var userId = Parser.ParseUserId(HttpContext);
@@ -59,12 +56,12 @@ public sealed class ProfileController : Controller
             ModelState.AddModelError("file", "Please select a valid image file.");
 
             var profile = (await _profileService.GetProfileAsync(userId)).Data!;
-            
+
             return View("Index", profile);
         }
 
         var profilePicture = Request.Form.Files[0];
-        
+
         using var memoryStream = new MemoryStream();
 
         await profilePicture.CopyToAsync(memoryStream);
@@ -84,7 +81,7 @@ public sealed class ProfileController : Controller
         if (!ModelState.IsValid)
         {
             var profile = (await _profileService.GetProfileAsync(userId)).Data!;
-            
+
             return View("Index", profile);
         }
 

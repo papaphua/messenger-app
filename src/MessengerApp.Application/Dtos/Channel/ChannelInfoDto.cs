@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace MessengerApp.Application.Dtos.Group;
+namespace MessengerApp.Application.Dtos.Channel;
 
-public sealed class GroupInfoDto
+public sealed class ChannelInfoDto
 {
     public string Title { get; set; } = null!;
 
