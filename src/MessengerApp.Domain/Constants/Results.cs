@@ -14,11 +14,10 @@ public static class Results
     public const string EmailChanged = "Email address changed.";
     public const string EmailSameAsCurrect = "Email address must be different from current.";
     public const string EmailChangeError = "Could not change email, try again.";
-    public static string EmailAlreadyTaken(string email) => $"Email address {email} already used.";
-    public static string EmailChangeRequestSentTo(string email) => $"Email change confirmation sent to {email}.";
-    public static string EmailConfirmationRequestSentTo(string email) => $"Email confirmation link sent to {email}.";
+
     public const string ExternalUserPasswordError =
         "Users authenticated using third party services can not change their password.";
+
     public const string ExternalUserEmailError =
         "Users authenticated using third party services can not change their email address.";
 
@@ -28,7 +27,25 @@ public static class Results
     public const string ChatCreateError = "Could not create chat.";
     public const string ChatRemoveError = "Could not remove chat.";
     public const string ChatLeaveError = "Could not leave chat.";
-    
+
+    public static string EmailAlreadyTaken(string email)
+    {
+        return $"Email address {email} already used.";
+    }
+
+    public static string EmailChangeRequestSentTo(string email)
+    {
+        return $"Email change confirmation sent to {email}.";
+    }
+
+    public static string EmailConfirmationRequestSentTo(string email)
+    {
+        return $"Email confirmation link sent to {email}.";
+    }
+
     // Search
-    public static string NoSearchResultsFor(string? search) => $"No search results for {search}.";
+    public static string NoSearchResultsFor(string? search)
+    {
+        return $"No search results for {search}.";
+    }
 }

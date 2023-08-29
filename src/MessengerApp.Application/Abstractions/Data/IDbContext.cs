@@ -10,7 +10,7 @@ public interface IDbContext
 
     Task AddAsync<TEntity>(TEntity entity)
         where TEntity : class, IEntity;
-    
+
     Task AddRangeAsync<TEntity>(params TEntity[] entities)
         where TEntity : class, IEntity;
 

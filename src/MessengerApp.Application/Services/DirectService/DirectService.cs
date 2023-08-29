@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Application.Dtos.Direct;
-using MessengerApp.Application.Dtos.Profile;
-using MessengerApp.Application.Services.UserService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Entities.Joints;
@@ -15,8 +13,8 @@ namespace MessengerApp.Application.Services.DirectService;
 public sealed class DirectService : IDirectService
 {
     private readonly IDbContext _dbContext;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<User> _userManager;
 
     public DirectService(IDbContext dbContext, IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager)
@@ -109,7 +107,7 @@ public sealed class DirectService : IDirectService
     {
         var user = await _userManager.FindByIdAsync(userId);
         var conversator = await _userManager.FindByIdAsync(conversatorId);
-        
+
         if (user == null || conversator == null)
             return new Result<DirectDto>
             {
@@ -118,18 +116,19 @@ public sealed class DirectService : IDirectService
             };
 
         var direct = await _dbContext.Set<Direct>()
+            .Include(direct => direct.Members)
             .Where(direct => direct.Members.Any(member => member.Id == userId) &&
                              direct.Members.Any(member => member.Id == conversatorId))
             .FirstOrDefaultAsync();
 
         if (direct != null)
             return await GetDirectAsync(user.Id, direct.Id);
-        
+
         direct = new Direct();
 
         var directUser = DirectMember.AddMemberToDirect(direct.Id, user.Id);
         var directConversator = DirectMember.AddMemberToDirect(direct.Id, conversator.Id);
-        
+
         var transaction = await _unitOfWork.BeginTransactionAsync();
 
         try
@@ -161,7 +160,7 @@ public sealed class DirectService : IDirectService
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<DirectDto>
+            return new Result
             {
                 Succeeded = false,
                 Message = Results.UserNotFound

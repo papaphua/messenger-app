@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MessengerApp.Application.Abstractions.Data;
-using MessengerApp.Application.Dtos.Group;
+using MessengerApp.Application.Dtos.Channel;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Entities.Joints;
@@ -8,16 +8,16 @@ using MessengerApp.Domain.Primitives;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace MessengerApp.Application.Services.GroupService;
+namespace MessengerApp.Application.Services.ChannelService;
 
-public sealed class GroupService : IGroupService
+public sealed class ChannelService : IChannelService
 {
     private readonly IDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<User> _userManager;
 
-    public GroupService(IDbContext dbContext, IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager)
+    public ChannelService(IDbContext dbContext, IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager)
     {
         _dbContext = dbContext;
         _unitOfWork = unitOfWork;
@@ -25,102 +25,102 @@ public sealed class GroupService : IGroupService
         _userManager = userManager;
     }
 
-    public async Task<Result<GroupDto>> GetGroupAsync(string userId, string groupId)
+    public async Task<Result<ChannelDto>> GetChannelAsync(string userId, string channelId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<GroupDto>
+            return new Result<ChannelDto>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
             };
 
-        var group = await _dbContext.Set<Group>()
-            .Include(group => group.Members)
-            .FirstOrDefaultAsync(group => group.Id == groupId &&
-                                          group.Members.Any(member => member.Id == userId));
+        var channel = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Members)
+            .FirstOrDefaultAsync(channel => channel.Id == channelId &&
+                                            channel.Members.Any(member => member.Id == userId));
 
-        if (group == null)
-            return new Result<GroupDto>
+        if (channel == null)
+            return new Result<ChannelDto>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
             };
 
-        var groupDto = _mapper.Map<GroupDto>(group);
+        var channelDto = _mapper.Map<ChannelDto>(channel);
 
-        return new Result<GroupDto>
+        return new Result<ChannelDto>
         {
-            Data = groupDto
+            Data = channelDto
         };
     }
 
-    public async Task<Result<IEnumerable<GroupPreviewDto>>> GetGroupPreviewsAsync(string userId)
+    public async Task<Result<IEnumerable<ChannelPreviewDto>>> GetChannelPreviewsAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<IEnumerable<GroupPreviewDto>>
+            return new Result<IEnumerable<ChannelPreviewDto>>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
             };
 
-        var groups = await _dbContext.Set<Group>()
-            .Include(group => group.Members)
-            .Where(group => group.Members.Any(member => member.Id == user.Id))
+        var channels = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Members)
+            .Where(channel => channel.Members.Any(member => member.Id == user.Id))
             .ToListAsync();
 
-        if (groups.Count == 0)
-            return new Result<IEnumerable<GroupPreviewDto>>
+        if (channels.Count == 0)
+            return new Result<IEnumerable<ChannelPreviewDto>>
             {
                 Message = Results.ChatsEmpty
             };
 
-        var groupPreviewDtos = groups
-            .Select(group => _mapper.Map<GroupPreviewDto>(group))
+        var channelPreviewDtos = channels
+            .Select(channel => _mapper.Map<ChannelPreviewDto>(channel))
             .ToList();
 
-        return new Result<IEnumerable<GroupPreviewDto>>
+        return new Result<IEnumerable<ChannelPreviewDto>>
         {
-            Data = groupPreviewDtos
+            Data = channelPreviewDtos
         };
     }
 
-    public async Task<Result<GroupDto>> CreateGroupAsync(string userId, GroupInfoDto groupInfoDto)
+    public async Task<Result<ChannelDto>> CreateChannelAsync(string userId, ChannelInfoDto channelInfoDto)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<GroupDto>
+            return new Result<ChannelDto>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
             };
 
-        var group = new Group();
-        _mapper.Map(groupInfoDto, group);
+        var channel = new Channel();
+        _mapper.Map(channelInfoDto, channel);
 
-        var groupMember = GroupMember.AddMemberToGroup(group.Id, user.Id);
-        groupMember.IsAdmin = true;
-        groupMember.IsOwner = true;
+        var channelMember = ChannelMember.AddMemberToChannel(channel.Id, user.Id);
+        channelMember.IsAdmin = true;
+        channelMember.IsOwner = true;
 
         var transaction = await _unitOfWork.BeginTransactionAsync();
 
         try
         {
-            await _dbContext.AddAsync(group);
+            await _dbContext.AddAsync(channel);
             await _unitOfWork.SaveChangesAsync();
 
-            await _dbContext.AddAsync(groupMember);
+            await _dbContext.AddAsync(channelMember);
             await _unitOfWork.SaveChangesAsync();
         }
         catch (Exception)
         {
             await transaction.RollbackAsync();
 
-            return new Result<GroupDto>
+            return new Result<ChannelDto>
             {
                 Succeeded = false,
                 Message = Results.ChatCreateError
@@ -129,10 +129,10 @@ public sealed class GroupService : IGroupService
 
         await transaction.CommitAsync();
 
-        return await GetGroupAsync(user.Id, group.Id);
+        return await GetChannelAsync(user.Id, channel.Id);
     }
 
-    public async Task<Result> LeaveGroupAsync(string userId, string groupId)
+    public async Task<Result> LeaveChannelAsync(string userId, string channelId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -143,21 +143,21 @@ public sealed class GroupService : IGroupService
                 Message = Results.UserNotFound
             };
 
-        var group = await _dbContext.Set<Group>()
-            .Include(group => group.Members)
-            .FirstOrDefaultAsync(group => group.Id == groupId);
+        var channel = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Members)
+            .FirstOrDefaultAsync(channel => channel.Id == channelId);
 
-        if (group == null)
+        if (channel == null)
             return new Result
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
             };
 
-        var groupMember = await _dbContext.Set<GroupMember>()
-            .FirstOrDefaultAsync(member => member.GroupId == group.Id);
+        var channelMember = await _dbContext.Set<ChannelMember>()
+            .FirstOrDefaultAsync(member => member.ChannelId == channel.Id);
 
-        if (groupMember == null)
+        if (channelMember == null)
             return new Result
             {
                 Succeeded = false,
@@ -166,36 +166,36 @@ public sealed class GroupService : IGroupService
 
         try
         {
-            if (groupMember is { IsOwner: true, IsAdmin: true })
+            if (channelMember is { IsOwner: true, IsAdmin: true })
             {
-                var otherOwners = await _dbContext.Set<GroupMember>()
-                    .Where(member => member.GroupId == group.Id &&
-                                     member.MembersId != groupMember.MembersId &&
+                var otherOwners = await _dbContext.Set<ChannelMember>()
+                    .Where(member => member.ChannelId == channel.Id &&
+                                     member.MembersId != channelMember.MembersId &&
                                      member.IsOwner)
                     .ToListAsync();
 
-                var otherAdmins = await _dbContext.Set<GroupMember>()
-                    .Where(member => member.GroupId == group.Id &&
-                                     member.MembersId != groupMember.MembersId &&
+                var otherAdmins = await _dbContext.Set<ChannelMember>()
+                    .Where(member => member.ChannelId == channel.Id &&
+                                     member.MembersId != channelMember.MembersId &&
                                      !member.IsOwner && member.IsAdmin)
                     .ToListAsync();
 
-                var otherMembers = await _dbContext.Set<GroupMember>()
-                    .Where(member => member.GroupId == group.Id &&
-                                     member.MembersId != groupMember.MembersId &&
+                var otherMembers = await _dbContext.Set<ChannelMember>()
+                    .Where(member => member.ChannelId == channel.Id &&
+                                     member.MembersId != channelMember.MembersId &&
                                      !member.IsOwner && !member.IsAdmin)
                     .ToListAsync();
 
                 if (otherOwners.Count >= 1)
                 {
-                    _dbContext.Remove(groupMember);
+                    _dbContext.Remove(channelMember);
                 }
                 else if (otherAdmins.Count >= 1)
                 {
                     var admin = otherAdmins.First();
                     admin.IsOwner = true;
 
-                    _dbContext.Remove(groupMember);
+                    _dbContext.Remove(channelMember);
                 }
                 else if (otherMembers.Count >= 1)
                 {
@@ -203,16 +203,16 @@ public sealed class GroupService : IGroupService
                     member.IsOwner = true;
                     member.IsAdmin = true;
 
-                    _dbContext.Remove(groupMember);
+                    _dbContext.Remove(channelMember);
                 }
                 else
                 {
-                    _dbContext.Remove(group);
+                    _dbContext.Remove(channel);
                 }
             }
             else
             {
-                _dbContext.Remove(groupMember);
+                _dbContext.Remove(channelMember);
             }
 
             await _unitOfWork.SaveChangesAsync();

@@ -8,8 +8,6 @@ public abstract class Message<TChat, TMessage, TAttachment, TReaction> : IEntity
     where TAttachment : Attachment<TChat, TMessage, TAttachment, TReaction>
     where TReaction : Reaction<TChat, TMessage, TAttachment, TReaction>
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-
     public string Content { get; set; } = null!;
 
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
@@ -25,4 +23,5 @@ public abstract class Message<TChat, TMessage, TAttachment, TReaction> : IEntity
     public ICollection<TAttachment> Attachments { get; set; } = null!;
 
     public ICollection<TReaction> Reactions { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 }

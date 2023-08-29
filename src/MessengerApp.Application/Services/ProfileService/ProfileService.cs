@@ -1,7 +1,6 @@
 ﻿using System.Web;
 using AutoMapper;
 using MessengerApp.Application.Dtos.Profile;
-using MessengerApp.Application.Services.UserService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Primitives;
@@ -13,9 +12,9 @@ namespace MessengerApp.Application.Services.ProfileService;
 
 public sealed class ProfileService : IProfileService
 {
-    private readonly UserManager<User> _userManager;
     private readonly IMapper _mapper;
     private readonly IEmailSender _sender;
+    private readonly UserManager<User> _userManager;
 
     public ProfileService(UserManager<User> userManager, IMapper mapper, IEmailSender sender)
     {
@@ -34,7 +33,7 @@ public sealed class ProfileService : IProfileService
                 Succeeded = false,
                 Message = Results.UserNotFound
             };
-        
+
         var profileDto = _mapper.Map<User, ProfileDto>(user);
 
         return new Result<ProfileDto>
@@ -53,9 +52,9 @@ public sealed class ProfileService : IProfileService
                 Succeeded = false,
                 Message = Results.UserNotFound
             };
-        
+
         _mapper.Map(profileInfoDto, user);
-        
+
         var updateResult = await _userManager.UpdateAsync(user);
 
         return new Result
@@ -77,7 +76,7 @@ public sealed class ProfileService : IProfileService
             };
 
         user.ProfilePictureBytes = profilePictureBytes;
-        
+
         await _userManager.UpdateAsync(user);
 
         return new Result
@@ -217,7 +216,7 @@ public sealed class ProfileService : IProfileService
         var link = AddTokenToUrl(Urls.EmailChangeLink, token);
 
         user.RequestedEmail = profileEmailDto.Email;
-        
+
         await _userManager.UpdateAsync(user);
 
         await _sender.SendEmailAsync(profileEmailDto.Email, Emails.EmailChangeSubject,

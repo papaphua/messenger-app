@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using DotNetEnv;
 using MessengerApp.Application;
 using MessengerApp.Application.Abstractions.Data;
+using MessengerApp.Application.Services.ChannelService;
 using MessengerApp.Application.Services.DirectService;
 using MessengerApp.Application.Services.GroupService;
 using MessengerApp.Application.Services.ProfileService;
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IDirectService, DirectService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IChannelService, ChannelService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

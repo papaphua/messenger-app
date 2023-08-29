@@ -14,18 +14,15 @@ public sealed class GroupController : Controller
     {
         _groupService = groupService;
     }
-    
+
     public async Task<IActionResult> Index()
     {
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _groupService.GetGroupPreviewsAsync(userId);
 
-        if (!result.Succeeded)
-        {
-            return RedirectToAction("Index", "Group");
-        }
-        
+        if (!result.Succeeded) return RedirectToAction("Index", "Group");
+
         var groupPreviews = result.Data;
 
         return View(groupPreviews);
@@ -36,14 +33,11 @@ public sealed class GroupController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _groupService.GetGroupAsync(userId, groupId);
-        
-        if (!result.Succeeded)
-        {
-            return RedirectToAction("Index", "Group");
-        }
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Group");
 
         var group = result.Data!;
-        
+
         return View(group);
     }
 
@@ -57,24 +51,21 @@ public sealed class GroupController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var chatPicture = Request.Form.Files[0];
-        
+
         using var memoryStream = new MemoryStream();
 
         await chatPicture.CopyToAsync(memoryStream);
         var chatPictureBytes = memoryStream.ToArray();
 
         groupInfoDto.ChatPictureBytes = chatPictureBytes;
-        
+
         var result = await _groupService.CreateGroupAsync(userId, groupInfoDto);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
-        
-        if (!result.Succeeded)
-        {
-            return RedirectToAction("Index", "Group");
-        }
-        
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Group");
+
         return View("Chat", result.Data);
     }
 

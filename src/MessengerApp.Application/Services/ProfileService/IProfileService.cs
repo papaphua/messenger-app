@@ -6,7 +6,7 @@ namespace MessengerApp.Application.Services.ProfileService;
 public interface IProfileService
 {
     public Task<Result<ProfileDto>> GetProfileAsync(string userId);
-    
+
     public Task<Result> UpdateProfileInfoAsync(string userId, ProfileInfoDto profileInfoDto);
 
     public Task<Result> UpdateProfilePictureAsync(string userId, byte[] profilePictureBytes);
