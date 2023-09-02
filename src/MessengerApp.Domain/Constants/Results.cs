@@ -12,7 +12,7 @@ public static class Results
     public const string EmailAlreadyConfirmed = "Email address already confirmed.";
     public const string EmailConfirmed = "Email address confirmed.";
     public const string EmailChanged = "Email address changed.";
-    public const string EmailSameAsCurrect = "Email address must be different from current.";
+    public const string EmailSameAsCurrent = "Email address must be different from current.";
     public const string EmailChangeError = "Could not change email, try again.";
 
     public const string ExternalUserPasswordError =
@@ -21,6 +21,9 @@ public static class Results
     public const string ExternalUserEmailError =
         "Users authenticated using third party services can not change their email address.";
 
+    //Message
+    public const string MessageSendError = "Could not send message.";
+    
     // Chat
     public const string ChatNotFound = "Chat not found.";
     public const string ChatsEmpty = "Chats empty.";

@@ -12,6 +12,7 @@ using MessengerApp.Domain.Entities;
 using MessengerApp.Infrastructure.Data;
 using MessengerApp.Infrastructure.Options;
 using MessengerApp.Infrastructure.Services;
+using MessengerApp.WebApp.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 // Options
 builder.Services.Configure<EmailOptions>(configuration.GetSection(Sections.EmailOptions).Bind);
@@ -88,6 +90,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// app.MapHub<DirectHub>("/Direct/Chat");
 
 app.MapControllerRoute(
         "default",

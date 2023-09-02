@@ -209,7 +209,7 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailSameAsCurrect
+                Message = Results.EmailSameAsCurrent
             };
 
         var token = await _userManager.GenerateChangeEmailTokenAsync(user, profileEmailDto.Email);

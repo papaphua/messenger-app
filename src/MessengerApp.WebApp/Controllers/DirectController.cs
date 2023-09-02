@@ -1,4 +1,5 @@
-﻿using MessengerApp.Application.Services.DirectService;
+﻿using MessengerApp.Application.Dtos;
+using MessengerApp.Application.Services.DirectService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -66,5 +67,16 @@ public sealed class DirectController : Controller
         TempData[Notifications.Succeeded] = result.Succeeded;
 
         return RedirectToAction("Index", "Direct");
+    }
+
+    public async Task<IActionResult> CreateDirectMessage(string directId, CreateMessageDto createMessageDto)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+        
+        await _directService.CreateDirectMessageAsync(userId, directId, createMessageDto);
+
+        var direct = (await _directService.GetDirectAsync(userId, directId)).Data;
+
+        return View("Chat", direct);
     }
 }

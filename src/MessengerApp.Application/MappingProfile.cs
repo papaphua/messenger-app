@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Channel;
 using MessengerApp.Application.Dtos.Direct;
 using MessengerApp.Application.Dtos.Group;
@@ -43,7 +44,9 @@ public sealed class MappingProfile : Profile
                 LastName = src.LastName,
                 Biography = src.Biography
             }))
-            .ForMember(dest => dest.ProfilePictureBytes, opt => opt.MapFrom(src => src.ProfilePictureBytes));
+            .ForMember(dest => dest.ProfilePictureBytes, opt => opt.MapFrom(src => src.ProfilePictureBytes))
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+        CreateMap<CreateMessageDto, DirectMessage>();
 
         // Group service
         CreateMap<Group, GroupDto>()
