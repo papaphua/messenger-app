@@ -1,6 +1,10 @@
-﻿using MessengerApp.Application.Dtos.Group;
+﻿using MessengerApp.Application.Dtos;
+using MessengerApp.Application.Dtos.Channel;
+using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Services.GroupService;
+using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Domain.Constants;
+using MessengerApp.Domain.Primitives;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +13,12 @@ namespace MessengerApp.WebApp.Controllers;
 public sealed class GroupController : Controller
 {
     private readonly IGroupService _groupService;
+    private readonly IProfileService _profileService;
 
-    public GroupController(IGroupService groupService)
+    public GroupController(IGroupService groupService, IProfileService profileService)
     {
         _groupService = groupService;
+        _profileService = profileService;
     }
 
     public async Task<IActionResult> Index()
@@ -32,12 +38,26 @@ public sealed class GroupController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var result = await _groupService.GetGroupAsync(userId, groupId);
+        Result<GroupDto> result; 
+        
+        if (TempData.TryGetValue("GroupId", out object? value))
+        {
+            result = await _groupService.GetGroupAsync(userId, value!.ToString()!);
+        }
+        else
+        {
+            result = await _groupService.GetGroupAsync(userId, groupId);
+        }
 
         if (!result.Succeeded) return RedirectToAction("Index", "Group");
 
         var group = result.Data!;
 
+        var profile = (await _profileService.GetProfileAsync(userId)).Data!;
+
+        ViewBag.Username = profile.ProfileInfoDto.UserName;
+        ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes);
+        
         return View(group);
     }
 
@@ -79,5 +99,18 @@ public sealed class GroupController : Controller
         TempData[Notifications.Succeeded] = result.Succeeded;
 
         return RedirectToAction("Index");
+    }
+    
+    public async Task<IActionResult> CreateGroupMessage(string groupId, CreateMessageDto createMessageDto)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+        
+        await _groupService.CreateGroupMessageAsync(userId, groupId, createMessageDto);
+
+        var group = (await _groupService.GetGroupAsync(userId, groupId)).Data!;
+
+        TempData["GroupId"] = group.Id;
+
+        return RedirectToAction("Chat");
     }
 }

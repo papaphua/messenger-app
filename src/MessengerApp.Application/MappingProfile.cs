@@ -60,6 +60,7 @@ public sealed class MappingProfile : Profile
         CreateMap<Group, GroupPreviewDto>();
         CreateMap<GroupInfoDto, Group>();
         CreateMap<Group, GroupInfoDto>();
+        CreateMap<CreateMessageDto, GroupMessage>();
 
         // Channel service
         CreateMap<Channel, ChannelDto>()
@@ -73,5 +74,6 @@ public sealed class MappingProfile : Profile
         CreateMap<Channel, ChannelPreviewDto>();
         CreateMap<ChannelInfoDto, Channel>();
         CreateMap<Channel, ChannelInfoDto>();
+        CreateMap<CreateMessageDto, ChannelMessage>();
     }
 }

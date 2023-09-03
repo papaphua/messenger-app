@@ -2,17 +2,9 @@
 
 <script type="module" src="~/js/directHub.js"></script>
 
-@{
-    var username = ViewBag.Username;
-    var profilePictureBytes = ViewBag.ProfilePictureBytes;
-}
-
-<div id="userData" data-username="@ViewBag.Username" data-profilepicture="@ViewBag.ProfilePictureBytes"></div>
+<div id="userData" data-username="@ViewBag.Username" data-profilepicture="@ViewBag.ProfilePictureBytes" data-directId="@Model.Id"></div>
 
 <div class="container mt-4">
-    <h1>Direct</h1>
-
-    <h2>Profile Information</h2>
     <div class="card">
         <div class="card-body">
             <div class="row">

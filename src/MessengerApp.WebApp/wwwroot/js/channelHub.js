@@ -3,7 +3,7 @@
     .build();
 
 const userDataElement = document.getElementById("userData");
-const directId = document.getElementById("userData").getAttribute("data-directId");
+const channelId = document.getElementById("userData").getAttribute("data-channelId");
 
 connection.on("ReceiveMessage", (username, content, timestamp, profilePictureBytes) =>
     addMessageToChat(username, content, timestamp, profilePictureBytes));
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     customSubmitButton.addEventListener("click", function (e) {
         const messageContent = contentTextarea.value.trim();
         if (messageContent) {
-            connection.invoke("SendMessage", username, messageContent, formatDateToCustomString(currentUTCDate), profilePictureBytes, directId).catch(function (err) {
+            connection.invoke("SendMessage", username, messageContent, formatDateToCustomString(currentUTCDate), profilePictureBytes, channelId).catch(function (err) {
                 console.error(err);
             });
 
@@ -39,5 +39,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 connection.start().then(() => {
-    connection.invoke("JoinDirect", directId)
+    connection.invoke("JoinChannel", channelId)
 });

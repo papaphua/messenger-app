@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MessengerApp.Application.Abstractions.Data;
+using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Channel;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
@@ -37,6 +38,10 @@ public sealed class ChannelService : IChannelService
             };
 
         var channel = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Messages)
+            .ThenInclude(message => message.Attachments)
+            .Include(direct => direct.Messages)
+            .ThenInclude(channel => channel.Reactions)
             .Include(channel => channel.Members)
             .FirstOrDefaultAsync(channel => channel.Id == channelId &&
                                             channel.Members.Any(member => member.Id == userId));
@@ -50,6 +55,10 @@ public sealed class ChannelService : IChannelService
 
         var channelDto = _mapper.Map<ChannelDto>(channel);
 
+        channelDto.Messages = channel.Messages
+            .OrderBy(message => message.Timestamp)
+            .Reverse();
+        
         return new Result<ChannelDto>
         {
             Data = channelDto
@@ -223,6 +232,54 @@ public sealed class ChannelService : IChannelService
             {
                 Succeeded = false,
                 Message = Results.ChatLeaveError
+            };
+        }
+
+        return new Result();
+    }
+
+    public async Task<Result> CreateChannelMessageAsync(string userId, string channelId, CreateMessageDto createMessageDto)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var channel = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Members)
+            .FirstOrDefaultAsync(channel => channel.Id == channelId &&
+                                            channel.Members.Any(member => member.Id == user.Id));
+
+        if (channel == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        var message = new ChannelMessage()
+        {
+            SenderId = user.Id,
+            ChatId = channel.Id
+        };
+        _mapper.Map(createMessageDto, message);
+
+        try
+        {
+            await _dbContext.Set<ChannelMessage>()
+                .AddAsync(message);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.MessageSendError
             };
         }
 

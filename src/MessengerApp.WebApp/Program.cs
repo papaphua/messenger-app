@@ -92,6 +92,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<DirectHub>("/directHub");
+app.MapHub<GroupHub>("/groupHub");
+app.MapHub<ChannelHub>("/channelHub");
 
 app.MapControllerRoute(
         "default",
