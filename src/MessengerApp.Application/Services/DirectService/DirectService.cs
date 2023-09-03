@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MessengerApp.Application.Abstractions.Data;
+using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Direct;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
@@ -37,6 +38,10 @@ public sealed class DirectService : IDirectService
             };
 
         var direct = await _dbContext.Set<Direct>()
+            .Include(direct => direct.Messages)
+            .ThenInclude(message => message.Attachments)
+            .Include(direct => direct.Messages)
+            .ThenInclude(message => message.Reactions)
             .Include(direct => direct.Members)
             .FirstOrDefaultAsync(direct => direct.Id == directId &&
                                            direct.Members.Any(member => member.Id == user.Id));
@@ -50,8 +55,16 @@ public sealed class DirectService : IDirectService
 
         var conversator = direct.Members.First(member => member.Id != user.Id);
 
-        var directDto = new DirectDto { Id = direct.Id };
+        var directDto = new DirectDto();
         _mapper.Map(conversator, directDto);
+
+        directDto.Id = direct.Id;
+        
+        directDto.ProfilePictureBytes = conversator.ProfilePictureBytes;
+        
+        directDto.Messages = direct.Messages
+            .OrderBy(message => message.Timestamp)
+            .Reverse();
 
         return new Result<DirectDto>
         {
@@ -189,6 +202,56 @@ public sealed class DirectService : IDirectService
             {
                 Succeeded = false,
                 Message = Results.ChatRemoveError
+            };
+        }
+
+        return new Result();
+    }
+
+    // TODO attachments, reactions
+    public async Task<Result> CreateDirectMessageAsync(string userId, string directId,
+        CreateMessageDto createMessageDto)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var direct = await _dbContext.Set<Direct>()
+            .Include(direct => direct.Members)
+            .FirstOrDefaultAsync(direct => direct.Id == directId &&
+                                           direct.Members.Any(member => member.Id == user.Id));
+
+        if (direct == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        var message = new DirectMessage
+        {
+            SenderId = user.Id,
+            ChatId = direct.Id
+        };
+        _mapper.Map(createMessageDto, message);
+
+        try
+        {
+            await _dbContext.Set<DirectMessage>()
+                .AddAsync(message);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.MessageSendError
             };
         }
 

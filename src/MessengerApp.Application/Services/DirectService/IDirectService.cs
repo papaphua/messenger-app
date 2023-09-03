@@ -1,4 +1,5 @@
-﻿using MessengerApp.Application.Dtos.Direct;
+﻿using MessengerApp.Application.Dtos;
+using MessengerApp.Application.Dtos.Direct;
 using MessengerApp.Domain.Primitives;
 
 namespace MessengerApp.Application.Services.DirectService;
@@ -9,4 +10,5 @@ public interface IDirectService
     Task<Result<IEnumerable<DirectPreviewDto>>> GetDirectPreviewsAsync(string userId);
     Task<Result<DirectDto>> CreateDirectAsync(string userId, string conversatorId);
     Task<Result> RemoveDirectAsync(string userId, string directId);
+    Task<Result> CreateDirectMessageAsync(string userId, string directId, CreateMessageDto createMessageDto);
 }

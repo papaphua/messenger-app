@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MessengerApp.Application.Abstractions.Data;
+using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
@@ -37,6 +38,10 @@ public sealed class GroupService : IGroupService
             };
 
         var group = await _dbContext.Set<Group>()
+            .Include(group => group.Messages)
+            .ThenInclude(message => message.Attachments)
+            .Include(group => group.Messages)
+            .ThenInclude(message => message.Reactions)
             .Include(group => group.Members)
             .FirstOrDefaultAsync(group => group.Id == groupId &&
                                           group.Members.Any(member => member.Id == userId));
@@ -49,7 +54,10 @@ public sealed class GroupService : IGroupService
             };
 
         var groupDto = _mapper.Map<GroupDto>(group);
-
+        groupDto.Messages = group.Messages
+            .OrderBy(message => message.Timestamp)
+            .Reverse();
+        
         return new Result<GroupDto>
         {
             Data = groupDto
@@ -223,6 +231,54 @@ public sealed class GroupService : IGroupService
             {
                 Succeeded = false,
                 Message = Results.ChatLeaveError
+            };
+        }
+
+        return new Result();
+    }
+
+    public async Task<Result> CreateGroupMessageAsync(string userId, string groupId, CreateMessageDto createMessageDto)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var group = await _dbContext.Set<Group>()
+            .Include(group => group.Members)
+            .FirstOrDefaultAsync(group => group.Id == groupId &&
+                                          group.Members.Any(member => member.Id == user.Id));
+
+        if (group == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        var message = new GroupMessage()
+        {
+            SenderId = user.Id,
+            ChatId = group.Id
+        };
+        _mapper.Map(createMessageDto, message);
+
+        try
+        {
+            await _dbContext.Set<GroupMessage>()
+                .AddAsync(message);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.MessageSendError
             };
         }
 
