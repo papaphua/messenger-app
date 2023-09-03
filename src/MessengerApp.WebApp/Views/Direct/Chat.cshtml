@@ -1,5 +1,14 @@
 ﻿@model MessengerApp.Application.Dtos.Direct.DirectDto
 
+<script type="module" src="~/js/directHub.js"></script>
+
+@{
+    var username = ViewBag.Username;
+    var profilePictureBytes = ViewBag.ProfilePictureBytes;
+}
+
+<div id="userData" data-username="@ViewBag.Username" data-profilepicture="@ViewBag.ProfilePictureBytes"></div>
+
 <div class="container mt-4">
     <h1>Direct</h1>
 
@@ -36,46 +45,48 @@
         </div>
     </div>
 
-    <form method="post" asp-controller="Direct" asp-action="CreateDirectMessage">
+    <form id="messageForm" method="post" asp-controller="Direct" asp-action="CreateDirectMessage">
         <div class="form-group">
             <input type="hidden" name="directId" value="@Model.Id">
-            <label for="Content">Message:</label>
-            <textarea class="form-control" id="Content" name="CreateMessageDto.Content" rows="3"></textarea>
+            <label for="content">Message:</label>
+            <textarea class="form-control" id="content" name="CreateMessageDto.Content" rows="3"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Send Message</button>
+        <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
     </form>
 
     @* TODO attachments, reactions *@
     <h2>Messages</h2>
-    @foreach (var message in Model.Messages)
-    {
-        <div class="card mt-3">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <h5 class="card-title">Message</h5>
-                        <p class="card-text">
-                            <strong>Sender:</strong> @message.Sender.UserName
-                        </p>
-                        <p class="card-text">
-                            <strong>Content:</strong> @message.Content
-                        </p>
-                        <p class="card-text">
-                            <strong>Timestamp:</strong> @message.Timestamp
-                        </p>
-                    </div>
-                    <div class="col">
-                        @if (message.Sender.ProfilePictureBytes != null)
-                        {
-                            <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(message.Sender.ProfilePictureBytes)" alt="Profile Picture"/>
-                        }
-                        else
-                        {
-                            <div class="empty-circle"></div>
-                        }
+    <div id="messagesContainer">
+        @foreach (var message in Model.Messages)
+        {
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title">Message</h5>
+                            <p class="card-text">
+                                <strong>Sender:</strong> @message.Sender.UserName
+                            </p>
+                            <p class="card-text">
+                                <strong>Content:</strong> @message.Content
+                            </p>
+                            <p class="card-text">
+                                <strong>Timestamp:</strong> @message.Timestamp
+                            </p>
+                        </div>
+                        <div class="col">
+                            @if (message.Sender.ProfilePictureBytes != null)
+                            {
+                                <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(message.Sender.ProfilePictureBytes)" alt="Profile Picture"/>
+                            }
+                            else
+                            {
+                                <div class="empty-circle"></div>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>

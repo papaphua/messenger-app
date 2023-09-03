@@ -91,7 +91,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// app.MapHub<DirectHub>("/Direct/Chat");
+app.MapHub<DirectHub>("/directHub");
 
 app.MapControllerRoute(
         "default",
