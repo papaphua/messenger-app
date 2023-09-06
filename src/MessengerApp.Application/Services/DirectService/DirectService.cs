@@ -55,16 +55,17 @@ public sealed class DirectService : IDirectService
 
         var conversator = direct.Members.First(member => member.Id != user.Id);
 
-        var directDto = new DirectDto();
-        _mapper.Map(conversator, directDto);
-
-        directDto.Id = direct.Id;
-        
-        directDto.ProfilePictureBytes = conversator.ProfilePictureBytes;
-        
-        directDto.Messages = direct.Messages
+        var messageDtos = direct.Messages
+            .Select(message => _mapper.Map<MessageDto>(message))
             .OrderBy(message => message.Timestamp)
             .Reverse();
+        
+        var directDto = new DirectDto();
+        _mapper.Map(conversator, directDto);
+        
+        directDto.Id = direct.Id;
+
+        directDto.Messages = messageDtos;
 
         return new Result<DirectDto>
         {
