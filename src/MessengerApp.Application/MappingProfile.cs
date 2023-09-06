@@ -79,6 +79,17 @@ public sealed class MappingProfile : Profile
         CreateMap<Group, GroupInfoDto>();
         
         CreateMap<CreateMessageDto, GroupMessage>();
+        
+        CreateMap<GroupMessage, MessageDto>()
+            .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
+            .ForMember(dest => dest.Reactions, opt => opt.MapFrom(src => src.Reactions))
+            .ReverseMap();
+        
+        CreateMap<GroupAttachment, AttachmentDto>().ReverseMap();
+        
+        CreateMap<GroupReaction, ReactionDto>()
+            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+            .ReverseMap();
 
         // Channel service
         CreateMap<Channel, ChannelDto>()

@@ -54,9 +54,6 @@ public sealed class GroupService : IGroupService
             };
 
         var groupDto = _mapper.Map<GroupDto>(group);
-        groupDto.Messages = group.Messages
-            .OrderBy(message => message.Timestamp)
-            .Reverse();
         
         return new Result<GroupDto>
         {
