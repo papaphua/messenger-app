@@ -8,5 +8,5 @@ public sealed class GroupDto
 
     public GroupInfoDto GroupInfoDto { get; set; } = null!;
     
-    public IEnumerable<GroupMessage> Messages { get; set; } = null!;
+    public IEnumerable<MessageDto> Messages { get; set; } = null!;
 }

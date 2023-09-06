@@ -8,5 +8,5 @@ public sealed class ChannelDto
 
     public ChannelInfoDto ChannelInfoDto { get; set; } = null!;
     
-    public IEnumerable<ChannelMessage> Messages { get; set; } = null!;
+    public IEnumerable<MessageDto> Messages { get; set; } = null!;
 }

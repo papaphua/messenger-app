@@ -54,10 +54,6 @@ public sealed class ChannelService : IChannelService
             };
 
         var channelDto = _mapper.Map<ChannelDto>(channel);
-
-        channelDto.Messages = channel.Messages
-            .OrderBy(message => message.Timestamp)
-            .Reverse();
         
         return new Result<ChannelDto>
         {

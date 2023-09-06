@@ -13,7 +13,7 @@
                     @chat.Title
                 </div>
                 <div class="card-body">
-                    @if (chat.ChatPictureBytes != null)
+                    @if (chat.ChatPictureBytes != null && chat.ChatPictureBytes.Length != 0)
                     {
                         <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(chat.ChatPictureBytes)" alt="Profile Picture"/>
                     }

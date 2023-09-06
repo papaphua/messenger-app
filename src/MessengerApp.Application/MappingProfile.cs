@@ -32,7 +32,9 @@ public sealed class MappingProfile : Profile
                     LastName = src.LastName,
                     Biography = src.Biography
                 }));
+        
         CreateMap<ProfileInfoDto, User>();
+        
         CreateMap<User, ProfileInfoDto>();
 
         // Direct service
@@ -46,7 +48,19 @@ public sealed class MappingProfile : Profile
             }))
             .ForMember(dest => dest.ProfilePictureBytes, opt => opt.MapFrom(src => src.ProfilePictureBytes))
             .ForMember(dest => dest.Id, opt => opt.Ignore());
+        
         CreateMap<CreateMessageDto, DirectMessage>();
+
+        CreateMap<DirectMessage, MessageDto>()
+            .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
+            .ForMember(dest => dest.Reactions, opt => opt.MapFrom(src => src.Reactions))
+            .ReverseMap();
+        
+        CreateMap<DirectAttachment, AttachmentDto>().ReverseMap();
+        
+        CreateMap<DirectReaction, ReactionDto>()
+            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+            .ReverseMap();
 
         // Group service
         CreateMap<Group, GroupDto>()
@@ -57,10 +71,25 @@ public sealed class MappingProfile : Profile
                     Description = src.Description,
                     ChatPictureBytes = src.ChatPictureBytes
                 }));
+        
         CreateMap<Group, GroupPreviewDto>();
+        
         CreateMap<GroupInfoDto, Group>();
+        
         CreateMap<Group, GroupInfoDto>();
+        
         CreateMap<CreateMessageDto, GroupMessage>();
+        
+        CreateMap<GroupMessage, MessageDto>()
+            .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
+            .ForMember(dest => dest.Reactions, opt => opt.MapFrom(src => src.Reactions))
+            .ReverseMap();
+        
+        CreateMap<GroupAttachment, AttachmentDto>().ReverseMap();
+        
+        CreateMap<GroupReaction, ReactionDto>()
+            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+            .ReverseMap();
 
         // Channel service
         CreateMap<Channel, ChannelDto>()
@@ -71,9 +100,24 @@ public sealed class MappingProfile : Profile
                     Description = src.Description,
                     ChatPictureBytes = src.ChatPictureBytes
                 }));
+        
         CreateMap<Channel, ChannelPreviewDto>();
+        
         CreateMap<ChannelInfoDto, Channel>();
+        
         CreateMap<Channel, ChannelInfoDto>();
+        
         CreateMap<CreateMessageDto, ChannelMessage>();
+        
+        CreateMap<ChannelMessage, MessageDto>()
+            .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
+            .ForMember(dest => dest.Reactions, opt => opt.MapFrom(src => src.Reactions))
+            .ReverseMap();
+        
+        CreateMap<ChannelAttachment, AttachmentDto>().ReverseMap();
+        
+        CreateMap<ChannelReaction, ReactionDto>()
+            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+            .ReverseMap();
     }
 }

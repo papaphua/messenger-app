@@ -18,7 +18,7 @@
                     </p>
                 </div>
                 <div class="col">
-                    @if (Model.GroupInfoDto.ChatPictureBytes != null)
+                    @if (Model.GroupInfoDto.ChatPictureBytes != null && Model.GroupInfoDto.ChatPictureBytes.Length != 0)
                     {
                         <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.GroupInfoDto.ChatPictureBytes)" alt="Profile Picture"/>
                     }
@@ -61,7 +61,7 @@
                             </p>
                         </div>
                         <div class="col">
-                            @if (message.Sender.ProfilePictureBytes != null)
+                            @if (message.Sender.ProfilePictureBytes != null && message.Sender.ProfilePictureBytes.Length != 0)
                             {
                                 <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(message.Sender.ProfilePictureBytes)" alt="Profile Picture"/>
                             }
