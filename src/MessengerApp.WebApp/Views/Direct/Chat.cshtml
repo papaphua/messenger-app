@@ -24,7 +24,7 @@
                     </p>
                 </div>
                 <div class="col">
-                    @if (Model.ProfilePictureBytes != null)
+                    @if (Model.ProfilePictureBytes != null && Model.ProfilePictureBytes.Length != 0)
                     {
                         <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfilePictureBytes)" alt="Profile Picture"/>
                     }
@@ -67,7 +67,7 @@
                             </p>
                         </div>
                         <div class="col">
-                            @if (message.Sender.ProfilePictureBytes != null)
+                            @if (message.Sender.ProfilePictureBytes != null && message.Sender.ProfilePictureBytes.Length != 0)
                             {
                                 <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(message.Sender.ProfilePictureBytes)" alt="Profile Picture"/>
                             }

@@ -11,7 +11,7 @@
                         @user.UserName
                     </div>
                     <div class="card-body">
-                        @if (user.ProfilePictureBytes != null)
+                        @if (user.ProfilePictureBytes != null && user.ProfilePictureBytes.Length != 0)
                         {
                             <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(user.ProfilePictureBytes)" alt="Profile Picture"/>
                         }
