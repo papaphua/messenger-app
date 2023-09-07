@@ -54,7 +54,7 @@ public sealed class ChannelService : IChannelService
             };
 
         var channelDto = _mapper.Map<ChannelDto>(channel);
-        
+
         return new Result<ChannelDto>
         {
             Data = channelDto
@@ -86,6 +86,26 @@ public sealed class ChannelService : IChannelService
         var channelPreviewDtos = channels
             .Select(channel => _mapper.Map<ChannelPreviewDto>(channel))
             .ToList();
+
+        return new Result<IEnumerable<ChannelPreviewDto>>
+        {
+            Data = channelPreviewDtos
+        };
+    }
+
+    public async Task<Result<IEnumerable<ChannelPreviewDto>>> FindChannelsByTitleAsync(string? search)
+    {
+        var channels = await _dbContext.Set<Channel>()
+            .Where(channel => EF.Functions.Like(channel.Title, $"%{search}%"))
+            .ToListAsync();
+
+        if (channels.Count == 0)
+            return new Result<IEnumerable<ChannelPreviewDto>>
+            {
+                Message = Results.NoSearchResultsFor(search)
+            };
+
+        var channelPreviewDtos = channels.Select(channel => _mapper.Map<ChannelPreviewDto>(channel));
 
         return new Result<IEnumerable<ChannelPreviewDto>>
         {
@@ -234,7 +254,8 @@ public sealed class ChannelService : IChannelService
         return new Result();
     }
 
-    public async Task<Result> CreateChannelMessageAsync(string userId, string channelId, CreateMessageDto createMessageDto)
+    public async Task<Result> CreateChannelMessageAsync(string userId, string channelId,
+        CreateMessageDto createMessageDto)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
