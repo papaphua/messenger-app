@@ -96,7 +96,8 @@ public sealed class ChannelService : IChannelService
     public async Task<Result<IEnumerable<ChannelPreviewDto>>> FindChannelsByTitleAsync(string? search)
     {
         var channels = await _dbContext.Set<Channel>()
-            .Where(channel => EF.Functions.Like(channel.Title, $"%{search}%"))
+            .Where(channel => EF.Functions.Like(channel.Title, $"%{search}%")
+                              && !channel.IsPrivate)
             .ToListAsync();
 
         if (channels.Count == 0)

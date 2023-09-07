@@ -7,4 +7,6 @@ public interface IAdministratedChat
     public string? Description { get; set; }
 
     public byte[]? ChatPictureBytes { get; set; }
+
+    public bool IsPrivate { get; set; }
 }

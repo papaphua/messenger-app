@@ -33,8 +33,8 @@
                 </ul>
             </li>
         </ul>
-        <form class="d-flex" method="post" asp-controller="User" asp-action="Index">
-            <input name="search" class="form-control me-2" type="search" placeholder="Search users..." aria-label="Search">
+        <form class="d-flex" method="post" asp-controller="Search" asp-action="Index">
+            <input name="search" class="form-control me-2" type="search" placeholder="Search users, groups or channels..." aria-label="Search">
             <button class="btn btn-outline-light" type="submit">Search</button>
         </form>
         @if (User.Identity!.IsAuthenticated)

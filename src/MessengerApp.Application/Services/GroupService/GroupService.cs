@@ -54,7 +54,7 @@ public sealed class GroupService : IGroupService
             };
 
         var groupDto = _mapper.Map<GroupDto>(group);
-        
+
         return new Result<GroupDto>
         {
             Data = groupDto
@@ -140,7 +140,8 @@ public sealed class GroupService : IGroupService
     public async Task<Result<IEnumerable<GroupPreviewDto>>> FindGroupsByTitleAsync(string? search)
     {
         var groups = await _dbContext.Set<Group>()
-            .Where(group => EF.Functions.Like(group.Title, $"%{search}%"))
+            .Where(group => EF.Functions.Like(group.Title, $"%{search}%")
+                            && !group.IsPrivate)
             .ToListAsync();
 
         if (groups.Count == 0)
