@@ -54,7 +54,7 @@ public sealed class GroupService : IGroupService
             };
 
         var groupDto = _mapper.Map<GroupDto>(group);
-        
+
         return new Result<GroupDto>
         {
             Data = groupDto
@@ -133,6 +133,79 @@ public sealed class GroupService : IGroupService
         }
 
         await transaction.CommitAsync();
+
+        return await GetGroupAsync(user.Id, group.Id);
+    }
+
+    public async Task<Result<IEnumerable<GroupPreviewDto>>> FindGroupsByTitleAsync(string? search)
+    {
+        var groups = await _dbContext.Set<Group>()
+            .Where(group => EF.Functions.Like(group.Title, $"%{search}%")
+                            && !group.IsPrivate)
+            .ToListAsync();
+
+        if (groups.Count == 0)
+            return new Result<IEnumerable<GroupPreviewDto>>
+            {
+                Message = Results.NoSearchResultsFor(search)
+            };
+
+        var groupPreviewDtos = groups.Select(group => _mapper.Map<GroupPreviewDto>(group));
+
+        return new Result<IEnumerable<GroupPreviewDto>>
+        {
+            Data = groupPreviewDtos
+        };
+    }
+
+    public async Task<Result<GroupDto>> JoinGroupAsync(string userId, string groupId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result<GroupDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var group = await _dbContext.Set<Group>()
+            .Include(group => group.Members)
+            .FirstOrDefaultAsync(group => group.Id == groupId);
+
+        if (group == null)
+            return new Result<GroupDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        var groupMember = await _dbContext.Set<GroupMember>()
+            .FirstOrDefaultAsync(gm => gm.GroupId == group.Id
+                                       && gm.MembersId == user.Id);
+
+        if (groupMember != null)
+            return new Result<GroupDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatAlreadyMember
+            };
+
+        groupMember = GroupMember.AddMemberToGroup(group.Id, user.Id);
+
+        try
+        {
+            await _dbContext.AddAsync(groupMember);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result<GroupDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatJoinError
+            };
+        }
 
         return await GetGroupAsync(user.Id, group.Id);
     }

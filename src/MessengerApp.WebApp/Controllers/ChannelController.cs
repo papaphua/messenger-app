@@ -89,6 +89,20 @@ public sealed class ChannelController : Controller
         return View("Chat", result.Data);
     }
 
+    public async Task<IActionResult> JoinChannel(string channelId)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var result = await _channelService.JoinChannelAsync(userId, channelId);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Channel");
+
+        return View("Chat", result.Data);
+    }
+    
     public async Task<IActionResult> LeaveChannel(string channelId)
     {
         var userId = Parser.ParseUserId(HttpContext);

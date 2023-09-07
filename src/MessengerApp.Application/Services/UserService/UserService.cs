@@ -19,7 +19,7 @@ public sealed class UserService : IUserService
         _mapper = mapper;
     }
 
-    public async Task<Result<IEnumerable<UserPreviewDto>>> SearchUsersByUsernameAsync(string? search)
+    public async Task<Result<IEnumerable<UserPreviewDto>>> FindUsersByUsernameAsync(string? search)
     {
         var users = await _userManager.Users
             .Where(user => EF.Functions.Like(user.UserName!, $"%{search}%"))

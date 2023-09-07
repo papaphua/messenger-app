@@ -30,6 +30,8 @@ public static class Results
     public const string ChatCreateError = "Could not create chat.";
     public const string ChatRemoveError = "Could not remove chat.";
     public const string ChatLeaveError = "Could not leave chat.";
+    public const string ChatJoinError = "Could not join chat.";
+    public const string ChatAlreadyMember = "Already member.";
 
     public static string EmailAlreadyTaken(string email)
     {

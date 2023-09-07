@@ -54,7 +54,7 @@ public sealed class ChannelService : IChannelService
             };
 
         var channelDto = _mapper.Map<ChannelDto>(channel);
-        
+
         return new Result<ChannelDto>
         {
             Data = channelDto
@@ -86,6 +86,27 @@ public sealed class ChannelService : IChannelService
         var channelPreviewDtos = channels
             .Select(channel => _mapper.Map<ChannelPreviewDto>(channel))
             .ToList();
+
+        return new Result<IEnumerable<ChannelPreviewDto>>
+        {
+            Data = channelPreviewDtos
+        };
+    }
+
+    public async Task<Result<IEnumerable<ChannelPreviewDto>>> FindChannelsByTitleAsync(string? search)
+    {
+        var channels = await _dbContext.Set<Channel>()
+            .Where(channel => EF.Functions.Like(channel.Title, $"%{search}%")
+                              && !channel.IsPrivate)
+            .ToListAsync();
+
+        if (channels.Count == 0)
+            return new Result<IEnumerable<ChannelPreviewDto>>
+            {
+                Message = Results.NoSearchResultsFor(search)
+            };
+
+        var channelPreviewDtos = channels.Select(channel => _mapper.Map<ChannelPreviewDto>(channel));
 
         return new Result<IEnumerable<ChannelPreviewDto>>
         {
@@ -133,6 +154,58 @@ public sealed class ChannelService : IChannelService
         }
 
         await transaction.CommitAsync();
+
+        return await GetChannelAsync(user.Id, channel.Id);
+    }
+
+    public async Task<Result<ChannelDto>> JoinChannelAsync(string userId, string channelId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result<ChannelDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var channel = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Members)
+            .FirstOrDefaultAsync(channel => channel.Id == channelId);
+
+        if (channel == null)
+            return new Result<ChannelDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        var channelMember = await _dbContext.Set<ChannelMember>()
+            .FirstOrDefaultAsync(cm => cm.ChannelId == channel.Id
+                                       && cm.MembersId == user.Id);
+
+        if (channelMember != null)
+            return new Result<ChannelDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatAlreadyMember
+            };
+
+        channelMember = ChannelMember.AddMemberToChannel(channel.Id, user.Id);
+
+        try
+        {
+            await _dbContext.AddAsync(channelMember);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result<ChannelDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatJoinError
+            };
+        }
 
         return await GetChannelAsync(user.Id, channel.Id);
     }
@@ -234,7 +307,8 @@ public sealed class ChannelService : IChannelService
         return new Result();
     }
 
-    public async Task<Result> CreateChannelMessageAsync(string userId, string channelId, CreateMessageDto createMessageDto)
+    public async Task<Result> CreateChannelMessageAsync(string userId, string channelId,
+        CreateMessageDto createMessageDto)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
