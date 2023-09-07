@@ -158,6 +158,58 @@ public sealed class ChannelService : IChannelService
         return await GetChannelAsync(user.Id, channel.Id);
     }
 
+    public async Task<Result<ChannelDto>> JoinChannelAsync(string userId, string channelId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result<ChannelDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var channel = await _dbContext.Set<Channel>()
+            .Include(channel => channel.Members)
+            .FirstOrDefaultAsync(channel => channel.Id == channelId);
+
+        if (channel == null)
+            return new Result<ChannelDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        var channelMember = await _dbContext.Set<ChannelMember>()
+            .FirstOrDefaultAsync(cm => cm.ChannelId == channel.Id
+                                       && cm.MembersId == user.Id);
+
+        if (channelMember != null)
+            return new Result<ChannelDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatAlreadyMember
+            };
+
+        channelMember = ChannelMember.AddMemberToChannel(channel.Id, user.Id);
+
+        try
+        {
+            await _dbContext.AddAsync(channelMember);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result<ChannelDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatJoinError
+            };
+        }
+
+        return await GetChannelAsync(user.Id, channel.Id);
+    }
+
     public async Task<Result> LeaveChannelAsync(string userId, string channelId)
     {
         var user = await _userManager.FindByIdAsync(userId);

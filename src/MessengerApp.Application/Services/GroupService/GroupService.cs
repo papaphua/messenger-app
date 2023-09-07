@@ -158,6 +158,58 @@ public sealed class GroupService : IGroupService
         };
     }
 
+    public async Task<Result<GroupDto>> JoinGroupAsync(string userId, string groupId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result<GroupDto>
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var group = await _dbContext.Set<Group>()
+            .Include(group => group.Members)
+            .FirstOrDefaultAsync(group => group.Id == groupId);
+
+        if (group == null)
+            return new Result<GroupDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        var groupMember = await _dbContext.Set<GroupMember>()
+            .FirstOrDefaultAsync(gm => gm.GroupId == group.Id
+                                       && gm.MembersId == user.Id);
+
+        if (groupMember != null)
+            return new Result<GroupDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatAlreadyMember
+            };
+
+        groupMember = GroupMember.AddMemberToGroup(group.Id, user.Id);
+
+        try
+        {
+            await _dbContext.AddAsync(groupMember);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result<GroupDto>
+            {
+                Succeeded = false,
+                Message = Results.ChatJoinError
+            };
+        }
+
+        return await GetGroupAsync(user.Id, group.Id);
+    }
+
     public async Task<Result> LeaveGroupAsync(string userId, string groupId)
     {
         var user = await _userManager.FindByIdAsync(userId);

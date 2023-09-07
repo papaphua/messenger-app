@@ -89,6 +89,20 @@ public sealed class GroupController : Controller
         return View("Chat", result.Data);
     }
 
+    public async Task<IActionResult> JoinGroup(string groupId)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var result = await _groupService.JoinGroupAsync(userId, groupId);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        if (!result.Succeeded) return RedirectToAction("Index", "Group");
+
+        return View("Chat", result.Data);
+    }
+    
     public async Task<IActionResult> LeaveGroup(string groupId)
     {
         var userId = Parser.ParseUserId(HttpContext);

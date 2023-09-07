@@ -38,7 +38,7 @@
             }
         }
     </div>
-    
+
     <div class="col-4">
         <h2>Groups</h2>
         @if (Model.Groups != null && Model.Groups.Any())
@@ -46,26 +46,34 @@
             @foreach (var group in Model.Groups)
             {
                 <div class="mb-4">
-                    <div class="card group-card">
+                    <div class="card user-card">
                         <div class="card-header">
                             @group.Title
                         </div>
                         <div class="card-body">
                             @if (group.ChatPictureBytes != null && group.ChatPictureBytes.Length != 0)
                             {
-                                <img class="chat-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(group.ChatPictureBytes)" alt="Chat Picture"/>
+                                <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(group.ChatPictureBytes)" alt="Chat Picture"/>
                             }
                             else
                             {
                                 <div class="empty-image"></div>
                             }
                         </div>
+                        <div class="card-footer">
+                            <form method="post" asp-controller="Group" asp-action="JoinGroup">
+                                <input type="hidden" name="groupId" value="@group.Id"/>
+                                <button class="btn btn-success btn-block" type="submit">
+                                    Join group
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             }
         }
     </div>
-    
+
     <div class="col-4">
         <h2>Channels</h2>
         @if (Model.Channels != null && Model.Channels.Any())
@@ -73,19 +81,27 @@
             @foreach (var channel in Model.Channels)
             {
                 <div class="mb-4">
-                    <div class="card channel-card">
+                    <div class="card user-card">
                         <div class="card-header">
                             @channel.Title
                         </div>
                         <div class="card-body">
                             @if (channel.ChatPictureBytes != null && channel.ChatPictureBytes.Length != 0)
                             {
-                                <img class="chat-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(channel.ChatPictureBytes)" alt="Chat Picture"/>
+                                <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(channel.ChatPictureBytes)" alt="Chat Picture"/>
                             }
                             else
                             {
                                 <div class="empty-image"></div>
                             }
+                        </div>
+                        <div class="card-footer">
+                            <form method="post" asp-controller="Channel" asp-action="JoinChannel">
+                                <input type="hidden" name="channelId" value="@channel.Id"/>
+                                <button class="btn btn-success btn-block" type="submit">
+                                    Join channel
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
