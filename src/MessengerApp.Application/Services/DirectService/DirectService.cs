@@ -208,8 +208,7 @@ public sealed class DirectService : IDirectService
 
         return new Result();
     }
-
-    // TODO attachments, reactions
+    
     public async Task<Result> CreateDirectMessageAsync(string userId, string directId,
         CreateMessageDto createMessageDto)
     {
@@ -239,16 +238,34 @@ public sealed class DirectService : IDirectService
             SenderId = user.Id,
             ChatId = direct.Id
         };
+
+        var attachments = createMessageDto.Attachments?.Select(attachment => new DirectAttachment()
+        {
+            MessageId = message.Id,
+            ContentBytes = attachment
+        });
+        
         _mapper.Map(createMessageDto, message);
 
+        var transaction = await _unitOfWork.BeginTransactionAsync();
+        
         try
         {
             await _dbContext.Set<DirectMessage>()
                 .AddAsync(message);
             await _unitOfWork.SaveChangesAsync();
+
+            if (attachments != null)
+            {
+                await _dbContext.Set<DirectAttachment>()
+                    .AddRangeAsync(attachments);
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
         catch (Exception)
         {
+            await transaction.RollbackAsync();
+            
             return new Result
             {
                 Succeeded = false,
@@ -256,6 +273,8 @@ public sealed class DirectService : IDirectService
             };
         }
 
+        await transaction.CommitAsync();
+        
         return new Result();
     }
 }

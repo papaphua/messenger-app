@@ -49,7 +49,8 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.ProfilePictureBytes, opt => opt.MapFrom(src => src.ProfilePictureBytes))
             .ForMember(dest => dest.Id, opt => opt.Ignore());
         
-        CreateMap<CreateMessageDto, DirectMessage>();
+        CreateMap<CreateMessageDto, DirectMessage>()
+            .ForMember(dest => dest.Attachments, opt => opt.Ignore());
 
         CreateMap<DirectMessage, MessageDto>()
             .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
