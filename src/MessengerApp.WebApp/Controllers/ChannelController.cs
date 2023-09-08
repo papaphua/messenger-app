@@ -119,6 +119,22 @@ public sealed class ChannelController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
         
+        var attachedFiles = Request.Form.Files;
+
+        var attachments = new List<byte[]>();
+
+        if (attachedFiles.Any())
+        {
+            foreach (var attachment in attachedFiles)
+            {
+                using var memoryStream = new MemoryStream();
+                await attachment.CopyToAsync(memoryStream);
+                attachments.Add(memoryStream.ToArray());
+            }
+        }
+
+        createMessageDto.Attachments = attachments;
+        
         await _channelService.CreateChannelMessageAsync(userId, channelId, createMessageDto);
 
         var channel = (await _channelService.GetChannelAsync(userId, channelId)).Data!;
