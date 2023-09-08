@@ -335,16 +335,34 @@ public sealed class GroupService : IGroupService
             SenderId = user.Id,
             ChatId = group.Id
         };
+        
+        var attachments = createMessageDto.Attachments?.Select(attachment => new GroupAttachment()
+        {
+            MessageId = message.Id,
+            ContentBytes = attachment
+        });
+        
         _mapper.Map(createMessageDto, message);
 
+        var transaction = await _unitOfWork.BeginTransactionAsync();
+        
         try
         {
             await _dbContext.Set<GroupMessage>()
                 .AddAsync(message);
             await _unitOfWork.SaveChangesAsync();
+            
+            if (attachments != null)
+            {
+                await _dbContext.Set<GroupAttachment>()
+                    .AddRangeAsync(attachments);
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
         catch (Exception)
         {
+            await transaction.RollbackAsync();
+            
             return new Result
             {
                 Succeeded = false,
@@ -352,6 +370,8 @@ public sealed class GroupService : IGroupService
             };
         }
 
+        await transaction.CommitAsync();
+        
         return new Result();
     }
 }

@@ -31,16 +31,19 @@
         </div>
     </div>
 
-    <form id="messageForm" method="post" asp-controller="Group" asp-action="CreateGroupMessage">
+    <form enctype="multipart/form-data" id="messageForm" method="post" asp-controller="Group" asp-action="CreateGroupMessage">
         <div class="form-group">
             <input type="hidden" name="groupId" value="@Model.Id">
             <label for="content">Message:</label>
             <textarea class="form-control" id="content" name="CreateMessageDto.Content" rows="3"></textarea>
         </div>
+        <div class="form-group">
+            <label for="attachmentInput"></label>
+            <input id="attachmentInput" class="form-control" multiple="multiple" type="file" name="file"/>
+        </div>
         <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
     </form>
 
-    @* TODO attachments, reactions *@
     <h2>Messages</h2>
     <div id="messagesContainer">
         @foreach (var message in Model.Messages)
@@ -56,6 +59,18 @@
                             <p class="card-text">
                                 <strong>Content:</strong> @message.Content
                             </p>
+                            <div class="card-text">
+                                @if (message.Attachments != null && message.Attachments.Any())
+                                {
+                                    <strong>Attachments:</strong>
+                                    <div class="attachments">
+                                        @foreach (var attachment in message.Attachments)
+                                        {
+                                            <img class="attachment" src="data:image/jpeg;base64,@Convert.ToBase64String(attachment.ContentBytes)" alt="Attachment"/>
+                                        }
+                                    </div>
+                                }
+                            </div>
                             <p class="card-text">
                                 <strong>Timestamp:</strong> @message.Timestamp
                             </p>
