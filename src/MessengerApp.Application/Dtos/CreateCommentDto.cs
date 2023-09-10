@@ -4,6 +4,5 @@ namespace MessengerApp.Application.Dtos;
 
 public sealed class CreateCommentDto
 {
-    [Required]
-    public string Content { get; set; } = null!;
+    [Required] public string Content { get; set; } = null!;
 }

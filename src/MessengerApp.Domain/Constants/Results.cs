@@ -23,7 +23,7 @@ public static class Results
 
     //Message
     public const string MessageSendError = "Could not send message.";
-    
+
     // Chat
     public const string ChatNotFound = "Chat not found.";
     public const string ChatsEmpty = "Chats empty.";

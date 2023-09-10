@@ -1,5 +1,4 @@
 ﻿using MessengerApp.Application.Dtos;
-using MessengerApp.Application.Dtos.Channel;
 using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Services.GroupService;
 using MessengerApp.Application.Services.ProfileService;
@@ -38,16 +37,12 @@ public sealed class GroupController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        Result<GroupDto> result; 
-        
-        if (TempData.TryGetValue("GroupId", out object? value))
-        {
+        Result<GroupDto> result;
+
+        if (TempData.TryGetValue("GroupId", out var value))
             result = await _groupService.GetGroupAsync(userId, value!.ToString()!);
-        }
         else
-        {
             result = await _groupService.GetGroupAsync(userId, groupId);
-        }
 
         if (!result.Succeeded) return RedirectToAction("Index", "Group");
 
@@ -56,8 +51,8 @@ public sealed class GroupController : Controller
         var profile = (await _profileService.GetProfileAsync(userId)).Data!;
 
         ViewBag.Username = profile.ProfileInfoDto.UserName;
-        ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes);
-        
+        ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes!);
+
         return View(group);
     }
 
@@ -94,7 +89,7 @@ public sealed class GroupController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _groupService.JoinGroupAsync(userId, groupId);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
@@ -102,7 +97,7 @@ public sealed class GroupController : Controller
 
         return View("Chat", result.Data);
     }
-    
+
     public async Task<IActionResult> LeaveGroup(string groupId)
     {
         var userId = Parser.ParseUserId(HttpContext);
@@ -114,27 +109,25 @@ public sealed class GroupController : Controller
 
         return RedirectToAction("Index");
     }
-    
+
     public async Task<IActionResult> CreateGroupMessage(string groupId, CreateMessageDto createMessageDto)
     {
         var userId = Parser.ParseUserId(HttpContext);
-        
+
         var attachedFiles = Request.Form.Files;
 
         var attachments = new List<byte[]>();
 
         if (attachedFiles.Any())
-        {
             foreach (var attachment in attachedFiles)
             {
                 using var memoryStream = new MemoryStream();
                 await attachment.CopyToAsync(memoryStream);
                 attachments.Add(memoryStream.ToArray());
             }
-        }
 
         createMessageDto.Attachments = attachments;
-        
+
         await _groupService.CreateGroupMessageAsync(userId, groupId, createMessageDto);
 
         var group = (await _groupService.GetGroupAsync(userId, groupId)).Data!;

@@ -37,16 +37,12 @@ public sealed class DirectController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        Result<DirectDto> result; 
-        
-        if (TempData.TryGetValue("DirectId", out object? value))
-        {
+        Result<DirectDto> result;
+
+        if (TempData.TryGetValue("DirectId", out var value))
             result = await _directService.GetDirectAsync(userId, value!.ToString()!);
-        }
         else
-        {
             result = await _directService.GetDirectAsync(userId, directId);
-        }
 
         if (!result.Succeeded) return RedirectToAction("Index", "Direct");
 
@@ -55,7 +51,7 @@ public sealed class DirectController : Controller
         var profile = (await _profileService.GetProfileAsync(userId)).Data!;
 
         ViewBag.Username = profile.ProfileInfoDto.UserName;
-        ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes);
+        ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes!);
 
         return View(direct);
     }
@@ -91,23 +87,21 @@ public sealed class DirectController : Controller
     public async Task<IActionResult> CreateDirectMessage(string directId, CreateMessageDto createMessageDto)
     {
         var userId = Parser.ParseUserId(HttpContext);
-        
+
         var attachedFiles = Request.Form.Files;
 
         var attachments = new List<byte[]>();
 
         if (attachedFiles.Any())
-        {
             foreach (var attachment in attachedFiles)
             {
                 using var memoryStream = new MemoryStream();
                 await attachment.CopyToAsync(memoryStream);
                 attachments.Add(memoryStream.ToArray());
             }
-        }
 
         createMessageDto.Attachments = attachments;
-        
+
         await _directService.CreateDirectMessageAsync(userId, directId, createMessageDto);
 
         var direct = (await _directService.GetDirectAsync(userId, directId)).Data!;

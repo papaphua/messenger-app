@@ -331,13 +331,13 @@ public sealed class ChannelService : IChannelService
                 Message = Results.ChatNotFound
             };
 
-        var message = new ChannelMessage()
+        var message = new ChannelMessage
         {
             SenderId = user.Id,
             ChatId = channel.Id
         };
 
-        var attachments = createMessageDto.Attachments?.Select(attachment => new ChannelAttachment()
+        var attachments = createMessageDto.Attachments?.Select(attachment => new ChannelAttachment
         {
             MessageId = message.Id,
             ContentBytes = attachment

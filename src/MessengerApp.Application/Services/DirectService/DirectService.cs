@@ -59,10 +59,10 @@ public sealed class DirectService : IDirectService
             .Select(message => _mapper.Map<MessageDto>(message))
             .OrderBy(message => message.Timestamp)
             .Reverse();
-        
+
         var directDto = new DirectDto();
         _mapper.Map(conversator, directDto);
-        
+
         directDto.Id = direct.Id;
 
         directDto.Messages = messageDtos;
@@ -208,7 +208,7 @@ public sealed class DirectService : IDirectService
 
         return new Result();
     }
-    
+
     public async Task<Result> CreateDirectMessageAsync(string userId, string directId,
         CreateMessageDto createMessageDto)
     {
@@ -239,16 +239,16 @@ public sealed class DirectService : IDirectService
             ChatId = direct.Id
         };
 
-        var attachments = createMessageDto.Attachments?.Select(attachment => new DirectAttachment()
+        var attachments = createMessageDto.Attachments?.Select(attachment => new DirectAttachment
         {
             MessageId = message.Id,
             ContentBytes = attachment
         });
-        
+
         _mapper.Map(createMessageDto, message);
 
         var transaction = await _unitOfWork.BeginTransactionAsync();
-        
+
         try
         {
             await _dbContext.Set<DirectMessage>()
@@ -265,7 +265,7 @@ public sealed class DirectService : IDirectService
         catch (Exception)
         {
             await transaction.RollbackAsync();
-            
+
             return new Result
             {
                 Succeeded = false,
@@ -274,7 +274,7 @@ public sealed class DirectService : IDirectService
         }
 
         await transaction.CommitAsync();
-        
+
         return new Result();
     }
 }
