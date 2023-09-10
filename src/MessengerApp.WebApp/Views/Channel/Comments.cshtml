@@ -1,13 +1,54 @@
 ﻿@model MessengerApp.Application.Dtos.Channel.ChannelCommentsDto
 
-    <form id="messageForm" method="post" asp-controller="Channel" asp-action="CreateComment">
-        <div class="form-group">
-            <input type="hidden" name="messageId" value="@Model.MessageId">
-            <label for="content">Comment:</label>
-            <textarea class="form-control" id="content" name="CreateCommentDto.Content" rows="3"></textarea>
+<div class="card mt-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <h5 class="card-title">Message</h5>
+                <p class="card-text">
+                    <strong>Sender:</strong> @Model.Message.Sender.UserName
+                </p>
+                <p class="card-text">
+                    <strong>Content:</strong> @Model.Message.Content
+                </p>
+                <div class="card-text">
+                    @if (Model.Message.Attachments != null && Model.Message.Attachments.Any())
+                    {
+                        <strong>Attachments:</strong>
+                        <div class="attachments">
+                            @foreach (var attachment in Model.Message.Attachments)
+                            {
+                                <img class="attachment" src="data:image/jpeg;base64,@Convert.ToBase64String(attachment.ContentBytes)" alt="Attachment"/>
+                            }
+                        </div>
+                    }
+                </div>
+                <p class="card-text">
+                    <strong>Timestamp:</strong> @Model.Message.Timestamp
+                </p>
+            </div>
+            <div class="col">
+                @if (Model.Message.Sender.ProfilePictureBytes != null && Model.Message.Sender.ProfilePictureBytes.Length != 0)
+                {
+                    <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Message.Sender.ProfilePictureBytes)" alt="Profile Picture"/>
+                }
+                else
+                {
+                    <div class="empty-circle"></div>
+                }
+            </div>
         </div>
-        <button id="sendMessageButton" type="submit" class="btn btn-primary">Send comment</button>
-    </form>
+    </div>
+</div>
+
+<form id="messageForm" method="post" asp-controller="Channel" asp-action="CreateComment">
+    <div class="form-group">
+        <input type="hidden" name="messageId" value="@Model.Message.Id">
+        <label for="content">Comment:</label>
+        <textarea class="form-control" id="content" name="CreateCommentDto.Content" rows="3"></textarea>
+    </div>
+    <button id="sendMessageButton" type="submit" class="btn btn-primary">Send comment</button>
+</form>
 
 <h2>Comments</h2>
 <div id="messagesContainer">
@@ -19,7 +60,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h5 class="card-title">Message</h5>
+                            <h5 class="card-title">Comment</h5>
                             <p class="card-text">
                                 <strong>Sender:</strong> @comment.Sender.UserName
                             </p>

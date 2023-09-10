@@ -2,7 +2,7 @@
 
 public sealed class ChannelCommentsDto
 {
-    public string MessageId { get; set; } = null!;
+    public MessageDto Message { get; set; } = null!;
 
     public IEnumerable<CommentDto> Comments { get; set; } = null!;
 }

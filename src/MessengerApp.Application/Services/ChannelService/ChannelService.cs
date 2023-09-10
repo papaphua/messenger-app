@@ -389,6 +389,7 @@ public sealed class ChannelService : IChannelService
 
         var message = await _dbContext.Set<ChannelMessage>()
             .Include(message => message.Comments)
+            .Include(message => message.Attachments)
             .FirstOrDefaultAsync(cm => cm.Id == messageId);
 
         if (message == null)
@@ -410,13 +411,14 @@ public sealed class ChannelService : IChannelService
                 Message = Results.ChatNotFound
             };
 
+        var messageDto = _mapper.Map<MessageDto>(message);
         var commentDtos = message.Comments.Select(comment => _mapper.Map<CommentDto>(comment));
         
         return new Result<ChannelCommentsDto>
         {
             Data = new ChannelCommentsDto
             {
-                MessageId = message.Id,
+                Message = messageDto,
                 Comments = commentDtos
             }
         };
