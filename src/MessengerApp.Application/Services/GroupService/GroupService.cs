@@ -53,8 +53,14 @@ public sealed class GroupService : IGroupService
                 Message = Results.ChatNotFound
             };
 
+        var messageDtos = group.Messages
+            .Select(message => _mapper.Map<MessageDto>(message))
+            .OrderBy(message => message.Timestamp)
+            .Reverse();
+        
         var groupDto = _mapper.Map<GroupDto>(group);
-
+        groupDto.Messages = messageDtos;
+        
         return new Result<GroupDto>
         {
             Data = groupDto

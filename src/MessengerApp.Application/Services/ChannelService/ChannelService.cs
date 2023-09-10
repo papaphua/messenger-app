@@ -53,7 +53,13 @@ public sealed class ChannelService : IChannelService
                 Message = Results.ChatNotFound
             };
 
+        var messageDtos = channel.Messages
+            .Select(message => _mapper.Map<MessageDto>(message))
+            .OrderBy(message => message.Timestamp)
+            .Reverse();
+        
         var channelDto = _mapper.Map<ChannelDto>(channel);
+        channelDto.Messages = messageDtos;
 
         return new Result<ChannelDto>
         {
@@ -412,7 +418,9 @@ public sealed class ChannelService : IChannelService
             };
 
         var messageDto = _mapper.Map<MessageDto>(message);
-        var commentDtos = message.Comments.Select(comment => _mapper.Map<CommentDto>(comment));
+        var commentDtos = message.Comments.Select(comment => _mapper.Map<CommentDto>(comment))
+            .OrderBy(comment => comment.Timestamp)
+            .Reverse();
         
         return new Result<ChannelCommentsDto>
         {
