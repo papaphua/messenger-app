@@ -92,6 +92,22 @@ public sealed class DirectController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
         
+        var attachedFiles = Request.Form.Files;
+
+        var attachments = new List<byte[]>();
+
+        if (attachedFiles.Any())
+        {
+            foreach (var attachment in attachedFiles)
+            {
+                using var memoryStream = new MemoryStream();
+                await attachment.CopyToAsync(memoryStream);
+                attachments.Add(memoryStream.ToArray());
+            }
+        }
+
+        createMessageDto.Attachments = attachments;
+        
         await _directService.CreateDirectMessageAsync(userId, directId, createMessageDto);
 
         var direct = (await _directService.GetDirectAsync(userId, directId)).Data!;

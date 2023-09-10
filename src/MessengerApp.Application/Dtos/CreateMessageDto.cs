@@ -2,6 +2,6 @@
 
 public sealed class CreateMessageDto
 {
-    // TODO attachments
     public string Content { get; set; } = null!;
+    public IEnumerable<byte[]>? Attachments { get; set; }
 }

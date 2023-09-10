@@ -12,7 +12,7 @@ public sealed class MessageDto
 
     public UserPreviewDto Sender { get; set; } = null!;
     
-    public IEnumerable<AttachmentDto> Attachments { get; set; } = null!;
+    public IEnumerable<AttachmentDto>? Attachments { get; set; }
 
-    public IEnumerable<ReactionDto> Reactions { get; set; } = null!;
+    public IEnumerable<ReactionDto>? Reactions { get; set; }
 }

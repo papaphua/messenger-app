@@ -336,16 +336,34 @@ public sealed class ChannelService : IChannelService
             SenderId = user.Id,
             ChatId = channel.Id
         };
+        
+        var attachments = createMessageDto.Attachments?.Select(attachment => new ChannelAttachment()
+        {
+            MessageId = message.Id,
+            ContentBytes = attachment
+        });
+        
         _mapper.Map(createMessageDto, message);
 
+        var transaction = await _unitOfWork.BeginTransactionAsync();
+        
         try
         {
             await _dbContext.Set<ChannelMessage>()
                 .AddAsync(message);
             await _unitOfWork.SaveChangesAsync();
+            
+            if (attachments != null)
+            {
+                await _dbContext.Set<ChannelAttachment>()
+                    .AddRangeAsync(attachments);
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
         catch (Exception)
         {
+            await transaction.RollbackAsync();
+            
             return new Result
             {
                 Succeeded = false,
@@ -353,6 +371,8 @@ public sealed class ChannelService : IChannelService
             };
         }
 
+        await transaction.CommitAsync();
+        
         return new Result();
     }
 }

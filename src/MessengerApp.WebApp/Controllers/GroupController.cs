@@ -119,6 +119,22 @@ public sealed class GroupController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
         
+        var attachedFiles = Request.Form.Files;
+
+        var attachments = new List<byte[]>();
+
+        if (attachedFiles.Any())
+        {
+            foreach (var attachment in attachedFiles)
+            {
+                using var memoryStream = new MemoryStream();
+                await attachment.CopyToAsync(memoryStream);
+                attachments.Add(memoryStream.ToArray());
+            }
+        }
+
+        createMessageDto.Attachments = attachments;
+        
         await _groupService.CreateGroupMessageAsync(userId, groupId, createMessageDto);
 
         var group = (await _groupService.GetGroupAsync(userId, groupId)).Data!;
