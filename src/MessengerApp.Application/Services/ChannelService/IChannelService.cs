@@ -13,4 +13,6 @@ public interface IChannelService
     Task<Result<ChannelDto>> JoinChannelAsync(string userId, string channelId);
     Task<Result> LeaveChannelAsync(string userId, string channelId);
     Task<Result> CreateChannelMessageAsync(string userId, string channelId, CreateMessageDto createMessageDto);
+    Task<Result<ChannelCommentsDto>> GetCommentsAsync(string userId, string messageId);
+    Task<Result> CreateCommentAsync(string userId, string messageId, CreateCommentDto createCommentDto);
 }

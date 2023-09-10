@@ -4,7 +4,7 @@ namespace MessengerApp.WebApp.Hubs;
 
 public sealed class DirectHub : Hub
 {
-    public async Task SendMessage(string username, string content, string timestamp, 
+    public async Task SendMessage(string username, string content, string timestamp,
         string profilePictureBytes, string directId)
     {
         await Clients.Group(directId)

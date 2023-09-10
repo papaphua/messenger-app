@@ -4,7 +4,7 @@ namespace MessengerApp.WebApp.Hubs;
 
 public sealed class GroupHub : Hub
 {
-    public async Task SendMessage(string username, string content, string timestamp, 
+    public async Task SendMessage(string username, string content, string timestamp,
         string profilePictureBytes, string groupId)
     {
         await Clients.Group(groupId)

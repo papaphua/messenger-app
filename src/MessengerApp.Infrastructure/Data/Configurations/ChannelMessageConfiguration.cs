@@ -17,5 +17,10 @@ public sealed class ChannelMessageConfiguration : IEntityTypeConfiguration<Chann
             .WithOne(reaction => reaction.Message)
             .HasForeignKey(reaction => reaction.MessageId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(message => message.Comments)
+            .WithOne(comment => comment.Message)
+            .HasForeignKey(comment => comment.MessageId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

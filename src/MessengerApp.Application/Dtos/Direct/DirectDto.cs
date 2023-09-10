@@ -1,5 +1,4 @@
 ﻿using MessengerApp.Application.Dtos.Profile;
-using MessengerApp.Domain.Entities;
 
 namespace MessengerApp.Application.Dtos.Direct;
 

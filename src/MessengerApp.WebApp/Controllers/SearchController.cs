@@ -1,18 +1,16 @@
 ﻿using MessengerApp.Application.Dtos;
-using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Services.ChannelService;
 using MessengerApp.Application.Services.GroupService;
 using MessengerApp.Application.Services.UserService;
-using MessengerApp.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessengerApp.WebApp.Controllers;
 
 public sealed class SearchController : Controller
 {
-    private readonly IUserService _userService;
-    private readonly IGroupService _groupService;
     private readonly IChannelService _channelService;
+    private readonly IGroupService _groupService;
+    private readonly IUserService _userService;
 
     public SearchController(IUserService userService, IGroupService groupService, IChannelService channelService)
     {

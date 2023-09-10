@@ -2,7 +2,7 @@
 
 namespace MessengerApp.Application.Dtos;
 
-public sealed class MessageDto
+public sealed class CommentDto
 {
     public string Id { get; set; } = null!;
 
@@ -11,8 +11,4 @@ public sealed class MessageDto
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
     public UserPreviewDto Sender { get; set; } = null!;
-
-    public IEnumerable<AttachmentDto>? Attachments { get; set; }
-
-    public IEnumerable<ReactionDto>? Reactions { get; set; }
 }

@@ -95,7 +95,7 @@ public sealed class ProfileController : Controller
 
     public async Task<IActionResult> RequestEmailConfirmation()
     {
-        var userId = Parser.ParseUserId(HttpContext)!;
+        var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _profileService.RequestEmailConfirmationAsync(userId);
 
