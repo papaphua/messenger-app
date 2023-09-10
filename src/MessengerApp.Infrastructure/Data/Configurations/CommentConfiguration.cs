@@ -8,7 +8,7 @@ public sealed class CommentConfiguration : IEntityTypeConfiguration<Comment>
 {
     public void Configure(EntityTypeBuilder<Comment> builder)
     {
-        builder.HasOne(comment => comment.SenderId)
+        builder.HasOne(comment => comment.Sender)
             .WithMany()
             .HasForeignKey(comment => comment.SenderId)
             .OnDelete(DeleteBehavior.NoAction);

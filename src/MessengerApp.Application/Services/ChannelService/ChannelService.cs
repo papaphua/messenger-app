@@ -376,12 +376,12 @@ public sealed class ChannelService : IChannelService
         return new Result();
     }
 
-    public async Task<Result<IEnumerable<CommentDto>>> GetCommentsAsync(string userId, string messageId)
+    public async Task<Result<ChannelCommentsDto>> GetCommentsAsync(string userId, string messageId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<IEnumerable<CommentDto>>
+            return new Result<ChannelCommentsDto>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
@@ -392,7 +392,7 @@ public sealed class ChannelService : IChannelService
             .FirstOrDefaultAsync(cm => cm.Id == messageId);
 
         if (message == null)
-            return new Result<IEnumerable<CommentDto>>
+            return new Result<ChannelCommentsDto>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
@@ -404,17 +404,21 @@ public sealed class ChannelService : IChannelService
                                             channel.Members.Any(member => member.Id == user.Id));
 
         if (channel == null)
-            return new Result<IEnumerable<CommentDto>>
+            return new Result<ChannelCommentsDto>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
             };
 
         var commentDtos = message.Comments.Select(comment => _mapper.Map<CommentDto>(comment));
-
-        return new Result<IEnumerable<CommentDto>>
+        
+        return new Result<ChannelCommentsDto>
         {
-            Data = commentDtos
+            Data = new ChannelCommentsDto
+            {
+                MessageId = message.Id,
+                Comments = commentDtos
+            }
         };
     }
 

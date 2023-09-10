@@ -87,6 +87,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-footer">
+                    <form asp-action="Comments" asp-controller="Channel">
+                        <input type="hidden" name="messageId" value="@message.Id">
+                        <button class="btn btn-primary" type="submit">Comments</button>
+                    </form>
+                </div>
             </div>
         }
     </div>

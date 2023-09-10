@@ -61,6 +61,20 @@ public sealed class ChannelController : Controller
         return View();
     }
 
+    public async Task<IActionResult> Comments(string messageId)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var result = await _channelService.GetCommentsAsync(userId, messageId);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        if (!result.Succeeded) return RedirectToAction("Index");
+
+        return View(result.Data);
+    }
+    
     public async Task<IActionResult> CreateChannel(ChannelInfoDto channelInfoDto)
     {
         var userId = Parser.ParseUserId(HttpContext);
@@ -135,5 +149,19 @@ public sealed class ChannelController : Controller
         TempData["ChannelId"] = channel.Id;
 
         return RedirectToAction("Chat");
+    }
+
+    public async Task<IActionResult> CreateComment(string messageId, CreateCommentDto createCommentDto)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var result = await _channelService.CreateCommentAsync(userId, messageId, createCommentDto);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        var commentResult = await _channelService.GetCommentsAsync(userId, messageId);
+        
+        return View("Comments", commentResult.Data);
     }
 }
