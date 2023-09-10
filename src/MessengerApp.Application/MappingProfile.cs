@@ -116,6 +116,9 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
             .ForMember(dest => dest.Reactions, opt => opt.MapFrom(src => src.Reactions))
             .ReverseMap();
+
+        CreateMap<Comment, CommentDto>()
+            .ReverseMap();
         
         CreateMap<ChannelAttachment, AttachmentDto>().ReverseMap();
         
