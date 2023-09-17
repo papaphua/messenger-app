@@ -3,6 +3,7 @@ using MessengerApp.Application.Dtos.Direct;
 using MessengerApp.Application.Services.DirectService;
 using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Domain.Constants;
+using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -109,5 +110,12 @@ public sealed class DirectController : Controller
         TempData["DirectId"] = direct.Id;
 
         return RedirectToAction("Chat");
+    }
+
+    public async Task AddReaction(string messageId, Reaction reaction)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+       await _directService.AddReactionAsync(userId, messageId, reaction);
     }
 }

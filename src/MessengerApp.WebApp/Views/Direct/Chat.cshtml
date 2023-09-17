@@ -1,4 +1,6 @@
-﻿@model MessengerApp.Application.Dtos.Direct.DirectDto
+﻿@using MessengerApp.Domain.Enumerations
+@using MessengerApp.WebApp.Helpers
+@model MessengerApp.Application.Dtos.Direct.DirectDto
 
 <script type="module" src="~/js/directHub.js"></script>
 
@@ -92,6 +94,25 @@
                             }
                         </div>
                     </div>
+                </div>
+                <div class="card-footer d-flex">
+                    @foreach (var reaction in Reactions.Dictionary)
+                    {
+                        var isReacted = message.Reactions!
+                            .Any(r => r.ReactionNum == reaction.Key &&
+                                      r.User.Id == Parser.ParseUserId(Context));
+
+                        var count = message.Reactions!
+                            .Count(r => r.ReactionNum == reaction.Key);
+
+                        <form method="post" asp-action="AddReaction">
+                            <div class="form-group">
+                                <input type="hidden" name="messageId" value="@message.Id">
+                                <input type="hidden" name="reaction" value="@((Reaction)reaction.Key)">
+                                <button class="btn  @(isReacted ? "btn-primary" : "btn-secondary")" type="submit">@reaction.Value @count</button>
+                            </div>
+                        </form>
+                    }
                 </div>
             </div>
         }
