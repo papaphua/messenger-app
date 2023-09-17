@@ -292,7 +292,7 @@ public sealed class DirectService : IDirectService
 
         var message = await _dbContext.Set<DirectMessage>()
             .FirstOrDefaultAsync(message => message.Id == messageId &&
-                                            message.Sender.Id == user.Id);
+                                            message.Chat.Members.Any(member => member.Id == user.Id));
 
         if (message == null)
             return new Result
