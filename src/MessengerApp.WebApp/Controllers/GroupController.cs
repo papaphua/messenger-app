@@ -2,7 +2,9 @@
 using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Services.GroupService;
 using MessengerApp.Application.Services.ProfileService;
+using MessengerApp.Domain.Abstractions.Chat;
 using MessengerApp.Domain.Constants;
+using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -135,5 +137,12 @@ public sealed class GroupController : Controller
         TempData["GroupId"] = group.Id;
 
         return RedirectToAction("Chat");
+    }
+    
+    public async Task AddReaction(string messageId, Reaction reaction)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        await _groupService.AddReactionAsync(userId, messageId, reaction);
     }
 }

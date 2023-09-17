@@ -8,7 +8,7 @@ public abstract class Reaction<TChat, TMessage, TAttachment, TReaction> : IEntit
     where TAttachment : Attachment<TChat, TMessage, TAttachment, TReaction>
     where TReaction : Reaction<TChat, TMessage, TAttachment, TReaction>
 {
-    public string Content { get; set; } = null!;
+    public int ReactionNum { get; set; }
 
     public User User { get; set; } = null!;
 

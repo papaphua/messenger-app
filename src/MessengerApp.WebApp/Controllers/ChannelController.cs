@@ -3,6 +3,7 @@ using MessengerApp.Application.Dtos.Channel;
 using MessengerApp.Application.Services.ChannelService;
 using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Domain.Constants;
+using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -163,5 +164,12 @@ public sealed class ChannelController : Controller
         var commentResult = await _channelService.GetCommentsAsync(userId, messageId);
         
         return View("Comments", commentResult.Data);
+    }
+    
+    public async Task AddReaction(string messageId, Reaction reaction)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        await _channelService.AddReactionAsync(userId, messageId, reaction);
     }
 }

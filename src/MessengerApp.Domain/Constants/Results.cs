@@ -48,6 +48,9 @@ public static class Results
         return $"Email confirmation link sent to {email}.";
     }
 
+    // Ractions
+    public const string AlreadyReacted = "Message is already reacted.";
+    
     // Search
     public static string NoSearchResultsFor(string? search)
     {

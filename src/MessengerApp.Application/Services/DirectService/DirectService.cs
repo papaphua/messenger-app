@@ -5,6 +5,7 @@ using MessengerApp.Application.Dtos.Direct;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Entities.Joints;
+using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -274,6 +275,68 @@ public sealed class DirectService : IDirectService
         }
 
         await transaction.CommitAsync();
+
+        return new Result();
+    }
+
+    public async Task<Result> AddReactionAsync(string userId, string messageId, Reaction reaction)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var message = await _dbContext.Set<DirectMessage>()
+            .FirstOrDefaultAsync(message => message.Id == messageId &&
+                                            message.Chat.Members.Any(member => member.Id == user.Id));
+
+        if (message == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        var previousReaction = await _dbContext.Set<DirectReaction>()
+            .FirstOrDefaultAsync(r => r.MessageId == message.Id &&
+                                      r.UserId == user.Id);
+
+        var reactionToAdd = new DirectReaction
+        {
+            UserId = user.Id,
+            MessageId = message.Id,
+            ReactionNum = (int)reaction
+        };
+
+        try
+        {
+            if (previousReaction != null)
+            {
+                if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
+                {
+                    return new Result { Succeeded = false, Message = Results.AlreadyReacted };
+                }
+
+                _dbContext.Remove(previousReaction);
+            }
+
+
+            await _dbContext.Set<DirectReaction>()
+                .AddAsync(reactionToAdd);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+        }
 
         return new Result();
     }

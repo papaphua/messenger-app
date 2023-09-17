@@ -1,5 +1,6 @@
 ﻿using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Channel;
+using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 
 namespace MessengerApp.Application.Services.ChannelService;
@@ -15,4 +16,5 @@ public interface IChannelService
     Task<Result> CreateChannelMessageAsync(string userId, string channelId, CreateMessageDto createMessageDto);
     Task<Result<ChannelCommentsDto>> GetCommentsAsync(string userId, string messageId);
     Task<Result> CreateCommentAsync(string userId, string messageId, CreateCommentDto createCommentDto);
+    Task<Result> AddReactionAsync(string userId, string messageId, Reaction reaction);
 }

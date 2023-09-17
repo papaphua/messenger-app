@@ -1,4 +1,6 @@
-﻿@model MessengerApp.Application.Dtos.Channel.ChannelDto
+﻿@using MessengerApp.WebApp.Helpers
+@using MessengerApp.Domain.Enumerations
+@model MessengerApp.Application.Dtos.Channel.ChannelDto
 
 <script type="module" src="~/js/channelHub.js"></script>
 
@@ -88,6 +90,25 @@
                     </div>
                 </div>
                 <div class="card-footer">
+                    <div class="d-flex">
+                        @foreach (var reaction in Reactions.Dictionary)
+                        {
+                            var isReacted = message.Reactions!
+                                .Any(r => r.ReactionNum == reaction.Key &&
+                                          r.User.Id == Parser.ParseUserId(Context));
+
+                            var count = message.Reactions!
+                                .Count(r => r.ReactionNum == reaction.Key);
+
+                            <form method="post" asp-action="AddReaction">
+                                <div class="form-group">
+                                    <input type="hidden" name="messageId" value="@message.Id">
+                                    <input type="hidden" name="reaction" value="@((Reaction)reaction.Key)">
+                                    <button class="btn  @(isReacted ? "btn-primary" : "btn-secondary")" type="submit">@reaction.Value @count</button>
+                                </div>
+                            </form>
+                        }
+                    </div>
                     <form asp-action="Comments" asp-controller="Channel">
                         <input type="hidden" name="messageId" value="@message.Id">
                         <button class="btn btn-primary" type="submit">Comments</button>
