@@ -48,8 +48,10 @@ public static class Results
         return $"Email confirmation link sent to {email}.";
     }
 
-    // Ractions
+    // Reactions
     public const string AlreadyReacted = "Message is already reacted.";
+    public const string ReactionsNotAllowed = "Reactions are disabled in this chat.";
+    public const string CommentsNotAllowed = "Comments are disabled in this chat.";
     
     // Search
     public static string NoSearchResultsFor(string? search)

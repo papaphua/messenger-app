@@ -466,6 +466,13 @@ public sealed class ChannelService : IChannelService
                 Message = Results.ChatNotFound
             };
 
+        if (!channel.AllowComments)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.CommentsNotAllowed
+            };
+        
         var comment = new Comment
         {
             MessageId = message.Id,
@@ -513,6 +520,13 @@ public sealed class ChannelService : IChannelService
                 Message = Results.ChatNotFound
             };
 
+        if (!message.Chat.AllowReactions)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ReactionsNotAllowed
+            };
+        
         var previousReaction = await _dbContext.Set<ChannelReaction>()
             .FirstOrDefaultAsync(r => r.MessageId == message.Id &&
                                       r.UserId == user.Id);
