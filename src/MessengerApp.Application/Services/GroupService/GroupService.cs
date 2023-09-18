@@ -394,6 +394,7 @@ public sealed class GroupService : IGroupService
             };
 
         var message = await _dbContext.Set<GroupMessage>()
+            .Include(message => message.Chat)
             .FirstOrDefaultAsync(message => message.Id == messageId &&
                                             message.Chat.Members.Any(member => member.Id == user.Id));
 
@@ -404,6 +405,13 @@ public sealed class GroupService : IGroupService
                 Message = Results.ChatNotFound
             };
 
+        if (!message.Chat.AllowReactions)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ReactionsNotAllowed
+            };
+        
         var previousReaction = await _dbContext.Set<GroupReaction>()
             .FirstOrDefaultAsync(r => r.MessageId == message.Id &&
                                       r.UserId == user.Id);
