@@ -6,7 +6,7 @@ public static class Reactions
 {
     public static readonly Dictionary<int, string> Dictionary = new()
     {
-        {(int)Reaction.ThumbUp, "👍"},
-        {(int)Reaction.ThumbDown, "👎"}
+        { (int)Reaction.ThumbUp, "👍" },
+        { (int)Reaction.ThumbDown, "👎" }
     };
 }

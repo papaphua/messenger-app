@@ -9,8 +9,4 @@ public interface IAdministratedChat
     public byte[]? ChatPictureBytes { get; set; }
 
     public bool IsPrivate { get; set; }
-    
-    public bool AllowReactions { get; set; }
-    
-    public bool AllowComments { get; set; }
 }

@@ -33,6 +33,11 @@ public static class Results
     public const string ChatJoinError = "Could not join chat.";
     public const string ChatAlreadyMember = "Already member.";
 
+    // Reactions
+    public const string AlreadyReacted = "Message is already reacted.";
+    public const string ReactionsNotAllowed = "Reactions are disabled in this chat.";
+    public const string CommentsNotAllowed = "Comments are disabled in this chat.";
+
     public static string EmailAlreadyTaken(string email)
     {
         return $"Email address {email} already used.";
@@ -48,11 +53,6 @@ public static class Results
         return $"Email confirmation link sent to {email}.";
     }
 
-    // Reactions
-    public const string AlreadyReacted = "Message is already reacted.";
-    public const string ReactionsNotAllowed = "Reactions are disabled in this chat.";
-    public const string CommentsNotAllowed = "Comments are disabled in this chat.";
-    
     // Search
     public static string NoSearchResultsFor(string? search)
     {
