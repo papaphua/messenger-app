@@ -6,5 +6,5 @@ public sealed class GroupDto
 
     public GroupInfoDto GroupInfoDto { get; set; } = null!;
 
-    public IEnumerable<MessageDto> Messages { get; set; } = null!;
+    public IReadOnlyList<MessageDto> Messages { get; set; } = null!;
 }

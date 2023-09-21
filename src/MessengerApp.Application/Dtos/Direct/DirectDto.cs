@@ -10,5 +10,5 @@ public sealed class DirectDto
 
     public byte[]? ProfilePictureBytes { get; set; }
 
-    public IEnumerable<MessageDto> Messages { get; set; } = null!;
+    public IReadOnlyList<MessageDto> Messages { get; set; } = null!;
 }

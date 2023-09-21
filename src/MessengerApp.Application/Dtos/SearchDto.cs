@@ -6,7 +6,7 @@ namespace MessengerApp.Application.Dtos;
 
 public sealed class SearchDto
 {
-    public IEnumerable<UserPreviewDto>? Users { get; set; }
-    public IEnumerable<GroupPreviewDto>? Groups { get; set; }
-    public IEnumerable<ChannelPreviewDto>? Channels { get; set; }
+    public IReadOnlyList<UserPreviewDto>? Users { get; set; }
+    public IReadOnlyList<GroupPreviewDto>? Groups { get; set; }
+    public IReadOnlyList<ChannelPreviewDto>? Channels { get; set; }
 }
