@@ -57,8 +57,9 @@ public sealed class ChannelService : IChannelService
         var messageDtos = channel.Messages
             .Select(message => _mapper.Map<MessageDto>(message))
             .OrderBy(message => message.Timestamp)
-            .Reverse();
-        
+            .Reverse()
+            .ToList();
+
         var channelDto = _mapper.Map<ChannelDto>(channel);
         channelDto.Messages = messageDtos;
 
@@ -68,12 +69,12 @@ public sealed class ChannelService : IChannelService
         };
     }
 
-    public async Task<Result<IEnumerable<ChannelPreviewDto>>> GetChannelPreviewsAsync(string userId)
+    public async Task<Result<IReadOnlyList<ChannelPreviewDto>>> GetChannelPreviewsAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<IEnumerable<ChannelPreviewDto>>
+            return new Result<IReadOnlyList<ChannelPreviewDto>>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
@@ -85,7 +86,7 @@ public sealed class ChannelService : IChannelService
             .ToListAsync();
 
         if (channels.Count == 0)
-            return new Result<IEnumerable<ChannelPreviewDto>>
+            return new Result<IReadOnlyList<ChannelPreviewDto>>
             {
                 Message = Results.ChatsEmpty
             };
@@ -94,7 +95,7 @@ public sealed class ChannelService : IChannelService
             .Select(channel => _mapper.Map<ChannelPreviewDto>(channel))
             .ToList();
 
-        return new Result<IEnumerable<ChannelPreviewDto>>
+        return new Result<IReadOnlyList<ChannelPreviewDto>>
         {
             Data = channelPreviewDtos
         };
@@ -362,7 +363,74 @@ public sealed class ChannelService : IChannelService
         return new Result();
     }
 
-    public async Task<Result<ChannelCommentsDto>> GetCommentsAsync(string userId, string messageId)
+    public async Task<Result> CreateChannelReactionAsync(string userId, string messageId, Reaction reaction)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.UserNotFound
+            };
+
+        var message = await _dbContext.Set<ChannelMessage>()
+            .FirstOrDefaultAsync(message => message.Id == messageId &&
+                                            message.Chat.Members.Any(member => member.Id == user.Id));
+
+        if (message == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+
+        if (!message.Chat.AllowReactions)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ReactionsNotAllowed
+            };
+
+        var previousReaction = await _dbContext.Set<ChannelReaction>()
+            .FirstOrDefaultAsync(r => r.MessageId == message.Id &&
+                                      r.UserId == user.Id);
+
+        var reactionToAdd = new ChannelReaction
+        {
+            UserId = user.Id,
+            MessageId = message.Id,
+            ReactionNum = (int)reaction
+        };
+
+        try
+        {
+            if (previousReaction != null)
+            {
+                if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
+                    return new Result { Succeeded = false, Message = Results.AlreadyReacted };
+
+                _dbContext.Remove(previousReaction);
+            }
+
+
+            await _dbContext.Set<ChannelReaction>()
+                .AddAsync(reactionToAdd);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.ChatNotFound
+            };
+        }
+
+        return new Result();
+    }
+
+    public async Task<Result<ChannelCommentsDto>> GetChannelMessageCommentsAsync(string userId, string messageId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -400,8 +468,9 @@ public sealed class ChannelService : IChannelService
         var messageDto = _mapper.Map<MessageDto>(message);
         var commentDtos = message.Comments.Select(comment => _mapper.Map<CommentDto>(comment))
             .OrderBy(comment => comment.Timestamp)
-            .Reverse();
-        
+            .Reverse()
+            .ToList();
+
         return new Result<ChannelCommentsDto>
         {
             Data = new ChannelCommentsDto
@@ -412,7 +481,8 @@ public sealed class ChannelService : IChannelService
         };
     }
 
-    public async Task<Result> CreateCommentAsync(string userId, string messageId, CreateCommentDto createCommentDto)
+    public async Task<Result> CreateChannelMessageCommentAsync(string userId, string messageId,
+        CreateCommentDto createCommentDto)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -451,7 +521,7 @@ public sealed class ChannelService : IChannelService
                 Succeeded = false,
                 Message = Results.CommentsNotAllowed
             };
-        
+
         var comment = new Comment
         {
             MessageId = message.Id,
@@ -471,75 +541,6 @@ public sealed class ChannelService : IChannelService
             {
                 Succeeded = false,
                 Message = Results.MessageSendError
-            };
-        }
-
-        return new Result();
-    }
-    
-    public async Task<Result> AddReactionAsync(string userId, string messageId, Reaction reaction)
-    {
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-            return new Result
-            {
-                Succeeded = false,
-                Message = Results.UserNotFound
-            };
-
-        var message = await _dbContext.Set<ChannelMessage>()
-            .FirstOrDefaultAsync(message => message.Id == messageId &&
-                                            message.Chat.Members.Any(member => member.Id == user.Id));
-
-        if (message == null)
-            return new Result
-            {
-                Succeeded = false,
-                Message = Results.ChatNotFound
-            };
-
-        if (!message.Chat.AllowReactions)
-            return new Result
-            {
-                Succeeded = false,
-                Message = Results.ReactionsNotAllowed
-            };
-        
-        var previousReaction = await _dbContext.Set<ChannelReaction>()
-            .FirstOrDefaultAsync(r => r.MessageId == message.Id &&
-                                      r.UserId == user.Id);
-
-        var reactionToAdd = new ChannelReaction
-        {
-            UserId = user.Id,
-            MessageId = message.Id,
-            ReactionNum = (int)reaction
-        };
-
-        try
-        {
-            if (previousReaction != null)
-            {
-                if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                {
-                    return new Result { Succeeded = false, Message = Results.AlreadyReacted };
-                }
-
-                _dbContext.Remove(previousReaction);
-            }
-
-
-            await _dbContext.Set<ChannelReaction>()
-                .AddAsync(reactionToAdd);
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            return new Result
-            {
-                Succeeded = false,
-                Message = Results.ChatNotFound
             };
         }
 

@@ -59,7 +59,8 @@ public sealed class DirectService : IDirectService
         var messageDtos = direct.Messages
             .Select(message => _mapper.Map<MessageDto>(message))
             .OrderBy(message => message.Timestamp)
-            .Reverse();
+            .Reverse()
+            .ToList();
 
         var directDto = new DirectDto();
         _mapper.Map(conversator, directDto);
@@ -74,12 +75,12 @@ public sealed class DirectService : IDirectService
         };
     }
 
-    public async Task<Result<IEnumerable<DirectPreviewDto>>> GetDirectPreviewsAsync(string userId)
+    public async Task<Result<IReadOnlyList<DirectPreviewDto>>> GetDirectPreviewsAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<IEnumerable<DirectPreviewDto>>
+            return new Result<IReadOnlyList<DirectPreviewDto>>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
@@ -91,7 +92,7 @@ public sealed class DirectService : IDirectService
             .ToListAsync();
 
         if (directs.Count == 0)
-            return new Result<IEnumerable<DirectPreviewDto>>
+            return new Result<IReadOnlyList<DirectPreviewDto>>
             {
                 Message = Results.ChatsEmpty
             };
@@ -112,7 +113,7 @@ public sealed class DirectService : IDirectService
             };
         }).ToList();
 
-        return new Result<IEnumerable<DirectPreviewDto>>
+        return new Result<IReadOnlyList<DirectPreviewDto>>
         {
             Data = directPreviewDtos
         };
@@ -279,7 +280,7 @@ public sealed class DirectService : IDirectService
         return new Result();
     }
 
-    public async Task<Result> AddReactionAsync(string userId, string messageId, Reaction reaction)
+    public async Task<Result> CreateDirectReactionAsync(string userId, string messageId, Reaction reaction)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -317,9 +318,7 @@ public sealed class DirectService : IDirectService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                {
                     return new Result { Succeeded = false, Message = Results.AlreadyReacted };
-                }
 
                 _dbContext.Remove(previousReaction);
             }

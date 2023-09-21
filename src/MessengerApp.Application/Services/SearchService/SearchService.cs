@@ -22,7 +22,7 @@ public sealed class SearchService : ISearchService
         _mapper = mapper;
     }
 
-    public async Task<Result<SearchDto>> SearchAsync(string? search)
+    public async Task<Result<SearchDto>> SearchChatsAsync(string? search)
     {
         var users = await FindUsersByUsernameAsync(search);
         var groups = await FindGroupsByTitleAsync(search);

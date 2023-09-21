@@ -143,6 +143,6 @@ public sealed class GroupController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        await _groupService.AddReactionAsync(userId, messageId, reaction);
+        await _groupService.CreateGroupReactionAsync(userId, messageId, reaction);
     }
 }

@@ -5,5 +5,5 @@ namespace MessengerApp.Application.Services.SearchService;
 
 public interface ISearchService
 {
-    Task<Result<SearchDto>> SearchAsync(string? search);
+    Task<Result<SearchDto>> SearchChatsAsync(string? search);
 }
