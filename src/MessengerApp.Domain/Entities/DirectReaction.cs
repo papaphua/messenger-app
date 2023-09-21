@@ -1,4 +1,4 @@
-﻿using MessengerApp.Domain.Abstractions.Chat;
+﻿using MessengerApp.Domain.Abstractions.Entities;
 
 namespace MessengerApp.Domain.Entities;
 

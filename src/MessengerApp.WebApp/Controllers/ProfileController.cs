@@ -21,11 +21,12 @@ public sealed class ProfileController : Controller
 
         var result = await _profileService.GetProfileAsync(userId);
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Home");
-
-        var profile = result.Data!;
-
-        return View(profile);
+        if (result.Succeeded) return View(result.Data);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+        
+        return RedirectToAction("Index", "Home");
     }
 
     public async Task<IActionResult> UpdateProfileInfo(ProfileInfoDto profileInfoDto)
@@ -34,16 +35,15 @@ public sealed class ProfileController : Controller
 
         if (!ModelState.IsValid)
         {
-            var profile = (await _profileService.GetProfileAsync(userId)).Data!;
-
+            var profile = (await _profileService.GetProfileAsync(userId)).Data;
             return View("Index", profile);
         }
 
         var result = await _profileService.UpdateProfileInfoAsync(userId, profileInfoDto);
-
+        
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
-
+        
         return RedirectToAction("Index", "Profile");
     }
 
@@ -55,17 +55,16 @@ public sealed class ProfileController : Controller
         {
             ModelState.AddModelError("file", "Please select a valid image file.");
 
-            var profile = (await _profileService.GetProfileAsync(userId)).Data!;
-
+            var profile = (await _profileService.GetProfileAsync(userId)).Data;
             return View("Index", profile);
         }
 
-        var profilePicture = Request.Form.Files[0];
+        var file = Request.Form.Files[0];
 
         using var memoryStream = new MemoryStream();
-
-        await profilePicture.CopyToAsync(memoryStream);
+        await file.CopyToAsync(memoryStream);
         var profilePictureBytes = memoryStream.ToArray();
+        
         var result = await _profileService.UpdateProfilePictureAsync(userId, profilePictureBytes);
 
         TempData[Notifications.Message] = result.Message;
@@ -80,8 +79,7 @@ public sealed class ProfileController : Controller
 
         if (!ModelState.IsValid)
         {
-            var profile = (await _profileService.GetProfileAsync(userId)).Data!;
-
+            var profile = (await _profileService.GetProfileAsync(userId)).Data;
             return View("Index", profile);
         }
 
@@ -109,8 +107,8 @@ public sealed class ProfileController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var token = HttpContext.Request.Query["token"].First()!;
-
+        var token = HttpContext.Request.Query["token"].FirstOrDefault();
+        
         var result = await _profileService.ConfirmEmailAsync(userId, token);
 
         TempData[Notifications.Message] = result.Message;
@@ -123,6 +121,12 @@ public sealed class ProfileController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
+        if (!ModelState.IsValid)
+        {
+            var profile = (await _profileService.GetProfileAsync(userId)).Data;
+            return View("Index", profile);
+        }
+        
         var result = await _profileService.RequestEmailChangeAsync(userId, profileEmailDto);
 
         TempData[Notifications.Message] = result.Message;
@@ -135,7 +139,7 @@ public sealed class ProfileController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var token = HttpContext.Request.Query["token"].First()!;
+        var token = HttpContext.Request.Query["token"].FirstOrDefault();
 
         var result = await _profileService.ChangeEmailAsync(userId, token);
 

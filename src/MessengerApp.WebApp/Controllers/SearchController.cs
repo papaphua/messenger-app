@@ -1,35 +1,29 @@
 ﻿using MessengerApp.Application.Dtos;
-using MessengerApp.Application.Services.ChannelService;
-using MessengerApp.Application.Services.GroupService;
-using MessengerApp.Application.Services.UserService;
+using MessengerApp.Application.Services.SearchService;
+using MessengerApp.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessengerApp.WebApp.Controllers;
 
 public sealed class SearchController : Controller
 {
-    private readonly IChannelService _channelService;
-    private readonly IGroupService _groupService;
-    private readonly IUserService _userService;
+    private readonly ISearchService _searchService;
 
-    public SearchController(IUserService userService, IGroupService groupService, IChannelService channelService)
+    public SearchController(ISearchService searchService)
     {
-        _userService = userService;
-        _groupService = groupService;
-        _channelService = channelService;
+        _searchService = searchService;
     }
 
     public async Task<IActionResult> Index(string? search)
     {
-        var userResult = await _userService.FindUsersByUsernameAsync(search);
-        var groupResult = await _groupService.FindGroupsByTitleAsync(search);
-        var channelResult = await _channelService.FindChannelsByTitleAsync(search);
+        var result = await _searchService.SearchChatsAsync(search);
 
-        return View(new SearchDto
-        {
-            Users = userResult.Data!,
-            Groups = groupResult.Data!,
-            Channels = channelResult.Data!
-        });
+        if (result.Succeeded) return View(result.Data);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        return RedirectToAction("Index", "Home");
+
     }
 }

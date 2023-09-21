@@ -57,23 +57,24 @@ public sealed class GroupService : IGroupService
         var messageDtos = group.Messages
             .Select(message => _mapper.Map<MessageDto>(message))
             .OrderBy(message => message.Timestamp)
-            .Reverse();
-        
+            .Reverse()
+            .ToList();
+
         var groupDto = _mapper.Map<GroupDto>(group);
         groupDto.Messages = messageDtos;
-        
+
         return new Result<GroupDto>
         {
             Data = groupDto
         };
     }
 
-    public async Task<Result<IEnumerable<GroupPreviewDto>>> GetGroupPreviewsAsync(string userId)
+    public async Task<Result<IReadOnlyList<GroupPreviewDto>>> GetGroupPreviewsAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<IEnumerable<GroupPreviewDto>>
+            return new Result<IReadOnlyList<GroupPreviewDto>>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
@@ -85,7 +86,7 @@ public sealed class GroupService : IGroupService
             .ToListAsync();
 
         if (groups.Count == 0)
-            return new Result<IEnumerable<GroupPreviewDto>>
+            return new Result<IReadOnlyList<GroupPreviewDto>>
             {
                 Message = Results.ChatsEmpty
             };
@@ -94,7 +95,7 @@ public sealed class GroupService : IGroupService
             .Select(group => _mapper.Map<GroupPreviewDto>(group))
             .ToList();
 
-        return new Result<IEnumerable<GroupPreviewDto>>
+        return new Result<IReadOnlyList<GroupPreviewDto>>
         {
             Data = groupPreviewDtos
         };
@@ -142,27 +143,6 @@ public sealed class GroupService : IGroupService
         await transaction.CommitAsync();
 
         return await GetGroupAsync(user.Id, group.Id);
-    }
-
-    public async Task<Result<IEnumerable<GroupPreviewDto>>> FindGroupsByTitleAsync(string? search)
-    {
-        var groups = await _dbContext.Set<Group>()
-            .Where(group => EF.Functions.Like(group.Title, $"%{search}%")
-                            && !group.IsPrivate)
-            .ToListAsync();
-
-        if (groups.Count == 0)
-            return new Result<IEnumerable<GroupPreviewDto>>
-            {
-                Message = Results.NoSearchResultsFor(search)
-            };
-
-        var groupPreviewDtos = groups.Select(group => _mapper.Map<GroupPreviewDto>(group));
-
-        return new Result<IEnumerable<GroupPreviewDto>>
-        {
-            Data = groupPreviewDtos
-        };
     }
 
     public async Task<Result<GroupDto>> JoinGroupAsync(string userId, string groupId)
@@ -381,8 +361,8 @@ public sealed class GroupService : IGroupService
 
         return new Result();
     }
-    
-    public async Task<Result> AddReactionAsync(string userId, string messageId, Reaction reaction)
+
+    public async Task<Result> CreateGroupReactionAsync(string userId, string messageId, Reaction reaction)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -411,7 +391,7 @@ public sealed class GroupService : IGroupService
                 Succeeded = false,
                 Message = Results.ReactionsNotAllowed
             };
-        
+
         var previousReaction = await _dbContext.Set<GroupReaction>()
             .FirstOrDefaultAsync(r => r.MessageId == message.Id &&
                                       r.UserId == user.Id);
@@ -428,9 +408,7 @@ public sealed class GroupService : IGroupService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                {
                     return new Result { Succeeded = false, Message = Results.AlreadyReacted };
-                }
 
                 _dbContext.Remove(previousReaction);
             }
