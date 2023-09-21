@@ -2,6 +2,8 @@
 
 public static class Results
 {
+    public const string InvalidLink = "Invalid link.";
+    
     // User
     public const string UserNotFound = "User not found.";
 

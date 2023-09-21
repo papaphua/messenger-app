@@ -15,9 +15,9 @@ public interface IProfileService
 
     public Task<Result> RequestEmailConfirmationAsync(string userId);
 
-    public Task<Result> ConfirmEmailAsync(string userId, string token);
+    public Task<Result> ConfirmEmailAsync(string userId, string? token);
 
     public Task<Result> RequestEmailChangeAsync(string userId, ProfileEmailDto profileEmailDto);
 
-    public Task<Result> ChangeEmailAsync(string userId, string token);
+    public Task<Result> ChangeEmailAsync(string userId, string? token);
 }

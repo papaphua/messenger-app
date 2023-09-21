@@ -150,8 +150,15 @@ public sealed class ProfileService : IProfileService
         };
     }
 
-    public async Task<Result> ConfirmEmailAsync(string userId, string token)
+    public async Task<Result> ConfirmEmailAsync(string userId, string? token)
     {
+        if (token == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.InvalidLink
+            };
+        
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -167,7 +174,7 @@ public sealed class ProfileService : IProfileService
                 Succeeded = false,
                 Message = Results.EmailAlreadyConfirmed
             };
-
+        
         var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
 
         return new Result
@@ -228,8 +235,15 @@ public sealed class ProfileService : IProfileService
         };
     }
 
-    public async Task<Result> ChangeEmailAsync(string userId, string token)
+    public async Task<Result> ChangeEmailAsync(string userId, string? token)
     {
+        if (token == null)
+            return new Result
+            {
+                Succeeded = false,
+                Message = Results.InvalidLink
+            };
+        
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -238,14 +252,14 @@ public sealed class ProfileService : IProfileService
                 Succeeded = false,
                 Message = Results.UserNotFound
             };
-
+        
         if (user.RequestedEmail == null)
             return new Result
             {
                 Succeeded = false,
                 Message = Results.EmailChangeError
             };
-
+        
         var changeEmailResult = await _userManager.ChangeEmailAsync(user, user.RequestedEmail, token);
 
         return new Result
