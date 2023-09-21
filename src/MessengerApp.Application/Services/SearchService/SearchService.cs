@@ -31,6 +31,7 @@ public sealed class SearchService : ISearchService
         if (users.Count == 0 && groups.Count == 0 && channels.Count == 0)
             return new Result<SearchDto>
             {
+                Succeeded = false,
                 Message = Results.NoSearchResultsFor(search)
             };
 

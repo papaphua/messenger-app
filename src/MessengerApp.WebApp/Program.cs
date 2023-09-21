@@ -6,7 +6,7 @@ using MessengerApp.Application.Services.ChannelService;
 using MessengerApp.Application.Services.DirectService;
 using MessengerApp.Application.Services.GroupService;
 using MessengerApp.Application.Services.ProfileService;
-using MessengerApp.Application.Services.UserService;
+using MessengerApp.Application.Services.SearchService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Infrastructure.Data;
@@ -29,7 +29,7 @@ builder.Services.AddSignalR();
 builder.Services.Configure<EmailOptions>(configuration.GetSection(Sections.EmailOptions).Bind);
 
 // Application services
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IDirectService, DirectService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
