@@ -100,27 +100,6 @@ public sealed class ChannelService : IChannelService
         };
     }
 
-    public async Task<Result<IEnumerable<ChannelPreviewDto>>> FindChannelsByTitleAsync(string? search)
-    {
-        var channels = await _dbContext.Set<Channel>()
-            .Where(channel => EF.Functions.Like(channel.Title, $"%{search}%")
-                              && !channel.IsPrivate)
-            .ToListAsync();
-
-        if (channels.Count == 0)
-            return new Result<IEnumerable<ChannelPreviewDto>>
-            {
-                Message = Results.NoSearchResultsFor(search)
-            };
-
-        var channelPreviewDtos = channels.Select(channel => _mapper.Map<ChannelPreviewDto>(channel));
-
-        return new Result<IEnumerable<ChannelPreviewDto>>
-        {
-            Data = channelPreviewDtos
-        };
-    }
-
     public async Task<Result<ChannelDto>> CreateChannelAsync(string userId, ChannelInfoDto channelInfoDto)
     {
         var user = await _userManager.FindByIdAsync(userId);

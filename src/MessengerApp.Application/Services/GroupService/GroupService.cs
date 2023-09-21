@@ -144,27 +144,6 @@ public sealed class GroupService : IGroupService
         return await GetGroupAsync(user.Id, group.Id);
     }
 
-    public async Task<Result<IEnumerable<GroupPreviewDto>>> FindGroupsByTitleAsync(string? search)
-    {
-        var groups = await _dbContext.Set<Group>()
-            .Where(group => EF.Functions.Like(group.Title, $"%{search}%")
-                            && !group.IsPrivate)
-            .ToListAsync();
-
-        if (groups.Count == 0)
-            return new Result<IEnumerable<GroupPreviewDto>>
-            {
-                Message = Results.NoSearchResultsFor(search)
-            };
-
-        var groupPreviewDtos = groups.Select(group => _mapper.Map<GroupPreviewDto>(group));
-
-        return new Result<IEnumerable<GroupPreviewDto>>
-        {
-            Data = groupPreviewDtos
-        };
-    }
-
     public async Task<Result<GroupDto>> JoinGroupAsync(string userId, string groupId)
     {
         var user = await _userManager.FindByIdAsync(userId);
