@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IViewLocalizer ViewLocalizer
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -14,33 +16,33 @@
         <a class="navbar-brand" asp-controller="Home" asp-action="Index">MessengerApp</a>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" asp-controller="Profile" asp-action="Index">Profile</a>
+                <a class="nav-link" asp-controller="Profile" asp-action="Index">@ViewLocalizer["Profile"]</a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Chats
+                    @ViewLocalizer["Chats"]
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
-                        <a class="dropdown-item" asp-action="Index" asp-controller="Direct">Directs</a>
+                        <a class="dropdown-item" asp-action="Index" asp-controller="Direct">@ViewLocalizer["Directs"]</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" asp-action="Index" asp-controller="Group">Groups</a>
+                        <a class="dropdown-item" asp-action="Index" asp-controller="Group">@ViewLocalizer["Groups"]</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" asp-action="Index" asp-controller="Channel">Channels</a>
+                        <a class="dropdown-item" asp-action="Index" asp-controller="Channel">@ViewLocalizer["Channels"]</a>
                     </li>
                 </ul>
             </li>
         </ul>
         <form class="d-flex" method="post" asp-controller="Search" asp-action="Index">
-            <input name="search" class="form-control me-2" type="search" placeholder="Search users, groups or channels..." aria-label="Search">
-            <button class="btn btn-outline-light" type="submit">Search</button>
+            <input name="search" class="form-control me-2" type="search" placeholder="@ViewLocalizer["SearchPlaceHolder"]" aria-label="Search">
+            <button class="btn btn-outline-light" type="submit">@ViewLocalizer["Search"]</button>
         </form>
         @if (User.Identity!.IsAuthenticated)
         {
             <form asp-controller="Home" asp-action="LogOut" method="post">
-                <button class="btn btn-danger" type="submit">Log out</button>
+                <button class="btn btn-danger" type="submit">@ViewLocalizer["LogOut"]</button>
             </form>
         }
     </div>

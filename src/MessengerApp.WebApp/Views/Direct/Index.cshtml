@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<MessengerApp.Application.Dtos.Direct.DirectPreviewDto>?
 
+@inject IViewLocalizer ViewLocalizer
+
 @if (Model != null && Model.Count() != 0)
 {
     @foreach (var chat in Model)
@@ -24,7 +26,7 @@
                         <form method="post" asp-controller="Direct" asp-action="Chat">
                             <input type="hidden" name="directId" value="@chat.Id"/>
                             <button class="btn btn-success btn-block" type="submit">
-                                Chat
+                                @ViewLocalizer["Open"]
                             </button>
                         </form>
                     </div>
@@ -32,7 +34,7 @@
                         <form method="post" asp-controller="Direct" asp-action="RemoveDirect">
                             <input type="hidden" name="directId" value="@chat.Id"/>
                             <button class="btn btn-danger" type="submit">
-                                Remove
+                                @ViewLocalizer["Remove"]
                             </button>
                         </form>
                     </div>

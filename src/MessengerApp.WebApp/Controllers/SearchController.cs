@@ -1,5 +1,4 @@
-﻿using MessengerApp.Application.Dtos;
-using MessengerApp.Application.Services.SearchService;
+﻿using MessengerApp.Application.Services.SearchService;
 using MessengerApp.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +18,10 @@ public sealed class SearchController : Controller
         var result = await _searchService.SearchChatsAsync(search);
 
         if (result.Succeeded) return View(result.Data);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
         return RedirectToAction("Index", "Home");
-
     }
 }

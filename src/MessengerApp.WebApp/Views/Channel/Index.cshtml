@@ -1,7 +1,9 @@
 ﻿@model IEnumerable<MessengerApp.Application.Dtos.Channel.ChannelPreviewDto>?
 
+@inject IViewLocalizer ViewLocalizer
+
 <div class="row">
-    <a class="btn btn-primary" asp-action="New" asp-controller="Channel">New channel</a>
+    <a class="btn btn-primary" asp-action="New" asp-controller="Channel">@ViewLocalizer["NewChannel"]</a>
 </div>
 @if (Model != null && Model.Count() != 0)
 {
@@ -27,7 +29,7 @@
                         <form method="post" asp-controller="Channel" asp-action="Chat">
                             <input type="hidden" name="channelId" value="@chat.Id"/>
                             <button class="btn btn-success btn-block" type="submit">
-                                Open
+                                @ViewLocalizer["Open"]
                             </button>
                         </form>
                     </div>
@@ -35,7 +37,7 @@
                         <form method="post" asp-controller="Channel" asp-action="LeaveChannel">
                             <input type="hidden" name="channelId" value="@chat.Id"/>
                             <button class="btn btn-danger" type="submit">
-                                Leave
+                                @ViewLocalizer["Leave"]
                             </button>
                         </form>
                     </div>

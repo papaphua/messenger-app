@@ -116,6 +116,6 @@ public sealed class DirectController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-       await _directService.CreateDirectReactionAsync(userId, messageId, reaction);
+        await _directService.CreateDirectReactionAsync(userId, messageId, reaction);
     }
 }

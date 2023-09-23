@@ -2,7 +2,6 @@
 using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Services.GroupService;
 using MessengerApp.Application.Services.ProfileService;
-using MessengerApp.Domain.Abstractions.Chat;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
@@ -138,7 +137,7 @@ public sealed class GroupController : Controller
 
         return RedirectToAction("Chat");
     }
-    
+
     public async Task AddReaction(string messageId, Reaction reaction)
     {
         var userId = Parser.ParseUserId(HttpContext);
