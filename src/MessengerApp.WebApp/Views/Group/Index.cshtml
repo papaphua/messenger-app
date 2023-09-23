@@ -1,7 +1,9 @@
 ﻿@model IEnumerable<MessengerApp.Application.Dtos.Group.GroupPreviewDto>?
 
+@inject IViewLocalizer ViewLocalizer
+
 <div class="row">
-    <a class="btn btn-primary" asp-action="New" asp-controller="Group">New group</a>
+    <a class="btn btn-primary" asp-action="New" asp-controller="Group">@ViewLocalizer["NewGroup"]</a>
 </div>
 @if (Model != null && Model.Count() != 0)
 {
@@ -27,7 +29,7 @@
                         <form method="post" asp-controller="Group" asp-action="Chat">
                             <input type="hidden" name="groupId" value="@chat.Id"/>
                             <button class="btn btn-success btn-block" type="submit">
-                                Open
+                                @ViewLocalizer["Open"]
                             </button>
                         </form>
                     </div>
@@ -35,7 +37,7 @@
                         <form method="post" asp-controller="Group" asp-action="LeaveGroup">
                             <input type="hidden" name="groupId" value="@chat.Id"/>
                             <button class="btn btn-danger" type="submit">
-                                Leave
+                                @ViewLocalizer["Leave"]
                             </button>
                         </form>
                     </div>

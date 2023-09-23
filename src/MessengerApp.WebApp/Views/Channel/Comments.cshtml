@@ -1,20 +1,22 @@
 ﻿@model MessengerApp.Application.Dtos.Channel.ChannelCommentsDto
 
+@inject IViewLocalizer ViewLocalizer
+
 <div class="card mt-3">
     <div class="card-body">
         <div class="row">
             <div class="col">
-                <h5 class="card-title">Message</h5>
+                <h5 class="card-title">@ViewLocalizer["Message"]</h5>
                 <p class="card-text">
-                    <strong>Sender:</strong> @Model.Message.Sender.UserName
+                    <strong>@ViewLocalizer["Sender"]:</strong> @Model.Message.Sender.UserName
                 </p>
                 <p class="card-text">
-                    <strong>Content:</strong> @Model.Message.Content
+                    <strong>@ViewLocalizer["Content"]:</strong> @Model.Message.Content
                 </p>
                 <div class="card-text">
                     @if (Model.Message.Attachments != null && Model.Message.Attachments.Any())
                     {
-                        <strong>Attachments:</strong>
+                        <strong>@ViewLocalizer["Attachments"]:</strong>
                         <div class="attachments">
                             @foreach (var attachment in Model.Message.Attachments)
                             {
@@ -24,7 +26,7 @@
                     }
                 </div>
                 <p class="card-text">
-                    <strong>Timestamp:</strong> @Model.Message.Timestamp
+                    <strong>@ViewLocalizer["Timestamp"]:</strong> @Model.Message.Timestamp
                 </p>
             </div>
             <div class="col">
@@ -44,13 +46,13 @@
 <form id="messageForm" method="post" asp-controller="Channel" asp-action="CreateComment">
     <div class="form-group">
         <input type="hidden" name="messageId" value="@Model.Message.Id">
-        <label for="content">Comment:</label>
+        <label for="content">@ViewLocalizer["Comment"]:</label>
         <textarea class="form-control" id="content" name="CreateCommentDto.Content" rows="3"></textarea>
     </div>
-    <button id="sendMessageButton" type="submit" class="btn btn-primary">Send comment</button>
+    <button id="sendMessageButton" type="submit" class="btn btn-primary">@ViewLocalizer["Send"]</button>
 </form>
 
-<h2>Comments</h2>
+<h2>@ViewLocalizer["Comms"]</h2>
 <div id="messagesContainer">
     @if (Model.Comments.Any())
     {
@@ -60,15 +62,15 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h5 class="card-title">Comment</h5>
+                            <h5 class="card-title">@ViewLocalizer["Comment"]</h5>
                             <p class="card-text">
-                                <strong>Sender:</strong> @comment.Sender.UserName
+                                <strong>@ViewLocalizer["Sender"]:</strong> @comment.Sender.UserName
                             </p>
                             <p class="card-text">
-                                <strong>Content:</strong> @comment.Content
+                                <strong>@ViewLocalizer["Content"]:</strong> @comment.Content
                             </p>
                             <p class="card-text">
-                                <strong>Timestamp:</strong> @comment.Timestamp
+                                <strong>@ViewLocalizer["Timestamp"]:</strong> @comment.Timestamp
                             </p>
                         </div>
                         <div class="col">

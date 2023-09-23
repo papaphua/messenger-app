@@ -1,7 +1,9 @@
-﻿@if (ViewContext.ModelState.IsValid == false)
+﻿@inject IViewLocalizer ViewLocalizer
+
+@if (ViewContext.ModelState.IsValid == false)
 {
     <div class="alert alert-danger">
-        <strong>Error</strong>
+        <strong>@ViewLocalizer["Error"]</strong>
         <div asp-validation-summary="All" class="danger"></div>
     </div>
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using DotNetEnv;
 using MessengerApp.Application;
@@ -15,20 +16,32 @@ using MessengerApp.Infrastructure.Services;
 using MessengerApp.WebApp.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+
+const string defaultCulture = "en";
+
+var supportedCultures = new[]
+{
+    new CultureInfo(defaultCulture),
+    new CultureInfo("uk")
+};
 
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
+
 builder.Services.AddSignalR();
 
-// Options
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 builder.Services.Configure<EmailOptions>(configuration.GetSection(Sections.EmailOptions).Bind);
 
-// Application services
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IDirectService, DirectService>();
@@ -87,6 +100,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(defaultCulture),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

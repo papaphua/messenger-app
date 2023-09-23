@@ -67,7 +67,7 @@ public sealed class ChannelController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _channelService.GetChannelMessageCommentsAsync(userId, messageId);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
@@ -75,7 +75,7 @@ public sealed class ChannelController : Controller
 
         return View(result.Data);
     }
-    
+
     public async Task<IActionResult> CreateChannel(ChannelInfoDto channelInfoDto)
     {
         var userId = Parser.ParseUserId(HttpContext);
@@ -157,15 +157,15 @@ public sealed class ChannelController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _channelService.CreateChannelMessageCommentAsync(userId, messageId, createCommentDto);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
         var commentResult = await _channelService.GetChannelMessageCommentsAsync(userId, messageId);
-        
+
         return View("Comments", commentResult.Data);
     }
-    
+
     public async Task AddReaction(string messageId, Reaction reaction)
     {
         var userId = Parser.ParseUserId(HttpContext);

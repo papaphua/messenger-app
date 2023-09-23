@@ -1,6 +1,8 @@
-﻿@using MessengerApp.Domain.Enumerations
-@using MessengerApp.WebApp.Helpers
+﻿@using MessengerApp.WebApp.Helpers
+@using MessengerApp.Domain.Enumerations
 @model MessengerApp.Application.Dtos.Direct.DirectDto
+
+@inject IViewLocalizer ViewLocalizer
 
 <script type="module" src="~/js/directHub.js"></script>
 
@@ -11,18 +13,18 @@
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <h5 class="card-title">Profile Information</h5>
+                    <h5 class="card-title">@ViewLocalizer["Profile"]</h5>
                     <p class="card-text">
-                        <strong>Username:</strong> @Model.ProfileInfoDto.UserName
+                        <strong>@ViewLocalizer["Username"]:</strong> @Model.ProfileInfoDto.UserName
                     </p>
                     <p class="card-text">
-                        <strong>First Name:</strong> @Model.ProfileInfoDto.FirstName
+                        <strong>@ViewLocalizer["FName"]:</strong> @Model.ProfileInfoDto.FirstName
                     </p>
                     <p class="card-text">
-                        <strong>Last Name:</strong> @Model.ProfileInfoDto.LastName
+                        <strong>@ViewLocalizer["LName"]:</strong> @Model.ProfileInfoDto.LastName
                     </p>
                     <p class="card-text">
-                        <strong>Biography:</strong> @Model.ProfileInfoDto.Biography
+                        <strong>@ViewLocalizer["Bio"]:</strong> @Model.ProfileInfoDto.Biography
                     </p>
                 </div>
                 <div class="col">
@@ -42,17 +44,17 @@
     <form enctype="multipart/form-data" id="messageForm" method="post" asp-controller="Direct" asp-action="CreateDirectMessage">
         <div class="form-group">
             <input type="hidden" name="directId" value="@Model.Id">
-            <label for="content">Message:</label>
+            <label for="content">@ViewLocalizer["Message"]:</label>
             <textarea class="form-control" id="content" name="CreateMessageDto.Content" rows="3"></textarea>
         </div>
         <div class="form-group">
             <label for="attachmentInput"></label>
             <input id="attachmentInput" class="form-control" multiple="multiple" type="file" name="file"/>
         </div>
-        <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
+        <button id="sendMessageButton" type="submit" class="btn btn-primary">@ViewLocalizer["Send"]</button>
     </form>
 
-    <h2>Messages</h2>
+    <h2>@ViewLocalizer["Messages"]</h2>
     <div id="messagesContainer">
         @foreach (var message in Model.Messages)
         {
@@ -60,17 +62,17 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h5 class="card-title">Message</h5>
+                            <h5 class="card-title">@ViewLocalizer["Message"]</h5>
                             <p class="card-text">
-                                <strong>Sender:</strong> @message.Sender.UserName
+                                <strong>@ViewLocalizer["Sender"]:</strong> @message.Sender.UserName
                             </p>
                             <p class="card-text">
-                                <strong>Content:</strong> @message.Content
+                                <strong>@ViewLocalizer["Content"]:</strong> @message.Content
                             </p>
                             <div class="card-text">
                                 @if (message.Attachments != null && message.Attachments.Any())
                                 {
-                                    <strong>Attachments:</strong>
+                                    <strong>@ViewLocalizer["Attachments"]:</strong>
                                     <div class="attachments">
                                         @foreach (var attachment in message.Attachments)
                                         {
@@ -80,7 +82,7 @@
                                 }
                             </div>
                             <p class="card-text">
-                                <strong>Timestamp:</strong> @message.Timestamp
+                                <strong>@ViewLocalizer["Timestamp"]:</strong> @message.Timestamp
                             </p>
                         </div>
                         <div class="col">

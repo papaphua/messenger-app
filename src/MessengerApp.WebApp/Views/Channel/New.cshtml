@@ -1,9 +1,11 @@
 ﻿@model MessengerApp.Application.Dtos.Channel.ChannelInfoDto
 
+@inject IViewLocalizer ViewLocalizer
+
 <div class="row-6">
     <div class="col-6">
         <div class="card">
-            <div class="card-header">New channel</div>
+            <div class="card-header">@ViewLocalizer["NewChannel"]</div>
             <form method="post" enctype="multipart/form-data" asp-action="CreateChannel">
                 <div class="card-body">
                     <div class="form-group">
@@ -20,7 +22,7 @@
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-around justify-content-end">
-                    <button class="btn btn-primary" type="submit">Create</button>
+                    <button class="btn btn-primary" type="submit">@ViewLocalizer["Create"]</button>
                 </div>
             </form>
         </div>

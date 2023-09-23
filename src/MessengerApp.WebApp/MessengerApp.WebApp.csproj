@@ -18,4 +18,155 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\Views\Shared\_Layout.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>_Layout.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Shared\_ValidationSummary.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>_ValidationSummary.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Search\Index.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Index.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Profile\Index.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Index.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Profile\ConfirmEmail.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ConfirmEmail.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Profile\ChangeEmail.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ChangeEmail.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Profile\_UserEmailForm.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>_UserEmailForm.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Direct\Chat.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Chat.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Direct\Index.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Index.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Group\New.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>New.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Group\Index.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Index.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Group\Chat.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Chat.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Channel\New.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>New.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Channel\Index.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Index.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Channel\Chat.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Chat.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Channel\Comments.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Comments.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\Views\Shared\_Layout.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>_Layout.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Shared\_ValidationSummary.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>_ValidationSummary.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Search\Index.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Index.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Profile\Index.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Index.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Profile\ConfirmEmail.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ConfirmEmail.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Profile\ChangeEmail.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ChangeEmail.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Profile\_UserEmailForm.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>_UserEmailForm.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Direct\Chat.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Chat.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Direct\Index.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Index.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Group\New.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>New.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Group\Index.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Index.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Group\Chat.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Chat.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Channel\New.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>New.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Channel\Index.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Index.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Channel\Chat.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Chat.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Channel\Comments.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Comments.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+    
 </Project>

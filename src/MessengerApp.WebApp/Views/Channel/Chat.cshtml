@@ -2,6 +2,8 @@
 @using MessengerApp.Domain.Enumerations
 @model MessengerApp.Application.Dtos.Channel.ChannelDto
 
+@inject IViewLocalizer ViewLocalizer
+
 <script type="module" src="~/js/channelHub.js"></script>
 
 <div id="userData" data-username="@ViewBag.Username" data-profilepicture="@ViewBag.ProfilePictureBytes" data-channelId="@Model.Id"></div>
@@ -11,12 +13,12 @@
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <h5 class="card-title">Channel Information</h5>
+                    <h5 class="card-title">@ViewLocalizer["Channel"]</h5>
                     <p class="card-text">
-                        <strong>Title:</strong> @Model.ChannelInfoDto.Title
+                        <strong>@ViewLocalizer["Title"]:</strong> @Model.ChannelInfoDto.Title
                     </p>
                     <p class="card-text">
-                        <strong>Description:</strong> @Model.ChannelInfoDto.Description
+                        <strong>@ViewLocalizer["Description"]:</strong> @Model.ChannelInfoDto.Description
                     </p>
                 </div>
                 <div class="col">
@@ -36,17 +38,17 @@
     <form enctype="multipart/form-data" id="messageForm" method="post" asp-controller="Channel" asp-action="CreateChannelMessage">
         <div class="form-group">
             <input type="hidden" name="channelId" value="@Model.Id">
-            <label for="content">Message:</label>
+            <label for="content">@ViewLocalizer["Message"]:</label>
             <textarea class="form-control" id="content" name="CreateMessageDto.Content" rows="3"></textarea>
         </div>
         <div class="form-group">
             <label for="attachmentInput"></label>
             <input id="attachmentInput" class="form-control" multiple="multiple" type="file" name="file"/>
         </div>
-        <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
+        <button id="sendMessageButton" type="submit" class="btn btn-primary">@ViewLocalizer["Send"]</button>
     </form>
 
-    <h2>Messages</h2>
+    <h2>@ViewLocalizer["Messages"]</h2>
     <div id="messagesContainer">
         @foreach (var message in Model.Messages)
         {
@@ -54,17 +56,17 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h5 class="card-title">Message</h5>
+                            <h5 class="card-title">@ViewLocalizer["Message"]</h5>
                             <p class="card-text">
-                                <strong>Sender:</strong> @message.Sender.UserName
+                                <strong>@ViewLocalizer["Sender"]:</strong> @message.Sender.UserName
                             </p>
                             <p class="card-text">
-                                <strong>Content:</strong> @message.Content
+                                <strong>@ViewLocalizer["Content"]:</strong> @message.Content
                             </p>
                             <div class="card-text">
                                 @if (message.Attachments != null && message.Attachments.Any())
                                 {
-                                    <strong>Attachments:</strong>
+                                    <strong>@ViewLocalizer["Attachments"]:</strong>
                                     <div class="attachments">
                                         @foreach (var attachment in message.Attachments)
                                         {
@@ -74,7 +76,7 @@
                                 }
                             </div>
                             <p class="card-text">
-                                <strong>Timestamp:</strong> @message.Timestamp
+                                <strong>@ViewLocalizer["Timestamp"]:</strong> @message.Timestamp
                             </p>
                         </div>
                         <div class="col">
@@ -111,7 +113,7 @@
                     </div>
                     <form asp-action="Comments" asp-controller="Channel">
                         <input type="hidden" name="messageId" value="@message.Id">
-                        <button class="btn btn-primary" type="submit">Comments</button>
+                        <button class="btn btn-primary" type="submit">@ViewLocalizer["Comments"]</button>
                     </form>
                 </div>
             </div>
