@@ -18,4 +18,36 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Resources\Views\Channel\Chat.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Channel\Comments.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Channel\Index.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Channel\New.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Direct\Chat.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Direct\Index.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Group\Chat.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Group\Index.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Group\New.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Home\Index.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Profile\ChangeEmail.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Profile\ConfirmEmail.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Profile\Index.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Profile\_UserEmailForm.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Profile\_UserPasswordForm.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Profile\_UserProfileForm.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Search\Index.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Shared\_Layout.cshtml" />
+      <AdditionalFiles Include="Resources\Views\Shared\_ValidationSummary.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Resources\Views\Channel\" />
+      <Folder Include="Resources\Views\Direct\" />
+      <Folder Include="Resources\Views\Group\" />
+      <Folder Include="Resources\Views\Home\" />
+      <Folder Include="Resources\Views\Profile\" />
+      <Folder Include="Resources\Views\Search\" />
+      <Folder Include="Resources\Views\Shared\" />
+    </ItemGroup>
 </Project>
