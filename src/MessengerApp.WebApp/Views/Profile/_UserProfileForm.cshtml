@@ -2,17 +2,17 @@
 
 <div class="form-group">
     <label asp-for="UserName"></label>
-    <input class="form-control" placeholder="Username" asp-for="UserName" autofocus>
+    <input class="form-control" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.UserName)]!.DisplayName" asp-for="UserName" autofocus>
 </div>
 <div class="form-group">
     <label asp-for="FirstName"></label>
-    <input class="form-control" placeholder="FirstName" asp-for="FirstName" autofocus>
+    <input class="form-control" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.FirstName)]!.DisplayName" asp-for="FirstName" autofocus>
 </div>
 <div class="form-group">
     <label asp-for="LastName"></label>
-    <input class="form-control" placeholder="LastName" asp-for="LastName" autofocus>
+    <input class="form-control" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.LastName)]!.DisplayName" asp-for="LastName" autofocus>
 </div>
 <div class="form-group">
     <label asp-for="Biography"></label>
-    <input class="form-control" placeholder="Biography" asp-for="Biography" autofocus>
+    <input class="form-control" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.Biography)]!.DisplayName" asp-for="Biography" autofocus>
 </div>

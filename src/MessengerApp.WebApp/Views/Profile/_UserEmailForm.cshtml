@@ -13,5 +13,5 @@
             <span style="color: red">@ViewLocalizer["EmailNotConfirmed"]</span>
         }
     </label>
-    <input class="form-control" placeholder="Email" asp-for="Email" autofocus>
+    <input class="form-control" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.Email)]!.DisplayName" asp-for="Email" autofocus>
 </div>
