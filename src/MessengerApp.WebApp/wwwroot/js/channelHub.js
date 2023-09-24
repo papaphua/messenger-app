@@ -1,5 +1,5 @@
 ﻿let connection = new signalR.HubConnectionBuilder()
-    .withUrl("/directHub")
+    .withUrl("/channelHub")
     .build();
 
 const userDataElement = document.getElementById("userData");
