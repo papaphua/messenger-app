@@ -111,10 +111,9 @@
                             </form>
                         }
                     </div>
-                    <form asp-action="Comments" asp-controller="Channel">
-                        <input type="hidden" name="messageId" value="@message.Id">
-                        <button class="btn btn-primary" type="submit">@ViewLocalizer["Comments"]</button>
-                    </form>
+                    <a class="btn btn-primary" asp-action="Comments" asp-route-messageId="@message.Id">
+                        @ViewLocalizer["Comments"]
+                    </a>
                 </div>
             </div>
         }

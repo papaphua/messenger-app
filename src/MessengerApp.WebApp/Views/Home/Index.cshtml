@@ -1,6 +1,33 @@
-﻿@{
+﻿@inject IViewLocalizer ViewLocalizer
+
+@{
     ViewData["Title"] = "Home";
 }
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var currentCulture = '@ViewBag.CurrentCulture';
+
+        var selectElement = document.getElementById('culture');
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value === currentCulture) {
+                selectElement.options[i].selected = true;
+                break;
+            }
+        }
+    });
+</script>
+
+<form asp-action="ChangeCulture" class="language-selection-form">
+    <div class="form-group">
+        <label for="culture" class="language-label">@ViewLocalizer["Select"]:</label>
+        <select name="culture" id="culture" class="form-control language-select">
+            <option id="en" value="en">@ViewLocalizer["English"]</option>
+            <option id="uk" value="uk">@ViewLocalizer["Ukrainian"]</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary language-submit-button">@ViewLocalizer["Change"]</button>
+</form>
 
 @if (User.Identity!.IsAuthenticated)
 {

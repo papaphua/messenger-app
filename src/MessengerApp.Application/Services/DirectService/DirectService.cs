@@ -280,12 +280,12 @@ public sealed class DirectService : IDirectService
         return new Result();
     }
 
-    public async Task<Result> CreateDirectReactionAsync(string userId, string messageId, Reaction reaction)
+    public async Task<Result<string>> CreateDirectReactionAsync(string userId, string messageId, Reaction reaction)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
@@ -296,7 +296,7 @@ public sealed class DirectService : IDirectService
                                             message.Chat.Members.Any(member => member.Id == user.Id));
 
         if (message == null)
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
@@ -318,7 +318,7 @@ public sealed class DirectService : IDirectService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                    return new Result { Succeeded = false, Message = Results.AlreadyReacted };
+                    return new Result<string> { Succeeded = false, Message = Results.AlreadyReacted };
 
                 _dbContext.Remove(previousReaction);
             }
@@ -330,13 +330,13 @@ public sealed class DirectService : IDirectService
         }
         catch (Exception)
         {
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
             };
         }
 
-        return new Result();
+        return new Result<string> { Data = message.ChatId };
     }
 }

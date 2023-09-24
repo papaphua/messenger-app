@@ -20,12 +20,12 @@ public sealed class ProfileController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _profileService.GetProfileAsync(userId);
-
+        
         if (result.Succeeded) return View(result.Data);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
-
+        
         return RedirectToAction("Index", "Home");
     }
 
@@ -44,7 +44,7 @@ public sealed class ProfileController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Index", "Profile");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> UpdateProfilePicture()
@@ -59,18 +59,14 @@ public sealed class ProfileController : Controller
             return View("Index", profile);
         }
 
-        var file = Request.Form.Files[0];
-
-        using var memoryStream = new MemoryStream();
-        await file.CopyToAsync(memoryStream);
-        var profilePictureBytes = memoryStream.ToArray();
+        var profilePictureBytes = await Parser.GetAttachmentAsync(Request.Form.Files);
 
         var result = await _profileService.UpdateProfilePictureAsync(userId, profilePictureBytes);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Index", "Profile");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> ChangePassword(PasswordDto passwordDto)
@@ -88,7 +84,7 @@ public sealed class ProfileController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Index", "Profile");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> RequestEmailConfirmation()
@@ -100,7 +96,7 @@ public sealed class ProfileController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Index", "Profile");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> ConfirmEmail()
@@ -114,7 +110,7 @@ public sealed class ProfileController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Index", "Profile");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> RequestEmailChange(ProfileEmailDto profileEmailDto)
@@ -132,7 +128,7 @@ public sealed class ProfileController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Index", "Profile");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> ChangeEmail()
@@ -146,6 +142,6 @@ public sealed class ProfileController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Index", "Profile");
+        return RedirectToAction("Index");
     }
 }

@@ -362,12 +362,12 @@ public sealed class GroupService : IGroupService
         return new Result();
     }
 
-    public async Task<Result> CreateGroupReactionAsync(string userId, string messageId, Reaction reaction)
+    public async Task<Result<string>> CreateGroupReactionAsync(string userId, string messageId, Reaction reaction)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
@@ -379,14 +379,14 @@ public sealed class GroupService : IGroupService
                                             message.Chat.Members.Any(member => member.Id == user.Id));
 
         if (message == null)
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
             };
 
         if (!message.Chat.AllowReactions)
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.ReactionsNotAllowed
@@ -408,7 +408,7 @@ public sealed class GroupService : IGroupService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                    return new Result { Succeeded = false, Message = Results.AlreadyReacted };
+                    return new Result<string> { Succeeded = false, Message = Results.AlreadyReacted };
 
                 _dbContext.Remove(previousReaction);
             }
@@ -420,13 +420,13 @@ public sealed class GroupService : IGroupService
         }
         catch (Exception)
         {
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
             };
         }
 
-        return new Result();
+        return new Result<string> { Data = message.ChatId };
     }
 }

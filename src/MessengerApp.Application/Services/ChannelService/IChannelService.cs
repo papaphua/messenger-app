@@ -13,7 +13,7 @@ public interface IChannelService
     Task<Result<ChannelDto>> JoinChannelAsync(string userId, string channelId);
     Task<Result> LeaveChannelAsync(string userId, string channelId);
     Task<Result> CreateChannelMessageAsync(string userId, string channelId, CreateMessageDto createMessageDto);
-    Task<Result> CreateChannelReactionAsync(string userId, string messageId, Reaction reaction);
+    Task<Result<string>> CreateChannelReactionAsync(string userId, string messageId, Reaction reaction);
     Task<Result<ChannelCommentsDto>> GetChannelMessageCommentsAsync(string userId, string messageId);
     Task<Result> CreateChannelMessageCommentAsync(string userId, string messageId, CreateCommentDto createCommentDto);
 }

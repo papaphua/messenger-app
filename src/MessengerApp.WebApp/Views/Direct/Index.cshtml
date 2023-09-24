@@ -23,20 +23,14 @@
                 </div>
                 <div class="card-footer d-flex">
                     <div class="d-flex justify-content-start w-100">
-                        <form method="post" asp-controller="Direct" asp-action="Chat">
-                            <input type="hidden" name="directId" value="@chat.Id"/>
-                            <button class="btn btn-success btn-block" type="submit">
-                                @ViewLocalizer["Open"]
-                            </button>
-                        </form>
+                        <a class="btn btn-success btn-block" asp-action="Chat" asp-route-directId="@chat.Id">
+                            @ViewLocalizer["Open"]
+                        </a>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <form method="post" asp-controller="Direct" asp-action="RemoveDirect">
-                            <input type="hidden" name="directId" value="@chat.Id"/>
-                            <button class="btn btn-danger" type="submit">
-                                @ViewLocalizer["Remove"]
-                            </button>
-                        </form>
+                        <a class="btn btn-danger" asp-action="RemoveDirect" asp-route-directId="@chat.Id">
+                            @ViewLocalizer["Remove"]
+                        </a>
                     </div>
                 </div>
             </div>
