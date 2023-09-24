@@ -31,4 +31,86 @@
     </ItemGroup>
 
 
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\Dtos\Profile\PasswordDto.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>PasswordDto.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Dtos\Profile\ProfileEmailDto.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ProfileEmailDto.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Dtos\Profile\ProfileInfoDto.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ProfileInfoDto.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Dtos\User\UserPreviewDto.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>UserPreviewDto.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Dtos\Group\GroupInfoDto.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>GroupInfoDto.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Dtos\Channel\ChannelInfoDto.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ChannelInfoDto.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Dtos\CreateCommentDto.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>CreateCommentDto.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Dtos\CreateMessageDto.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>CreateMessageDto.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+
+
+
+    <ItemGroup>
+      <Compile Update="Resources\Dtos\Profile\PasswordDto.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>PasswordDto.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Dtos\Profile\ProfileEmailDto.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ProfileEmailDto.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Dtos\Profile\ProfileInfoDto.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ProfileInfoDto.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Dtos\User\UserPreviewDto.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UserPreviewDto.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Dtos\Group\GroupInfoDto.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>GroupInfoDto.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Dtos\Channel\ChannelInfoDto.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ChannelInfoDto.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Dtos\CreateCommentDto.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CreateCommentDto.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Dtos\CreateMessageDto.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CreateMessageDto.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+
 </Project>

@@ -1,20 +1,21 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Localization;
 
 namespace MessengerApp.Application.Dtos.Profile;
 
 public sealed class PasswordDto
 {
-    [Required]
-    [DisplayName("Current password")]
+    [Required(ErrorMessage = "CurrentPasswordRequired")]
+    [DisplayName("CurrentPassword")]
     public string CurrentPassword { get; set; } = string.Empty;
 
-    [Required]
-    [DisplayName("New password")]
+    [Required(ErrorMessage = "NewPasswordRequired")]
+    [DisplayName("NewPassword")]
     public string NewPassword { get; set; } = string.Empty;
 
-    [Required]
-    [DisplayName("Confirm new password")]
-    [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match.")]
+    [Required(ErrorMessage = "ConfirmPasswordRequired")]
+    [DisplayName("ConfirmPassword")]
+    [Compare(nameof(NewPassword), ErrorMessage = "PasswordNotMatch")]
     public string ConfirmNewPassword { get; set; } = string.Empty;
 }
