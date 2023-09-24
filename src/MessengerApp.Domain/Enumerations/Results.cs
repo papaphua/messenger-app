@@ -28,5 +28,5 @@ public enum Results
     EmailAlreadyTaken,
     EmailChangeRequestSentTo,
     EmailConfirmationRequestSentTo,
-    NoSearchResultsFor,
+    NoSearchResultsFor
 }

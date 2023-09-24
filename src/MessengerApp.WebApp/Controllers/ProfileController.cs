@@ -20,12 +20,12 @@ public sealed class ProfileController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _profileService.GetProfileAsync(userId);
-        
+
         if (result.Succeeded) return View(result.Data);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
-        
+
         return RedirectToAction("Index", "Home");
     }
 

@@ -62,7 +62,8 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = updateResult.Succeeded,
-            Message = Result.IdentityResultToString(updateResult) ?? Localizer.GetLocalizedResult(Results.ProfileUpdated)
+            Message = Result.IdentityResultToString(updateResult) ??
+                      Localizer.GetLocalizedResult(Results.ProfileUpdated)
         };
     }
 
@@ -111,7 +112,8 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = changePasswordResult.Succeeded,
-            Message = Result.IdentityResultToString(changePasswordResult) ?? Localizer.GetLocalizedResult(Results.PasswordChanged)
+            Message = Result.IdentityResultToString(changePasswordResult) ??
+                      Localizer.GetLocalizedResult(Results.PasswordChanged)
         };
     }
 
@@ -160,7 +162,7 @@ public sealed class ProfileService : IProfileService
                 Succeeded = false,
                 Message = Localizer.GetLocalizedResult(Results.InvalidLink)
             };
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -176,13 +178,14 @@ public sealed class ProfileService : IProfileService
                 Succeeded = false,
                 Message = Localizer.GetLocalizedResult(Results.EmailAlreadyConfirmed)
             };
-        
+
         var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
 
         return new Result
         {
             Succeeded = confirmEmailResult.Succeeded,
-            Message = Result.IdentityResultToString(confirmEmailResult) ?? Localizer.GetLocalizedResult(Results.EmailConfirmed)
+            Message = Result.IdentityResultToString(confirmEmailResult) ??
+                      Localizer.GetLocalizedResult(Results.EmailConfirmed)
         };
     }
 
@@ -243,9 +246,9 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message =Localizer.GetLocalizedResult(Results.InvalidLink)
+                Message = Localizer.GetLocalizedResult(Results.InvalidLink)
             };
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
@@ -254,20 +257,21 @@ public sealed class ProfileService : IProfileService
                 Succeeded = false,
                 Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
-        
+
         if (user.RequestedEmail == null)
             return new Result
             {
                 Succeeded = false,
                 Message = Localizer.GetLocalizedResult(Results.EmailChangeError)
             };
-        
+
         var changeEmailResult = await _userManager.ChangeEmailAsync(user, user.RequestedEmail, token);
 
         return new Result
         {
             Succeeded = changeEmailResult.Succeeded,
-            Message = Result.IdentityResultToString(changeEmailResult) ?? Localizer.GetLocalizedResult(Results.EmailChanged)
+            Message = Result.IdentityResultToString(changeEmailResult) ??
+                      Localizer.GetLocalizedResult(Results.EmailChanged)
         };
     }
 

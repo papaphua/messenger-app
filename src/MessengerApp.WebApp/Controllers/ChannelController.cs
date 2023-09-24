@@ -4,7 +4,6 @@ using MessengerApp.Application.Services.ChannelService;
 using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Enumerations;
-using MessengerApp.Domain.Primitives;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -71,10 +70,10 @@ public sealed class ChannelController : Controller
         var result = await _channelService.GetChannelMessageCommentsAsync(userId, messageId);
 
         if (result.Succeeded) return View(result.Data);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
-        
+
         return RedirectToAction("Index");
     }
 
@@ -141,7 +140,7 @@ public sealed class ChannelController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _channelService.CreateChannelMessageCommentAsync(userId, messageId, createCommentDto);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
@@ -153,7 +152,7 @@ public sealed class ChannelController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _channelService.CreateChannelReactionAsync(userId, messageId, reaction);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 

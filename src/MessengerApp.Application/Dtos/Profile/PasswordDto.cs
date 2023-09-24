@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Localization;
 
 namespace MessengerApp.Application.Dtos.Profile;
 

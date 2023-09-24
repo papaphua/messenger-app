@@ -4,7 +4,6 @@ using MessengerApp.Application.Services.GroupService;
 using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Enumerations;
-using MessengerApp.Domain.Primitives;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -126,7 +125,7 @@ public sealed class GroupController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _groupService.CreateGroupReactionAsync(userId, messageId, reaction);
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 

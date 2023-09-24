@@ -3,14 +3,12 @@ using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Helpers;
-using MessengerApp.Application.Resources;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Entities.Joints;
 using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Results = MessengerApp.Domain.Enumerations.Results;
 
 namespace MessengerApp.Application.Services.GroupService;
 
@@ -155,7 +153,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message =Localizer.GetLocalizedResult(Results.UserNotFound)
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var group = await _dbContext.Set<Group>()
@@ -410,7 +408,8 @@ public sealed class GroupService : IGroupService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                    return new Result<string> { Succeeded = false, Message = Localizer.GetLocalizedResult(Results.AlreadyReacted) };
+                    return new Result<string>
+                        { Succeeded = false, Message = Localizer.GetLocalizedResult(Results.AlreadyReacted) };
 
                 _dbContext.Remove(previousReaction);
             }

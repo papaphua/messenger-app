@@ -5,12 +5,10 @@ using MessengerApp.Application.Dtos.Channel;
 using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Dtos.User;
 using MessengerApp.Application.Helpers;
-using MessengerApp.Application.Resources;
-using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Entities;
+using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 using Microsoft.EntityFrameworkCore;
-using Results = MessengerApp.Domain.Enumerations.Results;
 
 namespace MessengerApp.Application.Services.SearchService;
 

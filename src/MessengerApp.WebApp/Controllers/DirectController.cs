@@ -1,10 +1,8 @@
 ﻿using MessengerApp.Application.Dtos;
-using MessengerApp.Application.Dtos.Direct;
 using MessengerApp.Application.Services.DirectService;
 using MessengerApp.Application.Services.ProfileService;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Enumerations;
-using MessengerApp.Domain.Primitives;
 using MessengerApp.WebApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -110,7 +108,7 @@ public sealed class DirectController : Controller
             var directId = result.Data;
             return RedirectToAction("Chat", new { directId });
         }
-        
+
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 

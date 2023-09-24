@@ -9,9 +9,9 @@ public sealed class HomeController : Controller
     public IActionResult Index()
     {
         var currentCulture = CultureInfo.CurrentCulture.Name;
-        
+
         ViewBag.CurrentCulture = currentCulture;
-        
+
         return View();
     }
 

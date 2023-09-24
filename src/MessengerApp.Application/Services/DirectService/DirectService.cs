@@ -3,7 +3,6 @@ using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Direct;
 using MessengerApp.Application.Helpers;
-using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Entities.Joints;
 using MessengerApp.Domain.Enumerations;
@@ -319,7 +318,8 @@ public sealed class DirectService : IDirectService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                    return new Result<string> { Succeeded = false, Message = Localizer.GetLocalizedResult(Results.AlreadyReacted) };
+                    return new Result<string>
+                        { Succeeded = false, Message = Localizer.GetLocalizedResult(Results.AlreadyReacted) };
 
                 _dbContext.Remove(previousReaction);
             }
