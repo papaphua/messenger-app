@@ -64,7 +64,7 @@
 <script src="~/js/chat.js"></script>
 <script>
 $(document).ready(function () {
-    var notificationMessage = "@TempData[Notifications.Message]";
+    var notificationMessage = "@Html.Raw(TempData[Notifications.Message])";
     var notificationSucceeded = "@TempData[Notifications.Succeeded]" === "True";
 
     if (notificationMessage !== "") {

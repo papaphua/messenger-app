@@ -2,6 +2,7 @@
 using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Channel;
+using MessengerApp.Application.Helpers;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Entities.Joints;
@@ -35,7 +36,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var channel = await _dbContext.Set<Channel>()
@@ -51,7 +52,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelDto>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var messageDtos = channel.Messages
@@ -77,7 +78,7 @@ public sealed class ChannelService : IChannelService
             return new Result<IReadOnlyList<ChannelPreviewDto>>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var channels = await _dbContext.Set<Channel>()
@@ -88,7 +89,7 @@ public sealed class ChannelService : IChannelService
         if (channels.Count == 0)
             return new Result<IReadOnlyList<ChannelPreviewDto>>
             {
-                Message = Results.ChatsEmpty
+                Message = Localizer.GetLocalizedResult(Results.ChatsEmpty)
             };
 
         var channelPreviewDtos = channels
@@ -109,7 +110,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var channel = new Channel();
@@ -136,7 +137,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelDto>
             {
                 Succeeded = false,
-                Message = Results.ChatCreateError
+                Message = Localizer.GetLocalizedResult(Results.ChatCreateError)
             };
         }
 
@@ -153,7 +154,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var channel = await _dbContext.Set<Channel>()
@@ -164,7 +165,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelDto>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var channelMember = await _dbContext.Set<ChannelMember>()
@@ -175,7 +176,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelDto>
             {
                 Succeeded = false,
-                Message = Results.ChatAlreadyMember
+                Message = Localizer.GetLocalizedResult(Results.ChatAlreadyMember)
             };
 
         channelMember = ChannelMember.AddMemberToChannel(channel.Id, user.Id);
@@ -190,7 +191,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelDto>
             {
                 Succeeded = false,
-                Message = Results.ChatJoinError
+                Message = Localizer.GetLocalizedResult(Results.ChatJoinError)
             };
         }
 
@@ -205,7 +206,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var channel = await _dbContext.Set<Channel>()
@@ -216,7 +217,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var channelMember = await _dbContext.Set<ChannelMember>()
@@ -226,7 +227,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         try
@@ -287,7 +288,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatLeaveError
+                Message = Localizer.GetLocalizedResult(Results.ChatLeaveError)
             };
         }
 
@@ -303,7 +304,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var channel = await _dbContext.Set<Channel>()
@@ -315,7 +316,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var message = new ChannelMessage
@@ -354,7 +355,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.MessageSendError
+                Message = Localizer.GetLocalizedResult(Results.MessageSendError)
             };
         }
 
@@ -371,7 +372,7 @@ public sealed class ChannelService : IChannelService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var message = await _dbContext.Set<ChannelMessage>()
@@ -383,14 +384,14 @@ public sealed class ChannelService : IChannelService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         if (!message.Chat.AllowReactions)
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.ReactionsNotAllowed
+                Message = Localizer.GetLocalizedResult(Results.ReactionsNotAllowed)
             };
 
         var previousReaction = await _dbContext.Set<ChannelReaction>()
@@ -409,7 +410,7 @@ public sealed class ChannelService : IChannelService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                    return new Result<string> { Succeeded = false, Message = Results.AlreadyReacted };
+                    return new Result<string> { Succeeded = false, Message = Localizer.GetLocalizedResult(Results.AlreadyReacted) };
 
                 _dbContext.Remove(previousReaction);
             }
@@ -424,7 +425,7 @@ public sealed class ChannelService : IChannelService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
         }
 
@@ -439,7 +440,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelCommentsDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var message = await _dbContext.Set<ChannelMessage>()
@@ -451,7 +452,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelCommentsDto>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var channel = await _dbContext.Set<Channel>()
@@ -463,7 +464,7 @@ public sealed class ChannelService : IChannelService
             return new Result<ChannelCommentsDto>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var messageDto = _mapper.Map<MessageDto>(message);
@@ -491,7 +492,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var message = await _dbContext.Set<ChannelMessage>()
@@ -501,7 +502,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var channel = await _dbContext.Set<Channel>()
@@ -513,14 +514,14 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         if (!channel.AllowComments)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.CommentsNotAllowed
+                Message = Localizer.GetLocalizedResult(Results.CommentsNotAllowed)
             };
 
         var comment = new Comment
@@ -541,7 +542,7 @@ public sealed class ChannelService : IChannelService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.MessageSendError
+                Message = Localizer.GetLocalizedResult(Results.MessageSendError)
             };
         }
 

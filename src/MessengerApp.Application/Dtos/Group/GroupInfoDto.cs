@@ -8,5 +8,5 @@ public sealed class GroupInfoDto
 
     public string? Description { get; set; }
 
-    [DisplayName("Chat picture")] public byte[]? ChatPictureBytes { get; set; }
+    [DisplayName("Pfp")] public byte[]? ChatPictureBytes { get; set; }
 }

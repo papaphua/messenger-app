@@ -1,8 +1,10 @@
 ﻿using System.Web;
 using AutoMapper;
 using MessengerApp.Application.Dtos.Profile;
+using MessengerApp.Application.Helpers;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
+using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -31,7 +33,7 @@ public sealed class ProfileService : IProfileService
             return new Result<ProfileDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var profileDto = _mapper.Map<User, ProfileDto>(user);
@@ -50,7 +52,7 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         _mapper.Map(profileInfoDto, user);
@@ -60,7 +62,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = updateResult.Succeeded,
-            Message = Result.IdentityResultToString(updateResult) ?? Results.ProfileUpdated
+            Message = Result.IdentityResultToString(updateResult) ?? Localizer.GetLocalizedResult(Results.ProfileUpdated)
         };
     }
 
@@ -72,7 +74,7 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         user.ProfilePictureBytes = profilePictureBytes;
@@ -81,7 +83,7 @@ public sealed class ProfileService : IProfileService
 
         return new Result
         {
-            Message = Results.ProfilePictureUpdate
+            Message = Localizer.GetLocalizedResult(Results.ProfilePictureUpdate)
         };
     }
 
@@ -93,14 +95,14 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         if (user.IsExternal)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ExternalUserPasswordError
+                Message = Localizer.GetLocalizedResult(Results.ExternalUserPasswordError)
             };
 
         var changePasswordResult =
@@ -109,7 +111,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = changePasswordResult.Succeeded,
-            Message = Result.IdentityResultToString(changePasswordResult) ?? Results.PasswordChanged
+            Message = Result.IdentityResultToString(changePasswordResult) ?? Localizer.GetLocalizedResult(Results.PasswordChanged)
         };
     }
 
@@ -121,21 +123,21 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         if (user.IsExternal)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ExternalUserEmailError
+                Message = Localizer.GetLocalizedResult(Results.ExternalUserEmailError)
             };
 
         if (user.EmailConfirmed)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailAlreadyConfirmed
+                Message = Localizer.GetLocalizedResult(Results.EmailAlreadyConfirmed)
             };
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -146,7 +148,7 @@ public sealed class ProfileService : IProfileService
 
         return new Result
         {
-            Message = Results.EmailConfirmationRequestSentTo(user.Email!)
+            Message = Localizer.GetLocalizedResult(Results.EmailConfirmationRequestSentTo, user.Email!)
         };
     }
 
@@ -156,7 +158,7 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.InvalidLink
+                Message = Localizer.GetLocalizedResult(Results.InvalidLink)
             };
         
         var user = await _userManager.FindByIdAsync(userId);
@@ -165,14 +167,14 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         if (user.EmailConfirmed)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailAlreadyConfirmed
+                Message = Localizer.GetLocalizedResult(Results.EmailAlreadyConfirmed)
             };
         
         var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
@@ -180,7 +182,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = confirmEmailResult.Succeeded,
-            Message = Result.IdentityResultToString(confirmEmailResult) ?? Results.EmailConfirmed
+            Message = Result.IdentityResultToString(confirmEmailResult) ?? Localizer.GetLocalizedResult(Results.EmailConfirmed)
         };
     }
 
@@ -192,14 +194,14 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         if (user.IsExternal)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ExternalUserEmailError
+                Message = Localizer.GetLocalizedResult(Results.ExternalUserEmailError)
             };
 
         var userWithSameEmail =
@@ -209,14 +211,14 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailAlreadyTaken(profileEmailDto.Email)
+                Message = Localizer.GetLocalizedResult(Results.EmailAlreadyTaken, profileEmailDto.Email)
             };
 
         if (user.Email == profileEmailDto.Email)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailSameAsCurrent
+                Message = Localizer.GetLocalizedResult(Results.EmailSameAsCurrent)
             };
 
         var token = await _userManager.GenerateChangeEmailTokenAsync(user, profileEmailDto.Email);
@@ -231,7 +233,7 @@ public sealed class ProfileService : IProfileService
 
         return new Result
         {
-            Message = Results.EmailChangeRequestSentTo(user.Email!)
+            Message = Localizer.GetLocalizedResult(Results.EmailChangeRequestSentTo, user.Email!)
         };
     }
 
@@ -241,7 +243,7 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.InvalidLink
+                Message =Localizer.GetLocalizedResult(Results.InvalidLink)
             };
         
         var user = await _userManager.FindByIdAsync(userId);
@@ -250,14 +252,14 @@ public sealed class ProfileService : IProfileService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
         
         if (user.RequestedEmail == null)
             return new Result
             {
                 Succeeded = false,
-                Message = Results.EmailChangeError
+                Message = Localizer.GetLocalizedResult(Results.EmailChangeError)
             };
         
         var changeEmailResult = await _userManager.ChangeEmailAsync(user, user.RequestedEmail, token);
@@ -265,7 +267,7 @@ public sealed class ProfileService : IProfileService
         return new Result
         {
             Succeeded = changeEmailResult.Succeeded,
-            Message = Result.IdentityResultToString(changeEmailResult) ?? Results.EmailChanged
+            Message = Result.IdentityResultToString(changeEmailResult) ?? Localizer.GetLocalizedResult(Results.EmailChanged)
         };
     }
 

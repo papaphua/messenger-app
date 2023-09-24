@@ -4,10 +4,13 @@ using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Channel;
 using MessengerApp.Application.Dtos.Group;
 using MessengerApp.Application.Dtos.User;
-using MessengerApp.Domain.Constants;
+using MessengerApp.Application.Helpers;
+using MessengerApp.Application.Resources;
+using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Primitives;
 using Microsoft.EntityFrameworkCore;
+using Results = MessengerApp.Domain.Enumerations.Results;
 
 namespace MessengerApp.Application.Services.SearchService;
 
@@ -32,7 +35,7 @@ public sealed class SearchService : ISearchService
             return new Result<SearchDto>
             {
                 Succeeded = false,
-                Message = Results.NoSearchResultsFor(search)
+                Message = Localizer.GetLocalizedResult(Results.NoSearchResultsFor, search)
             };
 
         var dto = new SearchDto
