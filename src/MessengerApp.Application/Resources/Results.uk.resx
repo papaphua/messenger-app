@@ -1,0 +1,95 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="ChatCreateError" xml:space="preserve">
+        <value>Не вдалося створити чат.</value>
+    </data>
+    <data name="InvalidLink" xml:space="preserve">
+        <value>Невірне посилання.</value>
+    </data>
+    <data name="UserNotFound" xml:space="preserve">
+        <value>Користувач не знайдений.</value>
+    </data>
+    <data name="ProfileUpdated" xml:space="preserve">
+        <value>Профіль оновлено.</value>
+    </data>
+    <data name="ProfilePictureUpdate" xml:space="preserve">
+        <value>Фото профілю оновлено.</value>
+    </data>
+    <data name="PasswordChanged" xml:space="preserve">
+        <value>Пароль користувача змінено.</value>
+    </data>
+    <data name="EmailAlreadyConfirmed" xml:space="preserve">
+        <value>Пошта вже підтвержена.</value>
+    </data>
+    <data name="EmailConfirmed" xml:space="preserve">
+        <value>Пошту підтверджено.</value>
+    </data>
+    <data name="EmailChanged" xml:space="preserve">
+        <value>Пошту змінено.</value>
+    </data>
+    <data name="EmailSameAsCurrent" xml:space="preserve">
+        <value>Нова пошта повинна відрізнятися від поточної. </value>
+    </data>
+    <data name="EmailChangeError" xml:space="preserve">
+        <value>Невдалося змінити пошту, спробуйте ще раз.</value>
+    </data>
+    <data name="ExternalUserPasswordError" xml:space="preserve">
+        <value>Користувачі авторизовані за допомогою сторонніх сервісів не можуть змінювати свій пароль.</value>
+    </data>
+    <data name="ExternalUserEmailError" xml:space="preserve">
+        <value>Користувачі авторизовані за допомогою сторонніх сервісів не можуть змінювати свою пошту.</value>
+    </data>
+    <data name="MessageSendError" xml:space="preserve">
+        <value>Не вдалося відправити повідомлення.</value>
+    </data>
+    <data name="ChatNotFound" xml:space="preserve">
+        <value>Чат не знайдено.</value>
+    </data>
+    <data name="ChatsEmpty" xml:space="preserve">
+        <value>Чати порожні.</value>
+    </data>
+    <data name="ChatRemoveError" xml:space="preserve">
+        <value>Не вдалося видалити чат.</value>
+    </data>
+    <data name="ChatLeaveError" xml:space="preserve">
+        <value>Не вдалося залишити чат.</value>
+    </data>
+    <data name="ChatJoinError" xml:space="preserve">
+        <value>Не вдалося приєднатися до чату</value>
+    </data>
+    <data name="ChatAlreadyMember" xml:space="preserve">
+        <value>Ви вже член цього чату.</value>
+    </data>
+    <data name="AlreadyReacted" xml:space="preserve">
+        <value>Ви вже відреагували на це повідомлення.</value>
+    </data>
+    <data name="ReactionsNotAllowed" xml:space="preserve">
+        <value>Реакції вимкнені в цьому чаті.</value>
+    </data>
+    <data name="CommentsNotAllowed" xml:space="preserve">
+        <value>Коментарі вимкнені в цьому чаті.</value>
+    </data>
+    <data name="EmailAlreadyTaken" xml:space="preserve">
+        <value>Пошта {0} вже зареєстровна.</value>
+    </data>
+    <data name="EmailChangeRequestSentTo" xml:space="preserve">
+        <value>Повідомлення для підтвердження зміни пошти відправлено на адресу {0}.</value>
+    </data>
+    <data name="EmailConfirmationRequestSentTo" xml:space="preserve">
+        <value>Повідомлення для підтвердження пошти відправлено на адресу {0}.</value>
+    </data>
+    <data name="NoSearchResultsFor" xml:space="preserve">
+        <value>Не вдалося нічого знайи для запиту {0}.</value>
+    </data>
+</root>

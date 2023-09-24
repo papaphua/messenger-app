@@ -2,13 +2,15 @@
 using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Group;
-using MessengerApp.Domain.Constants;
+using MessengerApp.Application.Helpers;
+using MessengerApp.Application.Resources;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Entities.Joints;
 using MessengerApp.Domain.Enumerations;
 using MessengerApp.Domain.Primitives;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Results = MessengerApp.Domain.Enumerations.Results;
 
 namespace MessengerApp.Application.Services.GroupService;
 
@@ -35,7 +37,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var group = await _dbContext.Set<Group>()
@@ -51,7 +53,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var messageDtos = group.Messages
@@ -77,7 +79,7 @@ public sealed class GroupService : IGroupService
             return new Result<IReadOnlyList<GroupPreviewDto>>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var groups = await _dbContext.Set<Group>()
@@ -88,7 +90,7 @@ public sealed class GroupService : IGroupService
         if (groups.Count == 0)
             return new Result<IReadOnlyList<GroupPreviewDto>>
             {
-                Message = Results.ChatsEmpty
+                Message = Localizer.GetLocalizedResult(Results.ChatsEmpty)
             };
 
         var groupPreviewDtos = groups
@@ -109,7 +111,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var group = new Group();
@@ -136,7 +138,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message = Results.ChatCreateError
+                Message = Localizer.GetLocalizedResult(Results.ChatCreateError)
             };
         }
 
@@ -153,7 +155,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message =Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var group = await _dbContext.Set<Group>()
@@ -164,7 +166,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var groupMember = await _dbContext.Set<GroupMember>()
@@ -175,7 +177,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message = Results.ChatAlreadyMember
+                Message = Localizer.GetLocalizedResult(Results.ChatAlreadyMember)
             };
 
         groupMember = GroupMember.AddMemberToGroup(group.Id, user.Id);
@@ -190,7 +192,7 @@ public sealed class GroupService : IGroupService
             return new Result<GroupDto>
             {
                 Succeeded = false,
-                Message = Results.ChatJoinError
+                Message = Localizer.GetLocalizedResult(Results.ChatJoinError)
             };
         }
 
@@ -205,7 +207,7 @@ public sealed class GroupService : IGroupService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var group = await _dbContext.Set<Group>()
@@ -216,7 +218,7 @@ public sealed class GroupService : IGroupService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var groupMember = await _dbContext.Set<GroupMember>()
@@ -226,7 +228,7 @@ public sealed class GroupService : IGroupService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         try
@@ -287,7 +289,7 @@ public sealed class GroupService : IGroupService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatLeaveError
+                Message = Localizer.GetLocalizedResult(Results.ChatLeaveError)
             };
         }
 
@@ -302,7 +304,7 @@ public sealed class GroupService : IGroupService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var group = await _dbContext.Set<Group>()
@@ -314,7 +316,7 @@ public sealed class GroupService : IGroupService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var message = new GroupMessage
@@ -353,7 +355,7 @@ public sealed class GroupService : IGroupService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.MessageSendError
+                Message = Localizer.GetLocalizedResult(Results.MessageSendError)
             };
         }
 
@@ -370,7 +372,7 @@ public sealed class GroupService : IGroupService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var message = await _dbContext.Set<GroupMessage>()
@@ -382,14 +384,14 @@ public sealed class GroupService : IGroupService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         if (!message.Chat.AllowReactions)
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.ReactionsNotAllowed
+                Message = Localizer.GetLocalizedResult(Results.ReactionsNotAllowed)
             };
 
         var previousReaction = await _dbContext.Set<GroupReaction>()
@@ -408,7 +410,7 @@ public sealed class GroupService : IGroupService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                    return new Result<string> { Succeeded = false, Message = Results.AlreadyReacted };
+                    return new Result<string> { Succeeded = false, Message = Localizer.GetLocalizedResult(Results.AlreadyReacted) };
 
                 _dbContext.Remove(previousReaction);
             }
@@ -423,7 +425,7 @@ public sealed class GroupService : IGroupService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
         }
 

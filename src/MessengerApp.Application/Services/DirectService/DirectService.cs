@@ -2,6 +2,7 @@
 using MessengerApp.Application.Abstractions.Data;
 using MessengerApp.Application.Dtos;
 using MessengerApp.Application.Dtos.Direct;
+using MessengerApp.Application.Helpers;
 using MessengerApp.Domain.Constants;
 using MessengerApp.Domain.Entities;
 using MessengerApp.Domain.Entities.Joints;
@@ -35,7 +36,7 @@ public sealed class DirectService : IDirectService
             return new Result<DirectDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var direct = await _dbContext.Set<Direct>()
@@ -51,7 +52,7 @@ public sealed class DirectService : IDirectService
             return new Result<DirectDto>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var conversator = direct.Members.First(member => member.Id != user.Id);
@@ -83,7 +84,7 @@ public sealed class DirectService : IDirectService
             return new Result<IReadOnlyList<DirectPreviewDto>>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var directs = await _dbContext.Set<Direct>()
@@ -94,7 +95,7 @@ public sealed class DirectService : IDirectService
         if (directs.Count == 0)
             return new Result<IReadOnlyList<DirectPreviewDto>>
             {
-                Message = Results.ChatsEmpty
+                Message = Localizer.GetLocalizedResult(Results.ChatsEmpty)
             };
 
         var directPreviewDtos = directs.Select(direct =>
@@ -128,7 +129,7 @@ public sealed class DirectService : IDirectService
             return new Result<DirectDto>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var direct = await _dbContext.Set<Direct>()
@@ -162,7 +163,7 @@ public sealed class DirectService : IDirectService
             return new Result<DirectDto>
             {
                 Succeeded = false,
-                Message = Results.ChatCreateError
+                Message = Localizer.GetLocalizedResult(Results.ChatCreateError)
             };
         }
 
@@ -179,7 +180,7 @@ public sealed class DirectService : IDirectService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var direct = await _dbContext.Set<Direct>()
@@ -191,7 +192,7 @@ public sealed class DirectService : IDirectService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         try
@@ -204,7 +205,7 @@ public sealed class DirectService : IDirectService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatRemoveError
+                Message = Localizer.GetLocalizedResult(Results.ChatRemoveError)
             };
         }
 
@@ -220,7 +221,7 @@ public sealed class DirectService : IDirectService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var direct = await _dbContext.Set<Direct>()
@@ -232,7 +233,7 @@ public sealed class DirectService : IDirectService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var message = new DirectMessage
@@ -271,7 +272,7 @@ public sealed class DirectService : IDirectService
             return new Result
             {
                 Succeeded = false,
-                Message = Results.MessageSendError
+                Message = Localizer.GetLocalizedResult(Results.MessageSendError)
             };
         }
 
@@ -288,7 +289,7 @@ public sealed class DirectService : IDirectService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.UserNotFound
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
             };
 
         var message = await _dbContext.Set<DirectMessage>()
@@ -299,7 +300,7 @@ public sealed class DirectService : IDirectService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
 
         var previousReaction = await _dbContext.Set<DirectReaction>()
@@ -318,7 +319,7 @@ public sealed class DirectService : IDirectService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                    return new Result<string> { Succeeded = false, Message = Results.AlreadyReacted };
+                    return new Result<string> { Succeeded = false, Message = Localizer.GetLocalizedResult(Results.AlreadyReacted) };
 
                 _dbContext.Remove(previousReaction);
             }
@@ -333,7 +334,7 @@ public sealed class DirectService : IDirectService
             return new Result<string>
             {
                 Succeeded = false,
-                Message = Results.ChatNotFound
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
             };
         }
 
