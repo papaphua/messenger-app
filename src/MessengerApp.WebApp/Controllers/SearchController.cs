@@ -16,12 +16,12 @@ public sealed class SearchController : Controller
     public async Task<IActionResult> Index(string? search)
     {
         var result = await _searchService.SearchChatsAsync(search);
-
+        
         if (result.Succeeded) return View(result.Data);
 
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
-
+        
         return RedirectToAction("Index", "Home");
     }
 }
