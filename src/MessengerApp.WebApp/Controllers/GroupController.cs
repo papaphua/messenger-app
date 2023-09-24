@@ -27,34 +27,35 @@ public sealed class GroupController : Controller
 
         var result = await _groupService.GetGroupPreviewsAsync(userId);
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Group");
+        if (result.Succeeded) return View(result.Data);
 
-        var groupPreviews = result.Data;
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return View(groupPreviews);
+        return RedirectToAction("Index", "Home");
     }
 
+    [Route("Group/Chat/{groupId}")]
     public async Task<IActionResult> Chat(string groupId)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        Result<GroupDto> result;
+        var result = await _groupService.GetGroupAsync(userId, groupId);
 
-        if (TempData.TryGetValue("GroupId", out var value))
-            result = await _groupService.GetGroupAsync(userId, value!.ToString()!);
-        else
-            result = await _groupService.GetGroupAsync(userId, groupId);
+        if (result.Succeeded)
+        {
+            var profile = (await _profileService.GetProfileAsync(userId)).Data!;
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Group");
+            ViewBag.Username = profile.ProfileInfoDto.UserName;
+            ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes!);
 
-        var group = result.Data!;
+            return View(result.Data);
+        }
 
-        var profile = (await _profileService.GetProfileAsync(userId)).Data!;
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        ViewBag.Username = profile.ProfileInfoDto.UserName;
-        ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes!);
-
-        return View(group);
+        return RedirectToAction("Index");
     }
 
     public IActionResult New()
@@ -66,13 +67,7 @@ public sealed class GroupController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var chatPicture = Request.Form.Files[0];
-
-        using var memoryStream = new MemoryStream();
-
-        await chatPicture.CopyToAsync(memoryStream);
-        var chatPictureBytes = memoryStream.ToArray();
-
+        var chatPictureBytes = await Parser.GetAttachmentAsync(Request.Form.Files);
         groupInfoDto.ChatPictureBytes = chatPictureBytes;
 
         var result = await _groupService.CreateGroupAsync(userId, groupInfoDto);
@@ -80,7 +75,7 @@ public sealed class GroupController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Group");
+        if (!result.Succeeded) return RedirectToAction("Index");
 
         return View("Chat", result.Data);
     }
@@ -94,7 +89,7 @@ public sealed class GroupController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Group");
+        if (!result.Succeeded) return RedirectToAction("Index");
 
         return View("Chat", result.Data);
     }
@@ -115,33 +110,27 @@ public sealed class GroupController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var attachedFiles = Request.Form.Files;
+        var attachmentBytes = await Parser.GetAttachmentsAsync(Request.Form.Files);
+        createMessageDto.Attachments = attachmentBytes;
 
-        var attachments = new List<byte[]>();
+        var result = await _groupService.CreateGroupMessageAsync(userId, groupId, createMessageDto);
 
-        if (attachedFiles.Any())
-            foreach (var attachment in attachedFiles)
-            {
-                using var memoryStream = new MemoryStream();
-                await attachment.CopyToAsync(memoryStream);
-                attachments.Add(memoryStream.ToArray());
-            }
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        createMessageDto.Attachments = attachments;
-
-        await _groupService.CreateGroupMessageAsync(userId, groupId, createMessageDto);
-
-        var group = (await _groupService.GetGroupAsync(userId, groupId)).Data!;
-
-        TempData["GroupId"] = group.Id;
-
-        return RedirectToAction("Chat");
+        return RedirectToAction("Chat", new { groupId });
     }
 
-    public async Task AddReaction(string messageId, Reaction reaction)
+    public async Task<IActionResult> AddReaction(string messageId, Reaction reaction)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        await _groupService.CreateGroupReactionAsync(userId, messageId, reaction);
+        var result = await _groupService.CreateGroupReactionAsync(userId, messageId, reaction);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        var groupId = result.Data;
+        return RedirectToAction("Chat", new { groupId });
     }
 }

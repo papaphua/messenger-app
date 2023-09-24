@@ -13,5 +13,5 @@ public interface IGroupService
     Task<Result<GroupDto>> JoinGroupAsync(string userId, string groupId);
     Task<Result> LeaveGroupAsync(string userId, string groupId);
     Task<Result> CreateGroupMessageAsync(string userId, string groupId, CreateMessageDto createMessageDto);
-    Task<Result> CreateGroupReactionAsync(string userId, string messageId, Reaction reaction);
+    Task<Result<string>> CreateGroupReactionAsync(string userId, string messageId, Reaction reaction);
 }

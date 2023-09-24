@@ -26,20 +26,14 @@
                 </div>
                 <div class="card-footer d-flex">
                     <div class="d-flex justify-content-start w-100">
-                        <form method="post" asp-controller="Group" asp-action="Chat">
-                            <input type="hidden" name="groupId" value="@chat.Id"/>
-                            <button class="btn btn-success btn-block" type="submit">
-                                @ViewLocalizer["Open"]
-                            </button>
-                        </form>
+                        <a class="btn btn-success btn-block" asp-action="Chat" asp-route-groupId="@chat.Id">
+                            @ViewLocalizer["Open"]
+                        </a>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <form method="post" asp-controller="Group" asp-action="LeaveGroup">
-                            <input type="hidden" name="groupId" value="@chat.Id"/>
-                            <button class="btn btn-danger" type="submit">
-                                @ViewLocalizer["Leave"]
-                            </button>
-                        </form>
+                        <a class="btn btn-danger btn-block" asp-action="LeaveGroup" asp-route-groupId="@chat.Id">
+                            @ViewLocalizer["Leave"]
+                        </a>
                     </div>
                 </div>
             </div>
