@@ -21,10 +21,10 @@ public sealed class ProfileController : Controller
 
         var result = await _profileService.GetProfileAsync(userId);
 
-        if (result.Succeeded) return View(result.Data);
-
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
+        
+        if (result.Succeeded) return View(result.Data);
 
         return RedirectToAction("Index", "Home");
     }
