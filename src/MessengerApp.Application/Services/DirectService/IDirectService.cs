@@ -12,5 +12,5 @@ public interface IDirectService
     Task<Result<DirectDto>> CreateDirectAsync(string userId, string conversatorId);
     Task<Result> RemoveDirectAsync(string userId, string directId);
     Task<Result> CreateDirectMessageAsync(string userId, string directId, CreateMessageDto createMessageDto);
-    Task<Result> CreateDirectReactionAsync(string userId, string messageId, Reaction reaction);
+    Task<Result<string>> CreateDirectReactionAsync(string userId, string messageId, Reaction reaction);
 }

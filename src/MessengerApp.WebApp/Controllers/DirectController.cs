@@ -27,34 +27,35 @@ public sealed class DirectController : Controller
 
         var result = await _directService.GetDirectPreviewsAsync(userId);
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Home");
+        if (result.Succeeded) return View(result.Data);
 
-        var directPreviews = result.Data!;
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return View(directPreviews);
+        return RedirectToAction("Index", "Home");
     }
 
+    [Route("Direct/Chat/{directId}")]
     public async Task<IActionResult> Chat(string directId)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        Result<DirectDto> result;
+        var result = await _directService.GetDirectAsync(userId, directId);
 
-        if (TempData.TryGetValue("DirectId", out var value))
-            result = await _directService.GetDirectAsync(userId, value!.ToString()!);
-        else
-            result = await _directService.GetDirectAsync(userId, directId);
+        if (result.Succeeded)
+        {
+            var profile = (await _profileService.GetProfileAsync(userId)).Data!;
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Direct");
+            ViewBag.Username = profile.ProfileInfoDto.UserName;
+            ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes!);
 
-        var direct = result.Data!;
+            return View(result.Data);
+        }
 
-        var profile = (await _profileService.GetProfileAsync(userId)).Data!;
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        ViewBag.Username = profile.ProfileInfoDto.UserName;
-        ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes!);
-
-        return View(direct);
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> CreateDirect(string conversatorId)
@@ -66,11 +67,9 @@ public sealed class DirectController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Direct");
+        if (!result.Succeeded) return RedirectToAction("Index");
 
-        var direct = result.Data!;
-
-        return View("Chat", direct);
+        return View("Chat", result.Data);
     }
 
     public async Task<IActionResult> RemoveDirect(string directId)
@@ -82,40 +81,39 @@ public sealed class DirectController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return RedirectToAction("Index", "Direct");
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> CreateDirectMessage(string directId, CreateMessageDto createMessageDto)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var attachedFiles = Request.Form.Files;
+        var attachmentBytes = await Parser.GetAttachmentsAsync(Request.Form.Files);
+        createMessageDto.Attachments = attachmentBytes;
 
-        var attachments = new List<byte[]>();
+        var result = await _directService.CreateDirectMessageAsync(userId, directId, createMessageDto);
 
-        if (attachedFiles.Any())
-            foreach (var attachment in attachedFiles)
-            {
-                using var memoryStream = new MemoryStream();
-                await attachment.CopyToAsync(memoryStream);
-                attachments.Add(memoryStream.ToArray());
-            }
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        createMessageDto.Attachments = attachments;
-
-        await _directService.CreateDirectMessageAsync(userId, directId, createMessageDto);
-
-        var direct = (await _directService.GetDirectAsync(userId, directId)).Data!;
-
-        TempData["DirectId"] = direct.Id;
-
-        return RedirectToAction("Chat");
+        return RedirectToAction("Chat", new { directId });
     }
 
-    public async Task AddReaction(string messageId, Reaction reaction)
+    public async Task<IActionResult> AddReaction(string messageId, Reaction reaction)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        await _directService.CreateDirectReactionAsync(userId, messageId, reaction);
+        var result = await _directService.CreateDirectReactionAsync(userId, messageId, reaction);
+
+        if (result.Succeeded)
+        {
+            var directId = result.Data;
+            return RedirectToAction("Chat", new { directId });
+        }
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        return RedirectToAction("Index");
     }
 }
