@@ -27,34 +27,35 @@ public sealed class ChannelController : Controller
 
         var result = await _channelService.GetChannelPreviewsAsync(userId);
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Channel");
+        if (result.Succeeded) return View(result.Data);
 
-        var channelPreviews = result.Data;
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        return View(channelPreviews);
+        return RedirectToAction("Index", "Home");
     }
 
+    [Route("Channel/Chat/{channelId}")]
     public async Task<IActionResult> Chat(string channelId)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        Result<ChannelDto> result;
+        var result = await _channelService.GetChannelAsync(userId, channelId);
 
-        if (TempData.TryGetValue("ChannelId", out var value))
-            result = await _channelService.GetChannelAsync(userId, value!.ToString()!);
-        else
-            result = await _channelService.GetChannelAsync(userId, channelId);
+        if (result.Succeeded)
+        {
+            var profile = (await _profileService.GetProfileAsync(userId)).Data!;
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Channel");
+            ViewBag.Username = profile.ProfileInfoDto.UserName;
+            ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes!);
 
-        var channel = result.Data!;
+            return View(result.Data);
+        }
 
-        var profile = (await _profileService.GetProfileAsync(userId)).Data!;
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        ViewBag.Username = profile.ProfileInfoDto.UserName;
-        ViewBag.ProfilePictureBytes = Convert.ToBase64String(profile.ProfilePictureBytes!);
-
-        return View(channel);
+        return RedirectToAction("Index");
     }
 
     public IActionResult New()
@@ -62,31 +63,26 @@ public sealed class ChannelController : Controller
         return View();
     }
 
+    [Route("Channel/Comments/{messageId}")]
     public async Task<IActionResult> Comments(string messageId)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _channelService.GetChannelMessageCommentsAsync(userId, messageId);
 
+        if (result.Succeeded) return View(result.Data);
+        
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
-
-        if (!result.Succeeded) return RedirectToAction("Index");
-
-        return View(result.Data);
+        
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> CreateChannel(ChannelInfoDto channelInfoDto)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var chatPicture = Request.Form.Files[0];
-
-        using var memoryStream = new MemoryStream();
-
-        await chatPicture.CopyToAsync(memoryStream);
-        var chatPictureBytes = memoryStream.ToArray();
-
+        var chatPictureBytes = await Parser.GetAttachmentAsync(Request.Form.Files);
         channelInfoDto.ChatPictureBytes = chatPictureBytes;
 
         var result = await _channelService.CreateChannelAsync(userId, channelInfoDto);
@@ -94,7 +90,7 @@ public sealed class ChannelController : Controller
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        if (!result.Succeeded) return RedirectToAction("Index", "Channel");
+        if (!result.Succeeded) return RedirectToAction("Index");
 
         return View("Chat", result.Data);
     }
@@ -129,27 +125,15 @@ public sealed class ChannelController : Controller
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        var attachedFiles = Request.Form.Files;
+        var attachmentBytes = await Parser.GetAttachmentsAsync(Request.Form.Files);
+        createMessageDto.Attachments = attachmentBytes;
 
-        var attachments = new List<byte[]>();
+        var result = await _channelService.CreateChannelMessageAsync(userId, channelId, createMessageDto);
 
-        if (attachedFiles.Any())
-            foreach (var attachment in attachedFiles)
-            {
-                using var memoryStream = new MemoryStream();
-                await attachment.CopyToAsync(memoryStream);
-                attachments.Add(memoryStream.ToArray());
-            }
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
 
-        createMessageDto.Attachments = attachments;
-
-        await _channelService.CreateChannelMessageAsync(userId, channelId, createMessageDto);
-
-        var channel = (await _channelService.GetChannelAsync(userId, channelId)).Data!;
-
-        TempData["ChannelId"] = channel.Id;
-
-        return RedirectToAction("Chat");
+        return RedirectToAction("Chat", new { channelId });
     }
 
     public async Task<IActionResult> CreateComment(string messageId, CreateCommentDto createCommentDto)
@@ -157,19 +141,23 @@ public sealed class ChannelController : Controller
         var userId = Parser.ParseUserId(HttpContext);
 
         var result = await _channelService.CreateChannelMessageCommentAsync(userId, messageId, createCommentDto);
-
+        
         TempData[Notifications.Message] = result.Message;
         TempData[Notifications.Succeeded] = result.Succeeded;
 
-        var commentResult = await _channelService.GetChannelMessageCommentsAsync(userId, messageId);
-
-        return View("Comments", commentResult.Data);
+        return RedirectToAction("Comments", new { messageId });
     }
 
-    public async Task AddReaction(string messageId, Reaction reaction)
+    public async Task<IActionResult> AddReaction(string messageId, Reaction reaction)
     {
         var userId = Parser.ParseUserId(HttpContext);
 
-        await _channelService.CreateChannelReactionAsync(userId, messageId, reaction);
+        var result = await _channelService.CreateChannelReactionAsync(userId, messageId, reaction);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        var channelId = result.Data;
+        return RedirectToAction("Chat", new { channelId });
     }
 }

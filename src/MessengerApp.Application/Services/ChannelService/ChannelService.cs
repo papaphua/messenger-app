@@ -363,30 +363,31 @@ public sealed class ChannelService : IChannelService
         return new Result();
     }
 
-    public async Task<Result> CreateChannelReactionAsync(string userId, string messageId, Reaction reaction)
+    public async Task<Result<string>> CreateChannelReactionAsync(string userId, string messageId, Reaction reaction)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.UserNotFound
             };
 
         var message = await _dbContext.Set<ChannelMessage>()
+            .Include(message => message.Chat)
             .FirstOrDefaultAsync(message => message.Id == messageId &&
                                             message.Chat.Members.Any(member => member.Id == user.Id));
 
         if (message == null)
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
             };
 
         if (!message.Chat.AllowReactions)
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.ReactionsNotAllowed
@@ -408,7 +409,7 @@ public sealed class ChannelService : IChannelService
             if (previousReaction != null)
             {
                 if (previousReaction.ReactionNum == reactionToAdd.ReactionNum)
-                    return new Result { Succeeded = false, Message = Results.AlreadyReacted };
+                    return new Result<string> { Succeeded = false, Message = Results.AlreadyReacted };
 
                 _dbContext.Remove(previousReaction);
             }
@@ -420,14 +421,14 @@ public sealed class ChannelService : IChannelService
         }
         catch (Exception)
         {
-            return new Result
+            return new Result<string>
             {
                 Succeeded = false,
                 Message = Results.ChatNotFound
             };
         }
 
-        return new Result();
+        return new Result<string> { Data = message.ChatId };
     }
 
     public async Task<Result<ChannelCommentsDto>> GetChannelMessageCommentsAsync(string userId, string messageId)
