@@ -430,4 +430,134 @@ public sealed class GroupService : IGroupService
 
         return new Result<string> { Data = message.ChatId };
     }
+
+    public async Task<Result<GroupOptionsDto>> GetGroupOptionsAsync(string userId, string groupId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result<GroupOptionsDto>
+            {
+                Succeeded = false,
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
+            };
+        
+        var group = await _dbContext.Set<Group>()
+            .FirstOrDefaultAsync(group => group.Id == groupId &&
+                                          group.Members.Any(member => member.Id == user.Id));
+
+        if (group == null)
+            return new Result<GroupOptionsDto>
+            {
+                Succeeded = false,
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
+            };
+
+        var groupMember = await _dbContext.Set<GroupMember>()
+            .FirstAsync(member => member.MembersId == user.Id &&
+                                           member.GroupId == group.Id);
+
+        //TODO add localization
+        if (!groupMember.IsAdmin || !groupMember.IsOwner)
+            return new Result<GroupOptionsDto>
+            {
+                Succeeded = false,
+                Message = "NotPermission"
+            };
+
+        var options = _mapper.Map<GroupOptionsDto>(group);
+
+        return new Result<GroupOptionsDto>
+        {
+            Data = options
+        };
+    }
+
+    public async Task<Result> UpdateGroupOptionsAsync(string userId, string groupId, GroupOptionsDto groupOptionsDto)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return new Result<GroupOptionsDto>
+            {
+                Succeeded = false,
+                Message = Localizer.GetLocalizedResult(Results.UserNotFound)
+            };
+        
+        var group = await _dbContext.Set<Group>()
+            .FirstOrDefaultAsync(group => group.Id == groupId &&
+                                          group.Members.Any(member => member.Id == user.Id));
+
+        if (group == null)
+            return new Result<GroupOptionsDto>
+            {
+                Succeeded = false,
+                Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
+            };
+
+        var groupMember = await _dbContext.Set<GroupMember>()
+            .FirstAsync(member => member.MembersId == user.Id &&
+                                  member.GroupId == group.Id);
+
+        if (!groupMember.IsAdmin || !groupMember.IsOwner)
+            return new Result
+            {
+                Succeeded = false,
+                Message = "NoPermission"
+            };
+        
+        if (groupMember.IsAdmin)
+        {
+            group.Title = groupOptionsDto.Title;
+            group.Description = groupOptionsDto.Description;
+            group.ChatPictureBytes = groupOptionsDto.ChatPictureBytes;
+            
+            try
+            {
+                _dbContext.Update(group);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return new Result
+                {
+                    Succeeded = false,
+                    Message = "ChatUpdateError"
+                };
+            }
+
+            if (group.IsPrivate != groupOptionsDto.IsPrivate || group.AllowReactions != groupOptionsDto.AllowReactions)
+                return new Result
+                {
+                    Succeeded = false,
+                    Message = "OnlyChatInfoSaved"
+                };
+
+            return new Result
+            {
+                Message = "ChatInfoSaved"
+            };
+        }
+
+        var updatedGroup = _mapper.Map(groupOptionsDto, group);
+
+        try
+        {
+            _dbContext.Update(updatedGroup);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return new Result
+            {
+                Succeeded = false,
+                Message = "ChatUpdateError"
+            };
+        }
+
+        return new Result
+        {
+            Message = "ChatInfoSaved"
+        };
+    }
 }

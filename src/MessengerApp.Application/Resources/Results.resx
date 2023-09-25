@@ -96,7 +96,7 @@
         <value>Email address {0} already used.</value>
     </data>
     <data name="EmailChangeRequestSentTo" xml:space="preserve">
-        <value>Email change confirmation sent to {email}.</value>
+        <value>Email change confirmation sent to {0}.</value>
     </data>
     <data name="EmailConfirmationRequestSentTo" xml:space="preserve">
         <value>Email confirmation link sent to {0}.</value>

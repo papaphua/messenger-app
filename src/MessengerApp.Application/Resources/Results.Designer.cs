@@ -177,7 +177,7 @@ namespace MessengerApp.Application.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email change confirmation sent to {email}..
+        ///   Looks up a localized string similar to Email change confirmation sent to {0}..
         /// </summary>
         internal static string EmailChangeRequestSentTo {
             get {

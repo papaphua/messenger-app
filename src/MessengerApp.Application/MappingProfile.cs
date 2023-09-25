@@ -93,6 +93,9 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
             .ReverseMap();
 
+        CreateMap<Group, GroupOptionsDto>();
+        CreateMap<GroupOptionsDto, Group>();
+
         // Channel service
         CreateMap<Channel, ChannelDto>()
             .ForMember(dest => dest.ChannelInfoDto,
