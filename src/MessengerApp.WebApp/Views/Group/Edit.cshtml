@@ -1,0 +1,44 @@
+﻿@model MessengerApp.Application.Dtos.Group.GroupOptionsDto
+
+<div class="row-6">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">EditGroup</div>
+            <form method="post" enctype="multipart/form-data" asp-action="UpdateGroupOptions">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="Title"></label>
+                        <input class="form-control" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.Title)]!.DisplayName" asp-for="Title" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description"></label>
+                        <input class="form-control" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.Description)]!.DisplayName" asp-for="Description" autofocus>
+                    </div>
+                    <div class="form-group">
+                        @if (Model.ChatPictureBytes != null && Model.ChatPictureBytes.Length != 0)
+                        {
+                            <img class="profile-picture" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ChatPictureBytes)" alt="Profile Picture"/>
+                        }
+                        else
+                        {
+                            <div class="empty-circle"></div>
+                        }
+                        <label asp-for="ChatPictureBytes"></label>
+                        <input asp-for="ChatPictureBytes" class="form-control" type="file" name="file"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="IsPrivate"></label>
+                        <input type="checkbox" class="fa-check-square" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.IsPrivate)]!.DisplayName" asp-for="IsPrivate" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AllowReactions"></label>
+                        <input type="checkbox" class="fa-check-square" placeholder="@ViewData.ModelMetadata.Properties[nameof(Model.AllowReactions)]!.DisplayName" asp-for="AllowReactions" autofocus>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-around justify-content-end">
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

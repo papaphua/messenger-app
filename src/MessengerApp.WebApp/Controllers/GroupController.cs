@@ -132,4 +132,37 @@ public sealed class GroupController : Controller
         var groupId = result.Data;
         return RedirectToAction("Chat", new { groupId });
     }
+
+    [Route("Group/Chat/Options/{groupId}")]
+    public async Task<IActionResult> Edit(string groupId)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var result = await _groupService.GetGroupOptionsAsync(userId, groupId);
+
+        if (result.Succeeded)
+        {
+            TempData["GroupId"] = groupId;
+            return View(result.Data);
+        }
+
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+
+        return RedirectToAction("Index");
+    }
+
+    public async Task<IActionResult> UpdateGroupOptions(GroupOptionsDto groupOptionsDto)
+    {
+        var userId = Parser.ParseUserId(HttpContext);
+
+        var groupId = TempData["GroupId"]!.ToString()!;
+        
+        var result = await _groupService.UpdateGroupOptionsAsync(userId, groupId, groupOptionsDto);
+        
+        TempData[Notifications.Message] = result.Message;
+        TempData[Notifications.Succeeded] = result.Succeeded;
+        
+        return RedirectToAction("Edit", new { groupId });
+    }
 }

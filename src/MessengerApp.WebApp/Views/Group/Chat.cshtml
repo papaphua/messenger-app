@@ -33,6 +33,11 @@
                 </div>
             </div>
         </div>
+        <div class="card-footer">
+            <a class="btn btn-success btn-block" asp-action="Edit" asp-route-groupId="@Model.Id">
+                Edit
+            </a>
+        </div>
     </div>
 
     <form enctype="multipart/form-data" id="messageForm" method="post" asp-controller="Group" asp-action="CreateGroupMessage">

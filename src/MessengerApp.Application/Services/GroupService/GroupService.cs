@@ -478,7 +478,7 @@ public sealed class GroupService : IGroupService
         var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
-            return new Result<GroupOptionsDto>
+            return new Result
             {
                 Succeeded = false,
                 Message = Localizer.GetLocalizedResult(Results.UserNotFound)
@@ -489,7 +489,7 @@ public sealed class GroupService : IGroupService
                                           group.Members.Any(member => member.Id == user.Id));
 
         if (group == null)
-            return new Result<GroupOptionsDto>
+            return new Result
             {
                 Succeeded = false,
                 Message = Localizer.GetLocalizedResult(Results.ChatNotFound)
